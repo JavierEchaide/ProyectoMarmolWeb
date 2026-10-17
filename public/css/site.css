@@ -1443,8 +1443,11 @@ h1.titulo-seccion__titulo {
 
 /* Las páginas: sala oscura con cartas que flotan en 3D (karma-tracks).
    Cada carta tiene tres capas de movimiento, cada una en su elemento:
-   - .carta: posición en el espacio (profundidad y ángulo propios) y, con
-     ratón, el desplazamiento por capas que pone js/portada.js;
+   - .carta: posición en el espacio (profundidad y ángulo propios);
+   - .carta__enlace: el enlace, un marco que no se mueve. Es lo que recibe
+     el ratón: si el hover lo detectara algo que se mueve, la carta se le
+     escaparía al cursor por los bordes y el hover parpadearía;
+   - .carta__capa: con ratón, el desplazamiento por capas de js/portada.js;
    - .carta__cara: el balanceo continuo (animación CSS) y el hover;
    - .carta__textura: el mármol, que se desplaza despacio. */
 .sala-cartas {
@@ -1483,12 +1486,21 @@ h1.titulo-seccion__titulo {
   --tz: 0px;
   --ty: 0px;
   transform-style: preserve-3d;
-  transition: transform 0.9s var(--curva-salida), translate 0.7s var(--curva-salida), rotate 0.7s var(--curva-salida);
 }
 /* Cada carta en su sitio: a distinta profundidad y girada hacia el centro */
 .carta:nth-child(1) { transform: translate3d(0, 28px, -40px) rotateY(14deg) rotateZ(-2deg); }
 .carta:nth-child(2) { transform: translate3d(0, -12px, 30px) rotateY(0deg) rotateZ(1deg); }
 .carta:nth-child(3) { transform: translate3d(0, 18px, -10px) rotateY(-13deg) rotateZ(2.5deg); }
+.carta__enlace {
+  display: block;
+  color: var(--crema);
+  text-decoration: none;
+  transform-style: preserve-3d;
+}
+.carta__capa {
+  transform-style: preserve-3d;
+  transition: translate 0.7s var(--curva-salida), rotate 0.7s var(--curva-salida);
+}
 .carta__cara {
   position: relative;
   display: block;
@@ -1612,29 +1624,29 @@ h1.titulo-seccion__titulo {
 .carta__entrar {
   transition: color 0.3s;
 }
-.carta__cara:focus-visible {
+.carta__enlace:focus-visible .carta__cara {
   transform: translate3d(0, -12px, 70px);
 }
 @media (hover: hover) and (pointer: fine) {
-  .carta__cara:hover {
+  .carta__enlace:hover .carta__cara {
     transform: translate3d(0, -14px, 80px);
     box-shadow: inset 0 0 0 1px #f2d27a, inset 0 0 0 6px rgb(13 13 13 / 0.55), inset 0 0 0 7px #f2d27a,
       0 0 26px rgb(205 164 52 / 0.35), 0 44px 70px -22px rgb(0 0 0 / 0.95);
   }
-  .carta__cara:hover .carta__textura {
+  .carta__enlace:hover .carta__textura {
     filter: brightness(1.45) saturate(1.1);
   }
-  .carta__cara:hover .carta__entrar {
+  .carta__enlace:hover .carta__entrar {
     color: #f2d27a;
   }
-  .carta__cara:hover .flecha {
+  .carta__enlace:hover .flecha {
     transform: translateX(6px);
   }
-  .cartas:has(.carta__cara:hover) .carta__cara:not(:hover) {
+  .cartas:has(.carta__enlace:hover) .carta__enlace:not(:hover) .carta__cara {
     opacity: 0.55;
   }
 }
-.carta__cara:focus-visible {
+.carta__enlace:focus-visible {
   outline: 2px solid var(--oro);
   outline-offset: 6px;
 }

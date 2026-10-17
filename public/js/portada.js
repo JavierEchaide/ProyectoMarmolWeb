@@ -36,7 +36,9 @@
   var cartas = document.querySelector('[data-cartas]');
   if (cartas && !movimientoReducido && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     var sala = cartas.closest('.sala-cartas');
-    var lista = Array.prototype.slice.call(cartas.querySelectorAll('[data-carta]'));
+    // Se mueve la capa de dentro, no el enlace: así la zona que recibe el
+    // ratón no se desplaza y la carta no se le escapa al cursor
+    var lista = Array.prototype.slice.call(cartas.querySelectorAll('[data-carta-capa]'));
     var profundidad = [0.6, 1, 0.8];
     var cursor = { x: 0, y: 0 };
     var cartasPendiente = false;

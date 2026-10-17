@@ -99,7 +99,8 @@ const frases = portada.gancho.match(/[^.!?]+[.!?]*/g).map((f) => f.trim());
   <Grieta semilla={8} />
 
   {/* Las páginas: cartas que flotan en 3D sobre la sala oscura (referencia:
-      karma-tracks). El balanceo es CSS; el ratón las mueve por capas (js/portada.js). */}
+      karma-tracks). El enlace es un marco quieto que recibe el ratón; dentro, la
+      cara balancea y se adelanta (CSS). El ratón las mueve por capas (js/portada.js). */}
   <section class="sala-cartas" aria-labelledby="titulo-paginas">
     <div class="contenedor">
       <TituloSeccion titulo="Las páginas" id="titulo-paginas" />
@@ -108,7 +109,9 @@ const frases = portada.gancho.match(/[^.!?]+[.!?]*/g).map((f) => f.trim());
           const p = pagina(a.pagina);
           return (
             <li class="carta" style={`--i: ${i}`} data-carta>
-              <a class={`carta__cara carta__cara--${a.piedra}`} href={p.archivo}>
+              <a class="carta__enlace" href={p.archivo}>
+                <div class="carta__capa" data-carta-capa>
+                <div class={`carta__cara carta__cara--${a.piedra}`}>
                 <span class="carta__textura" aria-hidden="true"></span>
                 {a.imagen.src && <img class="carta__imagen" src={a.imagen.src} alt="" loading="lazy" decoding="async" />}
                 <span class="carta__marco" aria-hidden="true">
@@ -127,6 +130,8 @@ const frases = portada.gancho.match(/[^.!?]+[.!?]*/g).map((f) => f.trim());
                   Entrar
                   <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
                 </span>
+                </div>
+                </div>
               </a>
             </li>
           );
