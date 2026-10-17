@@ -3,3 +3,9 @@ dist/
 .astro/
 .DS_Store
 .vercel
+
+# Skills de agentes instaladas en local (no forman parte de la web)
+.agents/
+.claude/
+.taste-skill/
+skills-lock.json
