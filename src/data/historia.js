@@ -3,6 +3,14 @@
 // `spoiler: true` tapa la parte con el cartel negro hasta que se pulsa.
 
 export const historia = {
+  // Cabecera: el cursor abre en el mármol una ventana a otro mundo, como las
+  // ventanas del taller del teaser. Render pendiente (horizontal, oscuro y con
+  // mucha profundidad: un paisaje lejano, una nebulosa, un mar...).
+  ventana: {
+    src: null,
+    falta: 'Render: el otro mundo al otro lado de la ventana del taller (16:9, 2560×1440)',
+  },
+
   premisa: {
     titulo: 'Premisa',
     parrafos: [

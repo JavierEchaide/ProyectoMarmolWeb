@@ -49,6 +49,9 @@ export const portada = {
     },
     {
       pie: 'De su cara solo se ven los ojos.',
+      // Mientras no haya render, los ojos se dibujan y siguen la regla de la
+      // serie: nunca miran (componente Ojos.astro). Con `src`, se ve el render.
+      ojos: true,
       imagen: { src: null, alt: 'Los ojos del Creador en primer plano.', falta: 'Render: los ojos del Creador en primer plano' },
     },
     {

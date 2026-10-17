@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Cincel de escultor: mango de madera, virola de oro y hoja de acero.
+       La punta (abajo a la izquierda, en 7 28) es el punto activo del cursor. -->
+  <g transform="rotate(45 16 16)">
+    <path d="M12.6 1.5h6.8c.6 0 1 .4 1 1v11.5h-8.8V2.5c0-.6.4-1 1-1z" fill="#5a3b26" stroke="#1a110b" stroke-width=".8"/>
+    <path d="M13.6 3v10" stroke="#7a5236" stroke-width=".9" stroke-linecap="round"/>
+    <rect x="11.8" y="13.4" width="8.4" height="2.6" rx=".5" fill="#cda434" stroke="#1a110b" stroke-width=".8"/>
+    <path d="M13.4 16h5.2v10.5L16 30.5l-2.6-4z" fill="#c9ccd1" stroke="#1a110b" stroke-width=".8" stroke-linejoin="round"/>
+    <path d="M16 17v12.5" stroke="#f4f6f8" stroke-width=".7" opacity=".8"/>
+  </g>
+</svg>

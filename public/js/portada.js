@@ -30,6 +30,108 @@
     video.pause();
   }
 
+  /* Ojos del Creador (fotograma II): "nunca bajó a mirar". Apartan la
+     mirada del cursor; si nadie se mueve en 3 s, por fin miran (al cursor o,
+     sin ratón, al frente) y se les dilata la pupila. Al volver a moverse,
+     parpadean y esquivan. Parpadean solos de vez en cuando. */
+  var ojosEl = document.querySelector('[data-ojos]');
+  if (ojosEl) {
+    var svgOjos = ojosEl.querySelector('svg');
+    var ojos = Array.prototype.slice.call(ojosEl.querySelectorAll('[data-ojo]')).map(function (g) {
+      return {
+        globo: g.querySelector('.ojo__globo'),
+        iris: g.querySelector('[data-iris]'),
+        pupila: g.querySelector('[data-pupila]'),
+        cx: parseFloat(g.dataset.cx),
+        cy: parseFloat(g.dataset.cy),
+        x: -8,
+        y: 5,
+      };
+    });
+    var mirada = { x: null, y: null };
+    var quieto = performance.now();
+    var mirando = false;
+    var ojosVisibles = false;
+    var ojosPendiente = false;
+    var proximoParpadeo = performance.now() + 2500;
+
+    var parpadear = function () {
+      if (movimientoReducido) return;
+      ojos.forEach(function (o) {
+        o.globo.animate(
+          [{ transform: 'scaleY(1)' }, { transform: 'scaleY(0.06)' }, { transform: 'scaleY(1)' }],
+          { duration: 170, easing: 'ease-in-out' }
+        );
+      });
+    };
+
+    var pintarOjos = function (ahora) {
+      ojosPendiente = false;
+      if (!mirando && !movimientoReducido && ahora - quieto > 3000) {
+        mirando = true;
+        parpadear();
+      }
+      ojos.forEach(function (o) {
+        var dx = mirada.x === null ? 0 : mirada.x - o.cx;
+        var dy = mirada.y === null ? 0 : mirada.y - o.cy;
+        var d = Math.hypot(dx, dy) || 1;
+        var ux = dx / d;
+        var uy = dy / d;
+        var tx;
+        var ty;
+        if (mirando) {
+          // miran: hacia el cursor, o al frente si no hay cursor
+          tx = mirada.x === null ? 0 : ux * Math.min(d * 0.12, 13);
+          ty = mirada.y === null ? 0 : uy * Math.min(d * 0.12, 7);
+        } else if (mirada.x === null) {
+          tx = -11; // sin cursor todavía: miran abajo a un lado
+          ty = 6;
+        } else {
+          tx = -ux * 13; // esquivan: al lado contrario del cursor
+          ty = -uy * 7;
+        }
+        o.x += (tx - o.x) * (movimientoReducido ? 1 : 0.22);
+        o.y += (ty - o.y) * (movimientoReducido ? 1 : 0.22);
+        o.iris.setAttribute('transform', 'translate(' + o.x.toFixed(2) + ' ' + o.y.toFixed(2) + ')');
+        o.pupila.setAttribute('r', mirando ? 8.6 : 6.4);
+      });
+      if (!movimientoReducido && ahora > proximoParpadeo) {
+        proximoParpadeo = ahora + 3000 + Math.random() * 4000;
+        parpadear();
+      }
+      if (ojosVisibles && !movimientoReducido) pedirOjos();
+    };
+    var pedirOjos = function () {
+      if (!ojosPendiente) {
+        ojosPendiente = true;
+        requestAnimationFrame(pintarOjos);
+      }
+    };
+    var mover = function (e) {
+      var r = svgOjos.getBoundingClientRect();
+      if (!r.width) return;
+      mirada.x = ((e.clientX - r.left) / r.width) * 320;
+      mirada.y = ((e.clientY - r.top) / r.height) * 180;
+      quieto = performance.now();
+      if (mirando) {
+        mirando = false;
+        parpadear();
+      }
+      pedirOjos();
+    };
+    window.addEventListener('pointermove', mover, { passive: true });
+    window.addEventListener('pointerdown', mover, { passive: true });
+    window.addEventListener('scroll', function () { quieto = performance.now(); if (mirando) { mirando = false; parpadear(); } }, { passive: true });
+    new IntersectionObserver(function (entradas) {
+      ojosVisibles = entradas[0].isIntersecting;
+      if (ojosVisibles) {
+        quieto = performance.now();
+        pedirOjos();
+      }
+    }).observe(ojosEl);
+    pintarOjos(performance.now());
+  }
+
   /* Cartas de "Las páginas": con ratón se desplazan por capas (las más
      cercanas, más) y giran un poco hacia el cursor. Usa las propiedades
      `translate` y `rotate`, que se suman a la posición base de cada carta. */

@@ -140,7 +140,8 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
    - **Por capas:** si se rellena `capas` (fondo / losa / cincel con transparencia), cada capa se mueve según su `profundidad` y la profundidad es real. El ejemplo está comentado en `portada.js`.
    - **Vídeo en bucle:** si se rellena `video` (MP4/WebM de 3-5 s sin sonido), se ve en lugar de la imagen, con la imagen de escritorio como póster. Con "reducir movimiento" se queda quieto.
 3. **Presentación**: frase gancho (`gancho`, cada frase en su línea y la segunda en rojo), dos párrafos (`presentacion`) y botón **Entrar**, que lleva al Teaser.
-4. **La historia en cuatro fotogramas** (`fotogramas`): 4 en fila en escritorio y 2×2 en móvil. Al pasar el ratón aparece "Ver" y al pulsar se amplían en el visor; se recorren con las flechas.
+4. **La historia en cuatro fotogramas** (`fotogramas`). El **II** ("De su cara solo se ven los ojos") son los ojos del Creador dibujados (`Ojos.astro`) mientras no haya render, y siguen la regla de la serie: **nunca miran**. Esquivan el cursor; si nadie se mueve en 3 s, por fin te miran (con la pupila dilatada); al moverte parpadean y vuelven a apartar la vista. Con `imagen.src` se ve el render en su lugar.
+   Los cuatro fotogramas: 4 en fila en escritorio y 2×2 en móvil. Al pasar el ratón aparece "Ver" y al pulsar se amplían en el visor; se recorren con las flechas.
 5. **Las páginas** (`accesos`): sala oscura con tres cartas que **flotan en 3D** (referencia: karma-tracks). Cada una está a una profundidad y un ángulo distintos, se balancea sola y, con ratón, se desplaza por capas y gira hacia el cursor; la que señalas se adelanta.
    - Por dentro, una piedra que se mueve despacio (`piedra`: `'negra'`, `'rosso'` o `'dorada'`; texturas `img/marmol/carta-*.webp`).
    - Si una carta tiene imagen (`imagen.src`), se ve la imagen en lugar de la piedra.
@@ -159,6 +160,7 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
    - `video.src`: ruta del MP4 (`'video/teaser.mp4'`). Mientras sea `null`, al pulsar sale "Vídeo pendiente".
    - `video.poster`: fotograma que se ve antes de pulsar.
    - Los créditos van dentro del propio vídeo. No hay página de créditos.
+   - **Sala de proyección:** las luces de toda la página bajan al acercar el cursor al reproductor (sin ratón, al centrarlo en pantalla). Sobre el reproductor hay un **telón rojo** con flecos de oro que se entreabre al pasar el ratón y se recoge al pulsar play; entonces crece el vídeo. Al cerrar el vídeo, el telón se vuelve a cerrar.
 2. **Sinopsis** (`sinopsis`). Describe sin explicar, para no destapar la parte III de la historia (que venerar a las criaturas también las rompe).
 3. **Ficha técnica** (`ficha`): Duración · Hecho con · Formato · Música. La música pone "A decidir"; cuando se elija, se cambian las dos líneas.
 4. **Fotogramas clave** (`fotogramas`): planos 1, 2b, 7 y 8, en 2.35:1 y en 2 × 2 grandes, ampliables.
@@ -169,12 +171,14 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
 
 Textos escritos a partir de "Lore - Biblia completa", "Estructura narrativa - Partes y temporadas" y "El Protagonista".
 
+0. **Cabecera con ventanas** (`ventana`): una losa de mármol con el título. Al pasar el cursor se abre en el mármol un rasgón vertical con borde de luz dorada por el que se ve otro mundo, como las ventanas del taller del teaser. Sin ratón, la ventana pasea sola. Ahora el otro mundo es un cielo provisional; el render va en `historia.ventana.src`.
 1. **Premisa** (`premisa`): siempre visible, con imagen clave (4:5) y capitular roja.
 2. **Las seis partes** (`partes`): tarjetas con marco de mármol, cada una con número, imagen, título y párrafo.
    - `spoiler: true` las tapa con una losa de piedra negra que pone **SPOILER**. Ahora están tapadas la III, la IV, la V y la VI. La I y la II se ven siempre.
    - Mientras está tapado, el contenido es `inert` (no se lee, no se selecciona y no se enfoca con el teclado) y el bloque se queda a una altura fija (4:3; el final, 2:1), en vez de ocupar lo que mide el texto escondido.
    - **La losa es 3D** (`js/historia.js`, con la geometría de `js/grietas.js`): se inclina con el ratón y tiene un reflejo que lo sigue. Al pasar por encima le sale una fisura en el punto de impacto. Al pulsarla se agrieta en oro de lado a lado, se abre (asoma luz dorada por las juntas) y se rompe en unas 14-20 esquirlas que caen girando en perspectiva mientras el bloque crece hasta la altura del texto. Dura 2 s. Con "reducir movimiento" solo se destapa.
    - El botón **Mostrar todos** destapa todo de una vez y pasa a **Volver a taparlos**. Al recargar la página vuelven a estar tapados: no se guarda nada.
+   - **La losa de detrás cuenta el arco sin texto:** las seis partes están sobre una losa de mármol que, según bajas, primero está intacta, luego le salen grietas oscuras (la corrupción, y la piedra se apaga) y al final esas grietas se rellenan de oro (la sanación, kintsugi). Va con el scroll y es reversible. Se rehace sola si la losa cambia de alto al destapar spoilers.
 3. **El final** (`final`): bloque ancho tapado con "SPOILER · EL FINAL", con dos párrafos y la cita del tema de la serie.
 4. **Siguiente: IV · Proceso.**
 
@@ -239,6 +243,7 @@ Para poner la imagen real: copiar el archivo a `public/img/...` y cambiar `src: 
   - En móvil el mármol queda arriba y la lista debajo.
 - **Cabecera** sin filete: al bajar cambia a un fondo un poco más oscuro y se esconde; al subir vuelve. Así no tapa lo que se está leyendo.
 - **Cortina entre páginas.** Al pulsar un enlace interno sube una placa de mármol con el número y el nombre de la página de destino. En la página nueva, esa placa **se agrieta en oro y cae en esquirlas** (el mismo motor que las losas de SPOILER, en `js/grietas.js`), con la página nueva en penumbra que se aclara. Dura algo más de 1 s y no bloquea: se puede hacer scroll mientras cae. Si algo fallara, la placa se retira sola a los 2,5 s.
+- **Cursor de cincel** (`img/cincel.svg`), solo con ratón: la punta es el punto activo. En enlaces y botones se mantiene la mano. Al hacer clic salta un poco de polvo de mármol (5 motas, como mucho una vez cada 150 ms; nada con "reducir movimiento").
 - **Tallado** (`js/tallado.js`, referencia: heronaiapp, "en vez de crear, tallar"):
   - Los títulos de sección aparecen primero como un boceto en contorno fino y luego un cincel los descubre de izquierda a derecha, con una chispa y polvo de mármol.
   - El doble filete dorado de las tarjetas se traza solo, y después crecen las escuadras desde su esquina.
@@ -285,6 +290,7 @@ Formato recomendado: **WebP** (o JPG) calidad ~85. Renders con el mismo nombre q
 | 13 | **Teaser** en MP4 (H.264, 2.35:1, créditos dentro) | 1920×817 | `video/teaser.mp4` | `teaser.video.src` |
 | 14 | Póster del teaser (fotograma antes de pulsar play) | 2.35:1 | `img/teaser/poster.webp` | `teaser.video.poster` |
 | 15–20 | Fotogramas clave: planos 1, 2b, 7, 8 y la pareja 4 + 6 | 2.35:1 | `img/teaser/plano-*.webp` | `teaser.fotogramas` y `teaser.rima` |
+| 20b | El "otro mundo" que se ve por las ventanas de la cabecera de Historia (oscuro, con mucha profundidad) | 16:9 · 2560×1440 | `img/historia/ventana.webp` | `historia.ventana.src` |
 | 21 | Imagen clave de la premisa | 4:5 | `img/historia/premisa.webp` | `historia.premisa.imagen.src` |
 | 22–27 | Una imagen por parte (I–VI); la descripción de cada una está en su placeholder | 4:3 | `img/historia/parte-1..6.webp` | `historia.partes[i].imagen.src` |
 | 28 | Capturas para la línea de tiempo: notas de Obsidian, grafo, storyboard | 16:10 | `img/proceso/...` | `proceso.bloques[i].capturas` |

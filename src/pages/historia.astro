@@ -12,9 +12,21 @@ const { premisa, partes, final } = historia;
 const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
 ---
 <Base id="historia" descripcion="Resumen de la historia de Serie Mármol, con los spoilers tapados." scripts={['js/historia.js']}>
-  <div class="contenedor cabecera-pagina">
-    <TituloSeccion titulo="Historia" nivel={1} />
-  </div>
+  {/* Cabecera de mármol: el cursor abre una grieta-ventana a otro mundo (js/historia.js) */}
+  <header class="ventana" data-ventana>
+    <div class="ventana__mundo" data-ventana-mundo aria-hidden="true">
+      {historia.ventana.src ? (
+        <img src={historia.ventana.src} alt="" decoding="async" />
+      ) : (
+        <span class="ventana__falta">{historia.ventana.falta}</span>
+      )}
+    </div>
+    <svg class="ventana__borde" data-ventana-borde aria-hidden="true" focusable="false"><path /></svg>
+    <div class="contenedor ventana__titulo">
+      <TituloSeccion titulo="Historia" nivel={1} />
+      <p class="ventana__pista">Pasa el cursor por el mármol: detrás hay otros mundos.</p>
+    </div>
+  </header>
 
   <section class="contenedor premisa" aria-labelledby="titulo-premisa">
     <div class="premisa__texto" data-revelar>
@@ -36,6 +48,10 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
       </div>
     </TituloSeccion>
 
+    {/* La losa de detrás cuenta el arco sin texto: intacta en I-II, se agrieta
+        en III-IV y en V-VI las grietas se rellenan de oro (js/historia.js) */}
+    <div class="losa" data-losa>
+      <svg class="losa__grietas" data-losa-grietas aria-hidden="true" focusable="false"></svg>
     <ol class="partes">
       {partes.map((p, i) => (
         <Tarjeta etiqueta="li" marmol clase="parte" posicion={`${(i * 37) % 100}% ${(i * 53) % 100}%`}>
@@ -48,6 +64,7 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
         </Tarjeta>
       ))}
     </ol>
+    </div>
   </section>
 
   <section class="contenedor seccion final" aria-labelledby="titulo-final">

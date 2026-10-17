@@ -135,6 +135,33 @@ main {
   outline: none;
 }
 
+/* Cursor de cincel, solo con ratón. Los enlaces y botones mantienen la mano
+   para que se vea qué se puede pulsar; el polvo al hacer clic sale de
+   js/tallado.js */
+@media (hover: hover) and (pointer: fine) {
+  html {
+    cursor: url('../img/cincel.svg') 7 28, auto;
+  }
+  a,
+  button,
+  summary,
+  label,
+  [role='button'],
+  input[type='range'] {
+    cursor: pointer;
+  }
+}
+.polvo-cincel {
+  position: fixed;
+  z-index: 95;
+  width: 3px;
+  height: 3px;
+  border-radius: 1px;
+  background: #e2d9cb;
+  box-shadow: 0 0 0 0.5px rgb(54 41 38 / 0.25);
+  pointer-events: none;
+}
+
 /* 3. Utilidades ---------------------------------------------------------- */
 
 .oculto {
@@ -1453,6 +1480,53 @@ h1.titulo-seccion__titulo {
   transition-delay: 0s;
 }
 
+/* Ojos del Creador (fotograma II de la Portada, js/portada.js) */
+.ojos {
+  position: relative;
+  overflow: hidden;
+  background: var(--piedra) center / cover var(--negro);
+  box-shadow: inset 0 0 60px rgb(0 0 0 / 0.8);
+}
+.ojos svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ojo__globo {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.ojo__blanco {
+  fill: #d9d0c0;
+}
+.ojo__sombra {
+  fill: rgb(13 13 13 / 0.45);
+}
+.ojo__aro {
+  fill: none;
+  stroke: #cda434;
+  stroke-width: 0.8;
+}
+.ojo__pupila {
+  fill: #0d0d0d;
+  transition: r 0.5s var(--curva-salida);
+}
+.ojo__brillo {
+  fill: #fffbea;
+  opacity: 0.85;
+}
+.ojo__contorno,
+.ojo__ceja {
+  fill: none;
+  stroke: var(--oro);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+.ojo__ceja {
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
 /* Las páginas: sala oscura con cartas que flotan en 3D (karma-tracks).
    Cada carta tiene tres capas de movimiento, cada una en su elemento:
    - .carta: posición en el espacio (profundidad y ángulo propios) y, con
@@ -1882,6 +1956,89 @@ h1.titulo-seccion__titulo {
   cursor: pointer;
   overflow: hidden;
 }
+/* Sala de proyección (js/teaser.js): una capa negra baja la luz de toda la
+   página al acercarse al reproductor; la sección del cine queda por encima */
+.cine {
+  position: relative;
+  z-index: 65;
+}
+.luces {
+  position: fixed;
+  inset: 0;
+  z-index: 64;
+  background: var(--negro);
+  opacity: 0;
+  pointer-events: none;
+}
+.menu-abierto .luces {
+  visibility: hidden;
+}
+
+/* Telón rojo: dos hojas que se recogen hacia los lados al pulsar play */
+.telon {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.telon__hoja {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.5%;
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.35), transparent 30%, transparent 80%, rgb(0 0 0 / 0.45)),
+    repeating-linear-gradient(90deg, #4a0f10 0, #8b2626 18px, #a8383a 26px, #6e1a1b 40px, #4a0f10 52px);
+  transition: transform 0.9s var(--curva);
+}
+.telon__hoja::after {
+  /* flecos de oro */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 9px;
+  background: repeating-linear-gradient(90deg, var(--oro) 0 2px, transparent 2px 5px);
+  opacity: 0.85;
+}
+.telon__hoja--izq {
+  left: 0;
+  transform-origin: left center;
+  box-shadow: inset -14px 0 24px -10px rgb(0 0 0 / 0.6);
+}
+.telon__hoja--der {
+  right: 0;
+  transform-origin: right center;
+  box-shadow: inset 14px 0 24px -10px rgb(0 0 0 / 0.6);
+}
+.telon__bambalina {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 11%;
+  background: repeating-linear-gradient(90deg, #4a0f10 0, #7a2022 14px, #4a0f10 28px);
+  border-bottom: 2px solid var(--oro);
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.5);
+}
+@media (hover: hover) and (pointer: fine) {
+  .reproductor:hover .telon__hoja--izq { transform: scaleX(0.94); }
+  .reproductor:hover .telon__hoja--der { transform: scaleX(0.94); }
+}
+.telon-abierto .telon__hoja--izq,
+.telon-abierto .telon__hoja--der,
+.reproductor.telon-abierto:hover .telon__hoja--izq,
+.reproductor.telon-abierto:hover .telon__hoja--der {
+  transform: scaleX(0.12);
+}
+.reproductor__play {
+  z-index: 3;
+}
+.telon-abierto .reproductor__play {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
 .reproductor__poster {
   width: 100%;
   height: 100%;
@@ -2013,6 +2170,144 @@ h1.titulo-seccion__titulo {
 }
 
 /* 12. Historia ----------------------------------------------------------- */
+
+/* Cabecera de Historia: losa de mármol con ventanas a otros mundos.
+   js/historia.js recorta .ventana__mundo con la forma del rasgón y dibuja
+   su borde de luz en .ventana__borde. */
+.ventana {
+  position: relative;
+  min-height: clamp(340px, 54vh, 580px);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: var(--marmol) 30% 40% / cover var(--superficie);
+  margin-bottom: clamp(40px, 6vw, 80px);
+}
+.ventana::before {
+  /* velo crema: el mármol queda de fondo y el título se lee */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(241 242 227 / 0.35);
+}
+.ventana__mundo {
+  --px: 0px;
+  --py: 0px;
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 0 0, 0 0);
+  /* Provisional: un cielo profundo hasta que llegue el render */
+  background:
+    radial-gradient(1px 1px at 20% 30%, #fff8e0 50%, transparent 51%),
+    radial-gradient(1px 1px at 70% 20%, #fff8e0 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 40% 70%, #f2e6c4 50%, transparent 51%),
+    radial-gradient(1px 1px at 85% 60%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 55% 45%, #fff 50%, transparent 51%),
+    radial-gradient(ellipse 50% 40% at 60% 55%, rgb(205 164 52 / 0.35), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 35% 40%, #2b4f63, transparent 70%),
+    radial-gradient(ellipse at 50% 50%, #14202c, #07090d 80%);
+  background-size: 160px 160px, 210px 210px, 260px 260px, 190px 190px, 230px 230px, auto, auto, auto;
+}
+.ventana__mundo img,
+.ventana__falta {
+  position: absolute;
+  inset: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  object-fit: cover;
+  transform: translate3d(var(--px), var(--py), 0);
+}
+.ventana__falta {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+  font-style: italic;
+  font-size: var(--t-pequeno);
+  color: rgb(241 242 227 / 0.7);
+}
+.ventana__borde {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.ventana__borde path {
+  fill: none;
+  stroke: #f2d27a;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px rgb(242 210 122 / 0.9)) drop-shadow(0 0 18px rgb(205 164 52 / 0.6));
+}
+.ventana__titulo {
+  position: relative;
+  z-index: 2;
+  padding-bottom: clamp(20px, 3vw, 36px);
+  pointer-events: none;
+}
+.ventana__titulo .titulo-seccion {
+  margin-bottom: 0.2em;
+}
+.ventana__pista {
+  margin: 0;
+  font-style: italic;
+  font-size: var(--t-pequeno);
+  color: var(--tinta-2);
+}
+@media (hover: none) {
+  .ventana__pista {
+    display: none;
+  }
+}
+
+/* La losa de las seis partes: se agrieta y se cura con el scroll */
+.losa {
+  --corrupcion: 0;
+  --sanacion: 0;
+  position: relative;
+  padding: clamp(14px, 3vw, 40px);
+  background: var(--marmol-marco) center / 1200px auto var(--superficie);
+}
+.losa::before {
+  /* la piedra se apaga mientras está corrupta */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(54 41 38 / calc(var(--corrupcion) * 0.28));
+  pointer-events: none;
+}
+.losa__grietas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.losa__grietas path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.losa__corrupcion path {
+  stroke: #2b2120;
+  stroke-width: 2.4;
+  opacity: calc(1 - var(--sanacion) * 0.5);
+}
+.losa__oro path {
+  stroke: var(--oro);
+  stroke-width: 3.4;
+  filter: drop-shadow(0 0 3px rgb(242 207 98 / 0.7));
+}
+.losa__grietas .losa__rama {
+  stroke-width: 1.3;
+}
+.losa .partes {
+  position: relative;
+  z-index: 1;
+}
 
 .premisa {
   display: grid;

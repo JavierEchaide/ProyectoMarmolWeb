@@ -166,6 +166,40 @@
     }, 1700);
   });
 
+  /* 3. Cincel: al hacer clic con el ratón salta un poco de polvo de mármol.
+     Pocas motas y como mucho una vez cada 150 ms, para no cansar. */
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    var ultimoGolpe = 0;
+    document.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      var ahora = performance.now();
+      if (ahora - ultimoGolpe < 150) return;
+      ultimoGolpe = ahora;
+      var azar = aleatorio(Math.floor(ahora));
+      for (var k = 0; k < 5; k++) {
+        var m = document.createElement('span');
+        m.className = 'polvo-cincel';
+        m.style.left = e.clientX + 'px';
+        m.style.top = e.clientY + 'px';
+        var tam = (1.6 + azar() * 2).toFixed(1);
+        m.style.width = m.style.height = tam + 'px';
+        document.body.appendChild(m);
+        var angulo = -Math.PI * (0.15 + azar() * 0.7); // hacia arriba, en abanico
+        var fuerza = 10 + azar() * 22;
+        var vx = Math.cos(angulo) * fuerza;
+        var vy = Math.sin(angulo) * fuerza;
+        m.animate(
+          [
+            { transform: 'translate3d(0,0,0)', opacity: 1 },
+            { transform: 'translate3d(' + vx.toFixed(1) + 'px,' + vy.toFixed(1) + 'px,0)', opacity: 1, offset: 0.35 },
+            { transform: 'translate3d(' + (vx * 1.5).toFixed(1) + 'px,' + (vy + 34).toFixed(1) + 'px,0)', opacity: 0 },
+          ],
+          { duration: 520 + azar() * 220, easing: 'cubic-bezier(0.2, 0.6, 0.4, 1)' }
+        ).onfinish = (function (el) { return function () { el.remove(); }; })(m);
+      }
+    });
+  }
+
   // Grecas: se dibujan de izquierda a derecha
   var grecas = Array.prototype.slice.call(document.querySelectorAll('.greca'));
   grecas.forEach(function (g) { g.classList.add('greca--pendiente'); });
