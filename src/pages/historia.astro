@@ -22,9 +22,12 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
       )}
     </div>
     <svg class="ventana__borde" data-ventana-borde aria-hidden="true" focusable="false"><path /></svg>
-    <div class="contenedor ventana__titulo">
-      <TituloSeccion titulo="Historia" nivel={1} />
-      <p class="ventana__pista">Pasa el cursor por el mármol: detrás hay otros mundos.</p>
+    <div class="contenedor ventana__pie">
+      <div class="ventana__cartela">
+        <TituloSeccion titulo="Historia" nivel={1} />
+        <p class="ventana__lema">Las criaturas no nacen: se tallan.</p>
+        <p class="ventana__pista">Pasa el cursor por el mármol: detrás hay otros mundos.</p>
+      </div>
     </div>
   </header>
 
@@ -48,13 +51,15 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
       </div>
     </TituloSeccion>
 
-    {/* La losa de detrás cuenta el arco sin texto: intacta en I-II, se agrieta
-        en III-IV y en V-VI las grietas se rellenan de oro (js/historia.js) */}
-    <div class="losa" data-losa>
-      <svg class="losa__grietas" data-losa-grietas aria-hidden="true" focusable="false"></svg>
-    <ol class="partes">
+    {/* El arco de la serie, sin texto: las partes cuelgan a ambos lados de una
+        veta que con el scroll pasa de intacta (I-II) a grieta oscura (III-IV)
+        y a grieta rellena de oro (V-VI). js/historia.js */}
+    <div class="arco" data-arco>
+      <svg class="arco__veta" data-arco-veta aria-hidden="true" focusable="false"></svg>
+    <ol class="partes partes--arco">
       {partes.map((p, i) => (
-        <Tarjeta etiqueta="li" marmol clase="parte" posicion={`${(i * 37) % 100}% ${(i * 53) % 100}%`}>
+        <Tarjeta etiqueta="li" clase={`parte parte--${i < 2 ? 'pura' : i < 4 ? 'rota' : 'oro'}`}>
+          <span class="parte__nodo" aria-hidden="true"><span>{p.numero}</span></span>
           <p class="parte__numero">Parte {p.numero}</p>
           <Spoiler activo={p.spoiler} semilla={40 + i} descripcion={`la parte ${p.numero}`}>
             <Imagen imagen={p.imagen} ratio="4 / 3" ver={!p.spoiler} grupo="partes" pie={`Parte ${p.numero}. ${p.titulo}`} />

@@ -135,33 +135,6 @@ main {
   outline: none;
 }
 
-/* Cursor de cincel, solo con ratón. Los enlaces y botones mantienen la mano
-   para que se vea qué se puede pulsar; el polvo al hacer clic sale de
-   js/tallado.js */
-@media (hover: hover) and (pointer: fine) {
-  html {
-    cursor: url('../img/cincel.svg') 7 28, auto;
-  }
-  a,
-  button,
-  summary,
-  label,
-  [role='button'],
-  input[type='range'] {
-    cursor: pointer;
-  }
-}
-.polvo-cincel {
-  position: fixed;
-  z-index: 95;
-  width: 3px;
-  height: 3px;
-  border-radius: 1px;
-  background: #e2d9cb;
-  box-shadow: 0 0 0 0.5px rgb(54 41 38 / 0.25);
-  pointer-events: none;
-}
-
 /* 3. Utilidades ---------------------------------------------------------- */
 
 .oculto {
@@ -340,15 +313,25 @@ h1.titulo-seccion__titulo {
   transform-origin: right;
   transition: transform 0.45s var(--curva);
 }
-.boton:hover,
 .boton:focus-visible {
   color: var(--crema);
   border-color: var(--rojo);
 }
-.boton:hover::before,
+@media (hover: hover) and (pointer: fine) {
+  .boton:hover {
+    color: var(--crema);
+    border-color: var(--rojo);
+  }
+}
 .boton:focus-visible::before {
   transform: scaleX(1);
   transform-origin: left;
+}
+@media (hover: hover) and (pointer: fine) {
+  .boton:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
 }
 .boton--grande {
   font-size: var(--t-pequeno);
@@ -367,11 +350,15 @@ h1.titulo-seccion__titulo {
   stroke-width: 1.4;
   transition: transform 0.3s var(--curva-salida);
 }
-.boton:hover .flecha {
-  transform: translateX(4px);
+@media (hover: hover) and (pointer: fine) {
+  .boton:hover .flecha {
+    transform: translateX(4px);
+  }
 }
-.boton:hover .flecha--izq {
-  transform: translateX(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .boton:hover .flecha--izq {
+    transform: translateX(-4px);
+  }
 }
 
 /* Estados (Proceso) */
@@ -476,9 +463,11 @@ h1.titulo-seccion__titulo {
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
 }
-.boton-menu:hover {
-  background: var(--tinta);
-  color: var(--crema);
+@media (hover: hover) and (pointer: fine) {
+  .boton-menu:hover {
+    background: var(--tinta);
+    color: var(--crema);
+  }
 }
 .boton-menu__icono {
   position: relative;
@@ -649,14 +638,23 @@ h1.titulo-seccion__titulo {
   transform-origin: left;
   transition: transform 0.5s var(--curva);
 }
-.menu__item a:hover .menu__titulo,
 .menu__item a:focus-visible .menu__titulo {
   transform: translateX(10px);
   color: var(--rojo);
 }
-.menu__item a:hover::after,
+@media (hover: hover) and (pointer: fine) {
+  .menu__item a:hover .menu__titulo {
+    transform: translateX(10px);
+    color: var(--rojo);
+  }
+}
 .menu__item a[aria-current='page']::after {
   transform: scaleX(1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .menu__item a:hover::after {
+    transform: scaleX(1);
+  }
 }
 .menu__item a[aria-current='page'] .menu__titulo {
   color: var(--rojo);
@@ -793,6 +791,14 @@ h1.titulo-seccion__titulo {
 .cortina--rota .esquirla .cortina__cara {
   visibility: visible;
 }
+/* En móvil la placa no se rompe: sube y descubre la página */
+.entrando .cortina.cortina--sube {
+  animation: cortina-sube 0.7s 0.1s var(--curva) both;
+}
+@keyframes cortina-sube {
+  from { transform: none; }
+  to { transform: translateY(-100%); }
+}
 @keyframes cortina-respaldo {
   to { opacity: 0; visibility: hidden; }
 }
@@ -872,53 +878,8 @@ h1.titulo-seccion__titulo {
   margin-bottom: 0.8em;
 }
 
-/* Tallado (js/tallado.js): boceto en contorno, cincel con chispa y polvo,
-   y ornamentos que se dibujan. Sin JS o con "reducir movimiento" no hay
-   clase .tallado-activo y todo se ve dibujado desde el principio. */
-.tallable {
-  position: relative;
-}
-.tallado__pieza {
-  position: relative;
-  display: inline-block;
-}
-.tallado__solido {
-  display: block;
-}
-.tallado-activo .tallable:not(.tallando):not(.tallado) .tallado__solido {
-  clip-path: inset(0 100% 0 0);
-}
-.tallado__boceto {
-  position: absolute;
-  inset: 0;
-  color: transparent;
-  -webkit-text-stroke: 0.7px #a39a90;
-  pointer-events: none;
-  transition: opacity 0.8s 0.2s;
-}
-.tallado .tallado__boceto {
-  opacity: 0;
-}
-.tallado__chispa {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-  border-radius: 50%;
-  background: #fff3c4;
-  box-shadow: 0 0 6px 2px rgb(242 207 98 / 0.9), 0 0 16px 4px rgb(205 164 52 / 0.5);
-  pointer-events: none;
-}
-.tallado__polvo {
-  position: absolute;
-  border-radius: 1px;
-  background: #d9cfc0; /* polvo de mármol: claro, no sucio */
-  box-shadow: 0 0 0 0.5px rgb(54 41 38 / 0.18);
-  pointer-events: none;
-}
-
+/* Ornamentos que se dibujan (js/tallado.js). Sin JS o con "reducir
+   movimiento" no hay clase .tallado-activo y todo se ve dibujado. */
 /* Doble filete que se traza (luego lo sustituye el box-shadow de siempre) */
 .tarjeta__panel.filete-pendiente {
   box-shadow: none;
@@ -994,9 +955,6 @@ h1.titulo-seccion__titulo {
 .tarjeta {
   position: relative;
   list-style: none;
-  transform-style: preserve-3d;
-  transition: transform 0.5s var(--curva-salida), box-shadow 0.5s;
-  will-change: transform;
 }
 .tarjeta--marmol {
   padding: 10px;
@@ -1017,12 +975,6 @@ h1.titulo-seccion__titulo {
   text-decoration: none;
   /* Doble filete dorado */
   box-shadow: inset 0 0 0 1px var(--oro), inset 0 0 0 5px var(--crema), inset 0 0 0 6px var(--oro);
-}
-.tarjeta--enlace .tarjeta__panel:hover h3 {
-  color: var(--rojo);
-}
-.tarjeta[data-inclinar]:hover {
-  box-shadow: 0 22px 40px -18px rgb(54 41 38 / 0.45);
 }
 
 .esquina {
@@ -1154,13 +1106,20 @@ h1.titulo-seccion__titulo {
   background: currentColor;
   transform: rotate(45deg);
 }
-.imagen--ver:hover .imagen__ver,
 .imagen--ver:focus-visible .imagen__ver {
   opacity: 1;
   transform: none;
 }
-.imagen--ver:hover img {
-  transform: scale(1.03);
+@media (hover: hover) and (pointer: fine) {
+  .imagen--ver:hover .imagen__ver {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .imagen--ver:hover img {
+    transform: scale(1.03);
+  }
 }
 @media (hover: none) {
   .imagen__ver {
@@ -1474,10 +1433,12 @@ h1.titulo-seccion__titulo {
 .js [data-revelar].visible .imagen__falta {
   transform: none;
 }
-.js [data-revelar].visible .imagen--ver:hover img {
-  transform: scale(1.03);
-  transition-duration: 0.8s;
-  transition-delay: 0s;
+@media (hover: hover) and (pointer: fine) {
+  .js [data-revelar].visible .imagen--ver:hover img {
+    transform: scale(1.03);
+    transition-duration: 0.8s;
+    transition-delay: 0s;
+  }
 }
 
 /* Las páginas: sala oscura con cartas que flotan en 3D (karma-tracks).
@@ -1938,9 +1899,11 @@ h1.titulo-seccion__titulo {
   object-fit: cover;
   transition: transform 1s var(--curva-salida), opacity 0.4s;
 }
-.reproductor:hover .reproductor__poster {
-  transform: scale(1.02);
-  opacity: 0.85;
+@media (hover: hover) and (pointer: fine) {
+  .reproductor:hover .reproductor__poster {
+    transform: scale(1.02);
+    opacity: 0.85;
+  }
 }
 .reproductor__falta {
   position: absolute;
@@ -1974,11 +1937,17 @@ h1.titulo-seccion__titulo {
   fill: var(--crema);
   margin-left: 6%;
 }
-.reproductor:hover .reproductor__play,
 .reproductor:focus-visible .reproductor__play {
   transform: translate(-50%, -50%) scale(1.1);
   background: var(--rojo);
   border-color: var(--rojo);
+}
+@media (hover: hover) and (pointer: fine) {
+  .reproductor:hover .reproductor__play {
+    transform: translate(-50%, -50%) scale(1.1);
+    background: var(--rojo);
+    border-color: var(--rojo);
+  }
 }
 
 .teaser-info {
@@ -2073,15 +2042,15 @@ h1.titulo-seccion__titulo {
   display: flex;
   align-items: flex-end;
   overflow: hidden;
-  background: var(--marmol) 30% 40% / cover var(--superficie);
+  background: var(--marmol-marco) 40% 30% / cover var(--superficie);
   margin-bottom: clamp(40px, 6vw, 80px);
 }
 .ventana::before {
-  /* velo crema: el mármol queda de fondo y el título se lee */
+  /* velo crema: el mármol queda de fondo, sin competir con el título */
   content: '';
   position: absolute;
   inset: 0;
-  background: rgb(241 242 227 / 0.35);
+  background: rgb(241 242 227 / 0.2);
 }
 .ventana__mundo {
   --px: 0px;
@@ -2133,14 +2102,30 @@ h1.titulo-seccion__titulo {
   stroke-linejoin: round;
   filter: drop-shadow(0 0 6px rgb(242 210 122 / 0.9)) drop-shadow(0 0 18px rgb(205 164 52 / 0.6));
 }
-.ventana__titulo {
+.ventana__pie {
   position: relative;
   z-index: 2;
-  padding-bottom: clamp(20px, 3vw, 36px);
   pointer-events: none;
+  padding-bottom: clamp(24px, 4vw, 56px);
 }
-.ventana__titulo .titulo-seccion {
-  margin-bottom: 0.2em;
+/* El título va en una cartela de museo colgada sobre la losa */
+.ventana__cartela {
+  display: inline-block;
+  max-width: 100%;
+  padding: clamp(18px, 2.4vw, 30px) clamp(22px, 3vw, 40px) clamp(14px, 2vw, 22px);
+  background: var(--crema);
+  box-shadow: inset 0 0 0 1px var(--oro), inset 0 0 0 5px var(--crema), inset 0 0 0 6px var(--oro),
+    0 18px 40px -18px rgb(40 30 28 / 0.45);
+}
+.ventana__cartela .titulo-seccion {
+  margin-bottom: 0.15em;
+}
+.ventana__lema {
+  margin: 0 0 0.4em;
+  font-style: italic;
+  font-size: var(--t-h3);
+  font-family: var(--f-texto);
+  color: var(--tinta);
 }
 .ventana__pista {
   margin: 0;
@@ -2153,55 +2138,6 @@ h1.titulo-seccion__titulo {
     display: none;
   }
 }
-
-/* La losa de las seis partes: se agrieta y se cura con el scroll */
-.losa {
-  --corrupcion: 0;
-  --sanacion: 0;
-  position: relative;
-  padding: clamp(14px, 3vw, 40px);
-  background: var(--marmol-marco) center / 1200px auto var(--superficie);
-}
-.losa::before {
-  /* la piedra se apaga mientras está corrupta */
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgb(54 41 38 / calc(var(--corrupcion) * 0.28));
-  pointer-events: none;
-}
-.losa__grietas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.losa__grietas path {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-}
-.losa__corrupcion path {
-  stroke: #2b2120;
-  stroke-width: 2.4;
-  opacity: calc(1 - var(--sanacion) * 0.5);
-}
-.losa__oro path {
-  stroke: var(--oro);
-  stroke-width: 3.4;
-  filter: drop-shadow(0 0 3px rgb(242 207 98 / 0.7));
-}
-.losa__grietas .losa__rama {
-  stroke-width: 1.3;
-}
-.losa .partes {
-  position: relative;
-  z-index: 1;
-}
-
 .premisa {
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
@@ -2291,6 +2227,123 @@ h1.titulo-seccion__titulo {
   }
 }
 
+/* El arco de las seis partes (js/historia.js dibuja la veta). En escritorio
+   las partes cuelgan en zigzag a los dos lados de la veta central; en móvil,
+   en una columna con la veta a la izquierda. */
+.arco {
+  --hueco: clamp(56px, 8vw, 120px);
+  --veta-x: 50%;
+  position: relative;
+}
+.arco__veta {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.arco__veta path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.arco__pura {
+  stroke: #b3a99c;
+  stroke-width: 1.2;
+}
+.arco__rota {
+  stroke: #2e2422;
+  stroke-width: 2.6;
+}
+.arco__oro {
+  stroke: var(--oro);
+  stroke-width: 3.2;
+  filter: drop-shadow(0 0 4px rgb(242 207 98 / 0.65));
+}
+.arco__veta .arco__rama {
+  stroke-width: 1.2;
+}
+.partes--arco {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.partes--arco .parte {
+  width: calc(50% - var(--hueco) / 2);
+}
+.partes--arco .parte:nth-child(odd) {
+  align-self: flex-start;
+}
+.partes--arco .parte:nth-child(even) {
+  align-self: flex-end;
+  margin-top: -220px;
+}
+.partes--arco .parte:nth-child(odd):not(:first-child) {
+  margin-top: -220px;
+}
+/* El número de cada parte, en un rombo sobre la veta */
+.parte__nodo {
+  position: absolute;
+  top: 26px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: var(--crema);
+  border: 1.5px solid #b3a99c;
+  transform: rotate(45deg);
+  transition: border-color 0.5s, background-color 0.5s;
+}
+.parte__nodo span {
+  transform: rotate(-45deg);
+  font-family: var(--f-titulo);
+  font-size: var(--t-etiqueta);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--tinta);
+}
+.parte:nth-child(odd) .parte__nodo {
+  right: calc(var(--hueco) / -2 - 20px);
+}
+.parte:nth-child(even) .parte__nodo {
+  left: calc(var(--hueco) / -2 - 20px);
+}
+.arco--fase-2 .parte--rota .parte__nodo {
+  border-color: #2e2422;
+}
+.arco--fase-3 .parte--oro .parte__nodo {
+  border-color: var(--oro);
+  background: #f6ecc9;
+}
+@media (max-width: 900px) {
+  .arco {
+    --veta-x: 15px;
+    padding-left: 44px;
+  }
+  .partes--arco .parte,
+  .partes--arco .parte:nth-child(even),
+  .partes--arco .parte:nth-child(odd):not(:first-child) {
+    width: 100%;
+    align-self: stretch;
+    margin-top: 28px;
+  }
+  .partes--arco .parte:first-child {
+    margin-top: 0;
+  }
+  .parte:nth-child(odd) .parte__nodo,
+  .parte:nth-child(even) .parte__nodo {
+    left: -49px;
+    right: auto;
+    width: 32px;
+    height: 32px;
+  }
+}
+
 /* Spoiler: losa de piedra negra con relieve. Tapada se inclina con el ratón
    (variables --rx, --ry, --mx, --my que pone js/historia.js) y deja el bloque
    a una altura fija; al romperse, el bloque crece hasta su altura real. */
@@ -2332,8 +2385,10 @@ h1.titulo-seccion__titulo {
   transform: rotateX(var(--rx)) rotateY(var(--ry));
   transition: transform 0.6s var(--curva-salida);
 }
-.spoiler__tapa:hover .spoiler__cara {
-  transition-duration: 0.15s;
+@media (hover: hover) and (pointer: fine) {
+  .spoiler__tapa:hover .spoiler__cara {
+    transition-duration: 0.15s;
+  }
 }
 .spoiler__cara::after {
   /* reflejo que sigue al ratón */
@@ -2362,9 +2417,13 @@ h1.titulo-seccion__titulo {
   z-index: 1;
   transition: color 0.3s;
 }
-.spoiler__tapa:hover .spoiler__ayuda,
 .spoiler__tapa:focus-visible .spoiler__ayuda {
   color: var(--crema);
+}
+@media (hover: hover) and (pointer: fine) {
+  .spoiler__tapa:hover .spoiler__ayuda {
+    color: var(--crema);
+  }
 }
 .spoiler__tapa:focus-visible {
   outline-offset: 4px;
@@ -2401,10 +2460,15 @@ h1.titulo-seccion__titulo {
   transform: translateY(-0.6px);
 }
 /* Al pasar por encima: fisura en el punto de impacto */
-.spoiler:not(.agrietando) .spoiler__tapa:hover .spoiler__grietas path:not(.rotura__anillo),
 .spoiler:not(.agrietando) .spoiler__tapa:focus-visible .spoiler__grietas path:not(.rotura__anillo) {
   stroke-dashoffset: 0.9;
   transition: stroke-dashoffset 0.5s var(--curva-salida);
+}
+@media (hover: hover) and (pointer: fine) {
+  .spoiler:not(.agrietando) .spoiler__tapa:hover .spoiler__grietas path:not(.rotura__anillo) {
+    stroke-dashoffset: 0.9;
+    transition: stroke-dashoffset 0.5s var(--curva-salida);
+  }
 }
 /* Al pulsar: se agrieta entera; el anillo sale un poco después */
 .agrietando .rotura__capa path {
@@ -2561,8 +2625,10 @@ h1.titulo-seccion__titulo {
   letter-spacing: 0.06em;
   transition: color 0.3s;
 }
-.bloque__resumen:hover .bloque__titulo {
-  color: var(--rojo);
+@media (hover: hover) and (pointer: fine) {
+  .bloque__resumen:hover .bloque__titulo {
+    color: var(--rojo);
+  }
 }
 .bloque__fechas {
   font-style: italic;
@@ -2743,14 +2809,20 @@ details[open] > summary .bloque__chevron {
   inset: 0;
   z-index: 3;
 }
-.referencia:has(.referencia__abrir):hover {
-  background: var(--superficie);
+@media (hover: hover) and (pointer: fine) {
+  .referencia:has(.referencia__abrir):hover {
+    background: var(--superficie);
+  }
 }
-.referencia:has(.referencia__abrir):hover .referencia__titulo {
-  color: var(--rojo);
+@media (hover: hover) and (pointer: fine) {
+  .referencia:has(.referencia__abrir):hover .referencia__titulo {
+    color: var(--rojo);
+  }
 }
-.referencia:hover .referencia__abrir .flecha {
-  transform: translateX(4px);
+@media (hover: hover) and (pointer: fine) {
+  .referencia:hover .referencia__abrir .flecha {
+    transform: translateX(4px);
+  }
 }
 .referencia--vacia .referencia__miniatura {
   opacity: 0.6;
@@ -3129,9 +3201,11 @@ details[open] > summary .bloque__chevron {
   cursor: pointer;
   transition: background 0.3s, border-color 0.3s;
 }
-.visor__boton:hover {
-  background: var(--rojo);
-  border-color: var(--rojo);
+@media (hover: hover) and (pointer: fine) {
+  .visor__boton:hover {
+    background: var(--rojo);
+    border-color: var(--rojo);
+  }
 }
 .visor__boton:focus-visible {
   outline-color: var(--crema);

@@ -303,95 +303,100 @@
   pedir();
 })();
 
-/* La losa de detrás de las seis partes cuenta el arco de la serie sin texto:
-   intacta mientras se leen I y II; al bajar por III y IV le salen grietas
-   oscuras (la corrupción) y al bajar por V y VI esas mismas grietas se
-   rellenan de oro (la sanación, kintsugi). Va ligado al scroll y es
-   reversible. Necesita js/grietas.js. */
+/* El arco de las seis partes: una veta vertical que une las partes y cuenta
+   la historia sin texto. Entre I y II es una veta fina (el mármol intacto);
+   entre III y IV, una grieta oscura con ramas (la corrupción); entre V y VI,
+   la misma grieta rellena de oro (la sanación, kintsugi). Se dibuja según se
+   baja y vuelve atrás si se sube. Se rehace si cambia el alto (spoilers). */
 (function () {
   'use strict';
 
   var G = window.marmolGrietas;
-  var losa = document.querySelector('[data-losa]');
-  if (!G || !losa) return;
-  var svg = losa.querySelector('[data-losa-grietas]');
+  var arco = document.querySelector('[data-arco]');
+  if (!G || !arco) return;
+  var svg = arco.querySelector('[data-arco-veta]');
+  var partes = Array.prototype.slice.call(arco.querySelectorAll('.parte'));
+  if (partes.length < 6) return;
   var NS = 'http://www.w3.org/2000/svg';
   var movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var grietas = [];
+  var tramos = [];
   var medida = '';
 
-  // Grietas por toda la losa: unas cruzan de lado a lado y otras bajan
+  function camino(azar, x, y0, y1, amplitud) {
+    var puntos = [[x, y0]];
+    var y = y0;
+    while (y < y1) {
+      y = Math.min(y1, y + 14 + azar() * 22);
+      puntos.push([x + (azar() - 0.5) * amplitud, y]);
+    }
+    return puntos;
+  }
+
+  function rama(azar, origen, sentido, largo) {
+    var puntos = [origen.slice()];
+    var p = origen.slice();
+    var a = sentido * (0.6 + azar() * 0.5) + Math.PI / 2;
+    for (var k = 0; k < 4 + Math.floor(azar() * 4); k++) {
+      a += (azar() - 0.5) * 0.7;
+      p = [p[0] + Math.cos(a) * largo / 6, p[1] + Math.sin(a) * largo / 6];
+      puntos.push(p);
+    }
+    return puntos;
+  }
+
+  function nodo(svgPadre, clase, d, rama) {
+    var el = document.createElementNS(NS, 'path');
+    el.setAttribute('d', d);
+    el.setAttribute('pathLength', '1');
+    el.setAttribute('class', clase + (rama ? ' arco__rama' : ''));
+    svgPadre.appendChild(el);
+    return el;
+  }
+
   function construir() {
-    var w = losa.clientWidth;
-    var h = losa.clientHeight;
-    var clave = w + 'x' + h;
+    var w = arco.clientWidth;
+    var h = arco.clientHeight;
+    var clave = w + 'x' + h + ':' + partes.map(function (p) { return p.offsetTop; }).join(',');
     if (clave === medida || !w || !h) return;
     medida = clave;
     svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
     svg.innerHTML = '';
-    var oscuras = document.createElementNS(NS, 'g');
-    oscuras.setAttribute('class', 'losa__corrupcion');
-    var oros = document.createElementNS(NS, 'g');
-    oros.setAttribute('class', 'losa__oro');
-    svg.appendChild(oscuras);
-    svg.appendChild(oros);
-    grietas = [];
-
-    var trazados = [];
-    var filas = Math.max(3, Math.round(h / 320));
-    for (var f = 0; f < filas; f++) {
-      var geo = G.horizontal(101 + f * 7, w, 120);
-      var dy = ((f + 0.5) / filas) * h - 60;
-      [geo.principal].concat(geo.ramas).forEach(function (pts, k) {
-        trazados.push({ d: pts.map(function (p) { return [p[0], p[1] + dy]; }), rama: k > 0 });
-      });
+    tramos = [];
+    // --veta-x en CSS: 50% en escritorio (centro), 15px en móvil (izquierda)
+    var vx = getComputedStyle(arco).getPropertyValue('--veta-x').trim();
+    var x = /%$/.test(vx) ? (w * parseFloat(vx)) / 100 : parseFloat(vx) || w / 2;
+    var nodoY = function (i) { return partes[i].offsetTop + 44; };
+    var cortes = [0, nodoY(2), nodoY(4), h];
+    var azar = G.aleatorio(17);
+    var clases = ['arco__pura', 'arco__rota', 'arco__oro'];
+    for (var t = 0; t < 3; t++) {
+      var puntos = camino(azar, x, cortes[t], cortes[t + 1], t === 0 ? 3 : 9);
+      var piezas = [nodo(svg, clases[t], G.trazado(puntos), false)];
+      if (t > 0) {
+        // la corrupción echa ramas; el oro las rellena
+        for (var r = 0; r < 4; r++) {
+          var origen = puntos[1 + Math.floor(azar() * (puntos.length - 2))];
+          piezas.push(nodo(svg, clases[t], G.trazado(rama(azar, origen, azar() < 0.5 ? -1 : 1, 50 + azar() * 60)), true));
+        }
+      }
+      tramos.push({ desde: cortes[t], hasta: cortes[t + 1], piezas: piezas });
     }
-    var columnas = w > 800 ? 4 : 2;
-    for (var c = 0; c < columnas; c++) {
-      var geoV = G.horizontal(211 + c * 5, h, 80);
-      var dx = ((c + 0.5) / columnas) * w - 40;
-      [geoV.principal].concat(geoV.ramas).forEach(function (pts, k) {
-        trazados.push({ d: pts.map(function (p) { return [p[1] + dx, p[0]]; }), rama: k > 0 });
-      });
-    }
-
-    var azar = G.aleatorio(77);
-    trazados.forEach(function (t) {
-      var d = G.trazado(t.d);
-      // cada grieta aparece en su momento: unas antes, otras después
-      var inicio = azar() * 0.55;
-      ['corrupcion', 'oro'].forEach(function (capa) {
-        var p = document.createElementNS(NS, 'path');
-        p.setAttribute('d', d);
-        p.setAttribute('pathLength', '1');
-        if (t.rama) p.setAttribute('class', 'losa__rama');
-        (capa === 'oro' ? oros : oscuras).appendChild(p);
-        grietas.push({ el: p, capa: capa, inicio: inicio });
-      });
-    });
     pintar();
-  }
-
-  function tramo(y, desde, hasta) {
-    return Math.max(0, Math.min(1, (y - desde) / (hasta - desde)));
   }
 
   function pintar() {
     pendiente = false;
-    // Avance de la lectura por la losa (sirva igual con 1, 2 o 3 columnas):
-    // primer tercio intacta, el segundo se corrompe y el último se cura
-    var r = losa.getBoundingClientRect();
-    var p = (window.innerHeight * 0.65 - r.top) / r.height;
-    var corrupcion = movimientoReducido ? 1 : tramo(p, 0.22, 0.55);
-    var sanacion = movimientoReducido ? 1 : tramo(p, 0.6, 0.95);
-    grietas.forEach(function (g) {
-      var p = g.capa === 'oro' ? sanacion : corrupcion;
-      var local = Math.max(0, Math.min(1, (p - g.inicio) / 0.45));
-      g.el.style.strokeDashoffset = (1 - local).toFixed(3);
+    var r = arco.getBoundingClientRect();
+    var linea = window.innerHeight * 0.7 - r.top; // dónde va la lectura dentro del arco
+    tramos.forEach(function (t, i) {
+      var p = movimientoReducido ? 1 : Math.max(0, Math.min(1, (linea - t.desde) / (t.hasta - t.desde)));
+      t.piezas.forEach(function (el, k) {
+        // las ramas salen cuando la veta principal ya ha pasado la mitad
+        var local = k === 0 ? p : Math.max(0, Math.min(1, (p - 0.3) / 0.5));
+        el.style.strokeDashoffset = (1 - local).toFixed(3);
+      });
+      arco.classList.toggle('arco--fase-' + (i + 1), p > 0.02);
     });
-    // Mientras está corrupta (y aún sin oro), la losa se apaga un poco
-    losa.style.setProperty('--corrupcion', (corrupcion * (1 - sanacion)).toFixed(3));
-    losa.style.setProperty('--sanacion', sanacion.toFixed(3));
   }
 
   var pendiente = false;
@@ -404,7 +409,6 @@
 
   construir();
   window.addEventListener('scroll', pedir, { passive: true });
-  // La losa cambia de alto cuando se destapa un spoiler: se rehacen las grietas
-  if ('ResizeObserver' in window) new ResizeObserver(construir).observe(losa);
-  else window.addEventListener('resize', construir);
+  if ('ResizeObserver' in window) new ResizeObserver(construir).observe(arco);
+  window.addEventListener('resize', construir);
 })();

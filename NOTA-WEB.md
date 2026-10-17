@@ -13,7 +13,7 @@ Documento de referencia de la web del Proyecto Final Mármol (Javier Echaide, An
 | Qué | Cómo |
 |---|---|
 | Páginas | Portada · Teaser · Historia · Proceso (Personajes preparada, desactivada) |
-| Tecnología | [Astro 5](https://astro.build) genera HTML estático. CSS y JavaScript propios, sin librerías |
+| Tecnología | [Astro 5](https://astro.build) genera HTML estático. CSS y JavaScript propios; three.js solo para el busto 3D |
 | Contenido | Todo en `src/data/*.js`, separado del diseño |
 | Imágenes | Si una imagen no existe, sale un placeholder con el texto de lo que falta |
 | Alojamiento | Vercel (`proyectomarmol.vercel.app`), se publica al hacer push a `main` |
@@ -40,12 +40,12 @@ ProyectoMarmolWeb/
 ├── NOTA-WEB.md               esta nota
 ├── public/                   se copia tal cual a dist/
 │   ├── css/site.css          TODO el estilo (índice al principio del archivo)
-│   ├── js/site.js            menú, cabecera, transiciones, apariciones, visor, inclinación 3D, diálogos
+│   ├── js/site.js            menú, transición entre páginas, apariciones, visor, diálogos
 │   ├── js/grietas.js         geometría de las grietas y divisores de oro que se dibujan con el scroll
 │   ├── js/portada.js         intro, vídeo y parallax del hero
 │   ├── js/teaser.js          reproductor del teaser
-│   ├── js/historia.js        losas de SPOILER que se rompen en 3D
-│   ├── js/tallado.js         títulos que se tallan y ornamentos que se dibujan
+│   ├── js/historia.js        SPOILER que se rompen en 3D, cabecera con ventana y veta de las seis partes
+│   ├── js/tallado.js         filetes de las tarjetas y grecas que se dibujan
 │   ├── js/busto.js           GENERADO: el busto 3D con three.js (no editar; ver src/3d/busto.js)
 │   ├── js/proceso.js         comparadores antes/después
 │   ├── fonts/                Cinzel y EB Garamond (woff2, autoalojadas)
@@ -170,14 +170,14 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
 
 Textos escritos a partir de "Lore - Biblia completa", "Estructura narrativa - Partes y temporadas" y "El Protagonista".
 
-0. **Cabecera con ventanas** (`ventana`): una losa de mármol con el título. Al pasar el cursor se abre en el mármol un rasgón vertical con borde de luz dorada por el que se ve otro mundo, como las ventanas del taller del teaser. Sin ratón, la ventana pasea sola. Ahora el otro mundo es un cielo provisional; el render va en `historia.ventana.src`.
+0. **Cabecera con ventanas** (`ventana`): una losa de mármol con el título, el lema ("Las criaturas no nacen: se tallan.") y una pista en una cartela crema de doble filete dorado, como la de un museo. Al pasar el cursor se abre en el mármol un rasgón vertical con borde de luz dorada por el que se ve otro mundo, como las ventanas del taller del teaser. Sin ratón, la ventana pasea sola. Ahora el otro mundo es un cielo provisional; el render va en `historia.ventana.src`.
 1. **Premisa** (`premisa`): siempre visible, con imagen clave (4:5) y capitular roja.
-2. **Las seis partes** (`partes`): tarjetas con marco de mármol, cada una con número, imagen, título y párrafo.
+2. **Las seis partes** (`partes`): tarjetas crema con doble filete dorado (sin marco de mármol), cada una con número, imagen, título y párrafo.
    - `spoiler: true` las tapa con una losa de piedra negra que pone **SPOILER**. Ahora están tapadas la III, la IV, la V y la VI. La I y la II se ven siempre.
    - Mientras está tapado, el contenido es `inert` (no se lee, no se selecciona y no se enfoca con el teclado) y el bloque se queda a una altura fija (4:3; el final, 2:1), en vez de ocupar lo que mide el texto escondido.
-   - **La losa es 3D** (`js/historia.js`, con la geometría de `js/grietas.js`): se inclina con el ratón y tiene un reflejo que lo sigue. Al pasar por encima le sale una fisura en el punto de impacto. Al pulsarla se agrieta en oro de lado a lado, se abre (asoma luz dorada por las juntas) y se rompe en unas 14-20 esquirlas que caen girando en perspectiva mientras el bloque crece hasta la altura del texto. Dura 2 s. Con "reducir movimiento" solo se destapa.
+   - **El SPOILER es una losa de piedra negra** (`js/historia.js`, con la geometría de `js/grietas.js`): con ratón se inclina un poco y tiene un reflejo que lo sigue; al pasar por encima le sale una fisura. Al pulsarla se agrieta en oro de lado a lado, se abre (asoma luz dorada por las juntas) y se rompe en unas 14-20 esquirlas que caen girando en perspectiva mientras el bloque crece hasta la altura del texto. Dura 2 s. Con "reducir movimiento" solo se destapa.
    - El botón **Mostrar todos** destapa todo de una vez y pasa a **Volver a taparlos**. Al recargar la página vuelven a estar tapados: no se guarda nada.
-   - **La losa de detrás cuenta el arco sin texto:** las seis partes están sobre una losa de mármol que, según bajas, primero está intacta, luego le salen grietas oscuras (la corrupción, y la piedra se apaga) y al final esas grietas se rellenan de oro (la sanación, kintsugi). Va con el scroll y es reversible. Se rehace sola si la losa cambia de alto al destapar spoilers.
+   - **La veta cuenta el arco sin texto:** las seis partes van en zigzag a los dos lados de una veta vertical (en móvil, la veta va a la izquierda y las tarjetas en una columna). Cada parte cuelga de un rombo con su número. La veta se dibuja con el scroll en tres tramos: I-II, una línea gris fina (la criatura pura); III-IV, una grieta oscura con ramas (la corrupción); V-VI, la grieta rellena de oro (la sanación, kintsugi). Los rombos cambian de color con su tramo. Es reversible y se recalcula sola al destapar spoilers o cambiar el tamaño de la ventana. Con "reducir movimiento" la veta se ve entera desde el principio; sin JavaScript quedan el zigzag y los rombos.
 3. **El final** (`final`): bloque ancho tapado con "SPOILER · EL FINAL", con dos párrafos y la cita del tema de la serie.
 4. **Siguiente: IV · Proceso.**
 
@@ -241,14 +241,14 @@ Para poner la imagen real: copiar el archivo a `public/img/...` y cambiar `src: 
   - Mientras está abierto, el resto de la página queda `inert` y el foco no sale del menú.
   - En móvil el mármol queda arriba y la lista debajo.
 - **Cabecera** sin filete: al bajar cambia a un fondo un poco más oscuro y se esconde; al subir vuelve. Así no tapa lo que se está leyendo.
-- **Cortina entre páginas.** Al pulsar un enlace interno sube una placa de mármol con el número y el nombre de la página de destino. En la página nueva, esa placa **se agrieta en oro y cae en esquirlas** (el mismo motor que las losas de SPOILER, en `js/grietas.js`), con la página nueva en penumbra que se aclara. Dura algo más de 1 s y no bloquea: se puede hacer scroll mientras cae. Si algo fallara, la placa se retira sola a los 2,5 s.
-- **Cursor de cincel** (`img/cincel.svg`), solo con ratón: la punta es el punto activo. En enlaces y botones se mantiene la mano. Al hacer clic salta un poco de polvo de mármol (5 motas, como mucho una vez cada 150 ms; nada con "reducir movimiento").
-- **Tallado** (`js/tallado.js`, referencia: heronaiapp, "en vez de crear, tallar"):
-  - Los títulos de sección aparecen primero como un boceto en contorno fino y luego un cincel los descubre de izquierda a derecha, con una chispa y polvo de mármol.
-  - El doble filete dorado de las tarjetas se traza solo, y después crecen las escuadras desde su esquina.
-  - Las grecas se dibujan de izquierda a derecha.
+- **Cortina entre páginas.** Al pulsar un enlace interno sube una placa de mármol con el número y el nombre de la página de destino. En la página nueva:
+  - **En ordenador**, la placa **se agrieta en oro y cae en esquirlas** (el mismo motor que las losas de SPOILER, en `js/grietas.js`), con la página nueva en penumbra que se aclara. Dura algo más de 1 s.
+  - **En móvil** (pantalla táctil o menos de 760 px), la placa simplemente sube y deja ver la página. Dura 0,8 s.
+  - No bloquea: se puede hacer scroll mientras se va. Si algo fallara, la placa se retira sola a los 2,5 s.
+- **Cursor normal** del sistema en toda la web.
+- **Ornamentos que se dibujan** (`js/tallado.js`, referencia: heronaiapp): el doble filete dorado de las tarjetas se traza solo y después crecen las escuadras desde su esquina; las grecas se dibujan de izquierda a derecha. Los títulos aparecen con el resto del contenido, sin efecto propio.
 - **Aparición al hacer scroll.** Los elementos con `data-revelar` suben y aparecen al entrar en pantalla; sus imágenes se destapan de abajo arriba con un leve zoom de salida.
-- **Inclinación 3D** de las tarjetas con `data-inclinar` (solo con ratón).
+- **Hovers solo con ratón.** Todos los `:hover` van dentro de `@media (hover: hover) and (pointer: fine)`, así en móvil no se quedan "pegados" al tocar. El foco con teclado (`:focus-visible`) va aparte y funciona siempre.
 - **Visor** (`<dialog>`) para imágenes, placeholders y el vídeo. Crece desde el elemento pulsado, con el fondo oscurecido y desenfocado. Se recorre con flechas y se cierra con Esc, con el botón o con un clic fuera.
 - **Diálogos** de referencias: `data-abrir-dialogo="id"` / `data-cerrar-dialogo`.
 
@@ -300,6 +300,18 @@ Formato recomendado: **WebP** (o JPG) calidad ~85. Renders con el mismo nombre q
 | 33 | Música definitiva y su crédito CC BY | texto | — | `teaser.ficha` (Música) |
 | 34 | Título definitivo de la serie, si cambia | texto | — | `sitio.js`, `portada.js` |
 
+### Checklist del día de la entrega
+
+La web está terminada: lo que queda es meter los assets reales y comprobar.
+
+1. **Imprescindible:** teaser en MP4 (13) y su póster (14), render del hero (1 y 2), las seis imágenes de Historia (22–27) y la premisa (21). Copiar cada archivo a `public/` con la ruta de la tabla y cambiar `src: null` por esa ruta en `src/data/`.
+2. **Muy recomendable:** fotogramas del teaser (15–20), el "otro mundo" de la cabecera de Historia (20b), capturas del proceso (28, 31, 32) y el crédito de la música (33).
+3. **Opcional:** busto `.glb` (12, si no, se ven las tres esferas provisionales), capas o vídeo del hero (3, 3b), imágenes de las cartas (9–11).
+4. `npm run build` sin errores (el último mensaje debe ser "Todas las rutas son relativas").
+5. `git push` a `main` y abrir https://proyectomarmol.vercel.app en ordenador y en el móvil: recorrer las cuatro páginas con el menú, reproducir el vídeo y destapar un SPOILER.
+6. **Plan B:** copiar `dist/` a un USB y abrir `index.html` con doble clic en el ordenador de clase (o en otro que no sea el tuyo) antes de ir.
+7. Lo que no llegue a tiempo se queda con su placeholder, que ya dice qué va ahí: la web se puede enseñar así.
+
 ---
 
 ## 9. Decisiones tomadas (y de dónde salen)
@@ -310,9 +322,10 @@ Formato recomendado: **WebP** (o JPG) calidad ~85. Renders con el mismo nombre q
 - La intro solo sale al recargar o al entrar por primera vez.
 - Menú: mármol a un lado con una placa de museo, y la lista en números romanos.
 - Ornamentos: grecas finas y escuadras tipo karma-tracks (las esquineras Art Déco de la referencia tenían marca de agua y no son grecorromanas).
-- Animación de nivel medio: aparición al hacer scroll, parallax del hero, inclinación de tarjetas, grietas doradas y cortina entre páginas. Las losas de SPOILER se rompen en 3D con CSS (perspectiva y transformaciones), sin WebGL. Un visor `.glb` encajaría en la página de Personajes.
+- Animación de nivel medio: aparición al hacer scroll, parallax del hero, cartas flotantes en la portada, grietas doradas, veta de las seis partes y cortina entre páginas. Las losas de SPOILER se rompen en 3D con CSS (perspectiva y transformaciones), sin WebGL. Un visor `.glb` encajaría en la página de Personajes.
 - Revisión con la skill Taste (octubre 2026): seis tamaños de letra, nada por debajo de 13 px, fuera los antetítulos que repetían la cabecera, pipeline en romanos, sin sombra en reposo en las tarjetas de mármol y cabecera sin filete. Se mantienen a propósito, por ser decisiones de diseño: los filetes dorados, la paleta crema / oro / rojo, los marcos dobles y los números romanos.
 - Tipografía elegida: Cinzel + EB Garamond.
 - Pipeline de 8 pasos, que refleja la previz antes del modelado y el look dev antes de animar.
 - No se incluyen las referencias descartadas.
 - La imagen de Billelis (busto con calavera) es solo referencia: no aparece en la web.
+- Probado y descartado (octubre 2026): cursor de cincel, títulos que se tallan, sala de proyección con telón en el teaser, ojos que siguen al cursor, marco de mármol en las tarjetas de Historia y losa de fondo que se agrietaba detrás de las seis partes. Daban fallos o no convencían; no volver a meterlos sin hablarlo.

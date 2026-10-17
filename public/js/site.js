@@ -5,9 +5,8 @@
    1. Menú a pantalla completa
    2. Transición entre páginas (cortina)
    3. Aparición al hacer scroll
-   4. Inclinación 3D de las tarjetas
-   5. Visor de imágenes y vídeo
-   6. Diálogos (referencias de Proceso)
+   4. Visor de imágenes y vídeo
+   5. Diálogos (referencias de Proceso)
 */
 (function () {
   'use strict';
@@ -117,14 +116,22 @@
   });
 
   // Al llegar desde otra página de la web, la placa de la cortina se agrieta
-  // en oro y cae en esquirlas (motor de js/grietas.js). No bloquea la página:
-  // la cortina no recibe clics mientras cae.
+  // en oro y cae en esquirlas (motor de js/grietas.js). En móvil, donde una
+  // veintena de piezas a pantalla completa puede ir a tirones, la placa
+  // simplemente sube. No bloquea la página: la cortina no recibe clics.
   if (html.classList.contains('entrando')) {
     var G = window.marmolGrietas;
     var cortina = document.querySelector('[data-cortina]');
     var caraCortina = document.querySelector('[data-cortina-cara]');
+    var movil = window.matchMedia('(max-width: 760px), (pointer: coarse)').matches;
     if (!G || movimientoReducido || !cortina || !caraCortina || !caraCortina.animate) {
       html.classList.remove('entrando');
+    } else if (movil) {
+      cortina.classList.add('cortina--sube');
+      setTimeout(function () {
+        html.classList.remove('entrando');
+        cortina.classList.remove('cortina--sube');
+      }, 900);
     } else {
       var semilla = Math.floor(Math.random() * 100000);
       var geoCortina = G.rotura(semilla, window.innerWidth, window.innerHeight);
@@ -174,26 +181,7 @@
     observables.forEach(function (el) { el.classList.add('visible'); });
   }
 
-  /* 4. Inclinación 3D --------------------------------------------------- */
-
-  var punteroFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  if (punteroFino && !movimientoReducido) {
-    document.querySelectorAll('[data-inclinar]').forEach(function (t) {
-      t.addEventListener('pointermove', function (e) {
-        var r = t.getBoundingClientRect();
-        var x = (e.clientX - r.left) / r.width - 0.5;
-        var y = (e.clientY - r.top) / r.height - 0.5;
-        t.style.transition = 'transform 0.12s linear, box-shadow 0.5s';
-        t.style.transform = 'rotateX(' + (-y * 7).toFixed(2) + 'deg) rotateY(' + (x * 9).toFixed(2) + 'deg) translateY(-4px)';
-      });
-      t.addEventListener('pointerleave', function () {
-        t.style.transition = '';
-        t.style.transform = '';
-      });
-    });
-  }
-
-  /* 5. Visor de imágenes y vídeo ---------------------------------------- */
+  /* 4. Visor de imágenes y vídeo ---------------------------------------- */
 
   var visor = document.querySelector('[data-visor-dialogo]');
   var medio = document.querySelector('[data-visor-medio]');
@@ -322,7 +310,7 @@
     window.marmolVisor = { abrir: abrirVisor };
   }
 
-  /* 6. Diálogos --------------------------------------------------------- */
+  /* 5. Diálogos --------------------------------------------------------- */
 
   document.addEventListener('click', function (e) {
     var abrir = e.target.closest('[data-abrir-dialogo]');
