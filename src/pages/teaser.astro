@@ -29,20 +29,12 @@ const { video, rima } = teaser;
         ) : (
           <span class="reproductor__falta">{video.falta}</span>
         )}
-        {/* Telón: se abre al pulsar play, antes de que crezca el vídeo */}
-        <span class="telon" aria-hidden="true">
-          <span class="telon__hoja telon__hoja--izq"></span>
-          <span class="telon__hoja telon__hoja--der"></span>
-          <span class="telon__bambalina"></span>
-        </span>
         <span class="reproductor__play" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
         </span>
       </button>
     </div>
   </section>
-  {/* Sala de proyección: las luces de la página bajan al acercarse al reproductor */}
-  <div class="luces" aria-hidden="true" data-luces></div>
 
   <section class="contenedor seccion teaser-info" aria-labelledby="titulo-sinopsis">
     <div class="teaser-info__sinopsis" data-revelar>

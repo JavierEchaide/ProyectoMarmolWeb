@@ -3,7 +3,6 @@ import Base from '../layouts/Base.astro';
 import Imagen from '../components/Imagen.astro';
 import Grieta from '../components/Grieta.astro';
 import Greca from '../components/Greca.astro';
-import Ojos from '../components/Ojos.astro';
 import TituloSeccion from '../components/TituloSeccion.astro';
 import Siguiente from '../components/Siguiente.astro';
 import { portada } from '../data/portada.js';
@@ -90,11 +89,7 @@ const frases = portada.gancho.match(/[^.!?]+[.!?]*/g).map((f) => f.trim());
     <ol class="fotogramas">
       {portada.fotogramas.map((f, i) => (
         <li class="fotograma" data-revelar style={`--i: ${i}`}>
-          {f.ojos && !f.imagen.src ? (
-            <Ojos alt={f.imagen.alt} />
-          ) : (
-            <Imagen imagen={f.imagen} ratio="16 / 9" ver grupo="prologo" pie={`${romanos[i]}. ${f.pie}`} />
-          )}
+          <Imagen imagen={f.imagen} ratio="16 / 9" ver grupo="prologo" pie={`${romanos[i]}. ${f.pie}`} />
           <p class="fotograma__pie"><span class="fotograma__numero">{romanos[i]}</span>{f.pie}</p>
         </li>
       ))}

@@ -1480,53 +1480,6 @@ h1.titulo-seccion__titulo {
   transition-delay: 0s;
 }
 
-/* Ojos del Creador (fotograma II de la Portada, js/portada.js) */
-.ojos {
-  position: relative;
-  overflow: hidden;
-  background: var(--piedra) center / cover var(--negro);
-  box-shadow: inset 0 0 60px rgb(0 0 0 / 0.8);
-}
-.ojos svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.ojo__globo {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.ojo__blanco {
-  fill: #d9d0c0;
-}
-.ojo__sombra {
-  fill: rgb(13 13 13 / 0.45);
-}
-.ojo__aro {
-  fill: none;
-  stroke: #cda434;
-  stroke-width: 0.8;
-}
-.ojo__pupila {
-  fill: #0d0d0d;
-  transition: r 0.5s var(--curva-salida);
-}
-.ojo__brillo {
-  fill: #fffbea;
-  opacity: 0.85;
-}
-.ojo__contorno,
-.ojo__ceja {
-  fill: none;
-  stroke: var(--oro);
-  stroke-width: 1.3;
-  stroke-linecap: round;
-}
-.ojo__ceja {
-  stroke-width: 1;
-  opacity: 0.7;
-}
-
 /* Las páginas: sala oscura con cartas que flotan en 3D (karma-tracks).
    Cada carta tiene tres capas de movimiento, cada una en su elemento:
    - .carta: posición en el espacio (profundidad y ángulo propios) y, con
@@ -1586,13 +1539,15 @@ h1.titulo-seccion__titulo {
   /* doble filete dorado, como las tarjetas de la galería */
   box-shadow: inset 0 0 0 1px var(--oro), inset 0 0 0 6px rgb(13 13 13 / 0.55), inset 0 0 0 7px var(--oro),
     0 30px 60px -20px rgb(0 0 0 / 0.9);
+  /* El balanceo usa `translate` y `rotate`; el hover usa `transform`.
+     Así se suman y el hover no queda anulado por la animación. */
   animation: carta-flota 6.4s ease-in-out infinite alternate;
   animation-delay: calc(var(--i) * -2.1s);
-  transition: transform 0.6s var(--curva-salida);
+  transition: transform 0.5s var(--curva-salida), box-shadow 0.5s var(--curva-salida), opacity 0.4s;
 }
 @keyframes carta-flota {
-  from { transform: translate3d(0, -7px, 0) rotateX(2deg); }
-  to { transform: translate3d(0, 7px, 0) rotateX(-2deg); }
+  from { translate: 0 -7px; rotate: x 2deg; }
+  to { translate: 0 7px; rotate: x -2deg; }
 }
 .carta__textura {
   position: absolute;
@@ -1688,13 +1643,34 @@ h1.titulo-seccion__titulo {
   text-transform: uppercase;
   color: var(--oro);
 }
+/* Hover (y foco con teclado): la carta se adelanta hacia ti, el filete
+   brilla, la piedra se aclara y las otras dos se apagan un poco */
+.carta__textura {
+  transition: filter 0.5s var(--curva-salida);
+}
+.carta__entrar {
+  transition: color 0.3s;
+}
+.carta__cara:focus-visible {
+  transform: translate3d(0, -12px, 70px);
+}
 @media (hover: hover) and (pointer: fine) {
   .carta__cara:hover {
-    animation-play-state: paused;
-    transform: translate3d(0, -10px, 60px) rotateX(0deg);
+    transform: translate3d(0, -14px, 80px);
+    box-shadow: inset 0 0 0 1px #f2d27a, inset 0 0 0 6px rgb(13 13 13 / 0.55), inset 0 0 0 7px #f2d27a,
+      0 0 26px rgb(205 164 52 / 0.35), 0 44px 70px -22px rgb(0 0 0 / 0.95);
+  }
+  .carta__cara:hover .carta__textura {
+    filter: brightness(1.45) saturate(1.1);
+  }
+  .carta__cara:hover .carta__entrar {
+    color: #f2d27a;
   }
   .carta__cara:hover .flecha {
-    transform: translateX(5px);
+    transform: translateX(6px);
+  }
+  .cartas:has(.carta__cara:hover) .carta__cara:not(:hover) {
+    opacity: 0.55;
   }
 }
 .carta__cara:focus-visible {
@@ -1955,89 +1931,6 @@ h1.titulo-seccion__titulo {
   background: #000;
   cursor: pointer;
   overflow: hidden;
-}
-/* Sala de proyección (js/teaser.js): una capa negra baja la luz de toda la
-   página al acercarse al reproductor; la sección del cine queda por encima */
-.cine {
-  position: relative;
-  z-index: 65;
-}
-.luces {
-  position: fixed;
-  inset: 0;
-  z-index: 64;
-  background: var(--negro);
-  opacity: 0;
-  pointer-events: none;
-}
-.menu-abierto .luces {
-  visibility: hidden;
-}
-
-/* Telón rojo: dos hojas que se recogen hacia los lados al pulsar play */
-.telon {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-.telon__hoja {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50.5%;
-  background:
-    linear-gradient(to bottom, rgb(0 0 0 / 0.35), transparent 30%, transparent 80%, rgb(0 0 0 / 0.45)),
-    repeating-linear-gradient(90deg, #4a0f10 0, #8b2626 18px, #a8383a 26px, #6e1a1b 40px, #4a0f10 52px);
-  transition: transform 0.9s var(--curva);
-}
-.telon__hoja::after {
-  /* flecos de oro */
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 9px;
-  background: repeating-linear-gradient(90deg, var(--oro) 0 2px, transparent 2px 5px);
-  opacity: 0.85;
-}
-.telon__hoja--izq {
-  left: 0;
-  transform-origin: left center;
-  box-shadow: inset -14px 0 24px -10px rgb(0 0 0 / 0.6);
-}
-.telon__hoja--der {
-  right: 0;
-  transform-origin: right center;
-  box-shadow: inset 14px 0 24px -10px rgb(0 0 0 / 0.6);
-}
-.telon__bambalina {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 11%;
-  background: repeating-linear-gradient(90deg, #4a0f10 0, #7a2022 14px, #4a0f10 28px);
-  border-bottom: 2px solid var(--oro);
-  box-shadow: 0 6px 14px rgb(0 0 0 / 0.5);
-}
-@media (hover: hover) and (pointer: fine) {
-  .reproductor:hover .telon__hoja--izq { transform: scaleX(0.94); }
-  .reproductor:hover .telon__hoja--der { transform: scaleX(0.94); }
-}
-.telon-abierto .telon__hoja--izq,
-.telon-abierto .telon__hoja--der,
-.reproductor.telon-abierto:hover .telon__hoja--izq,
-.reproductor.telon-abierto:hover .telon__hoja--der {
-  transform: scaleX(0.12);
-}
-.reproductor__play {
-  z-index: 3;
-}
-.telon-abierto .reproductor__play {
-  opacity: 0;
-  transition: opacity 0.3s;
 }
 .reproductor__poster {
   width: 100%;

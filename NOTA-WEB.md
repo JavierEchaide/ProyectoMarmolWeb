@@ -140,11 +140,11 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
    - **Por capas:** si se rellena `capas` (fondo / losa / cincel con transparencia), cada capa se mueve según su `profundidad` y la profundidad es real. El ejemplo está comentado en `portada.js`.
    - **Vídeo en bucle:** si se rellena `video` (MP4/WebM de 3-5 s sin sonido), se ve en lugar de la imagen, con la imagen de escritorio como póster. Con "reducir movimiento" se queda quieto.
 3. **Presentación**: frase gancho (`gancho`, cada frase en su línea y la segunda en rojo), dos párrafos (`presentacion`) y botón **Entrar**, que lleva al Teaser.
-4. **La historia en cuatro fotogramas** (`fotogramas`). El **II** ("De su cara solo se ven los ojos") son los ojos del Creador dibujados (`Ojos.astro`) mientras no haya render, y siguen la regla de la serie: **nunca miran**. Esquivan el cursor; si nadie se mueve en 3 s, por fin te miran (con la pupila dilatada); al moverte parpadean y vuelven a apartar la vista. Con `imagen.src` se ve el render en su lugar.
-   Los cuatro fotogramas: 4 en fila en escritorio y 2×2 en móvil. Al pasar el ratón aparece "Ver" y al pulsar se amplían en el visor; se recorren con las flechas.
+4. **La historia en cuatro fotogramas** (`fotogramas`): 4 en fila en escritorio y 2×2 en móvil. Al pasar el ratón aparece "Ver" y al pulsar se amplían en el visor; se recorren con las flechas.
 5. **Las páginas** (`accesos`): sala oscura con tres cartas que **flotan en 3D** (referencia: karma-tracks). Cada una está a una profundidad y un ángulo distintos, se balancea sola y, con ratón, se desplaza por capas y gira hacia el cursor; la que señalas se adelanta.
    - Por dentro, una piedra que se mueve despacio (`piedra`: `'negra'`, `'rosso'` o `'dorada'`; texturas `img/marmol/carta-*.webp`).
    - Si una carta tiene imagen (`imagen.src`), se ve la imagen en lugar de la piedra.
+   - Al pasar el ratón (o con el foco del teclado) la carta se adelanta, el filete brilla, la piedra se aclara y las otras dos se apagan.
    - Cada carta lleva "Sala II/III/IV", el dato (`subtitulo`) y una frase (`frase`).
 6. **Hecho por** (`autor`): sala oscura con un **busto 3D que se abre al bajar** (referencia: Billelis). La escena se queda fija mientras se recorre la sección; tu nombre va enorme detrás, y a la derecha va la cartela con estudios y curso.
    - Ahora son tres esferas provisionales: el casquete y la base son de mármol blanco, partidos por una rotura irregular con una costura de oro; en medio está el hueso, de bronce con pátina verde y vetas de oro que se encienden al abrirse.
@@ -160,7 +160,6 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
    - `video.src`: ruta del MP4 (`'video/teaser.mp4'`). Mientras sea `null`, al pulsar sale "Vídeo pendiente".
    - `video.poster`: fotograma que se ve antes de pulsar.
    - Los créditos van dentro del propio vídeo. No hay página de créditos.
-   - **Sala de proyección:** las luces de toda la página bajan al acercar el cursor al reproductor (sin ratón, al centrarlo en pantalla). Sobre el reproductor hay un **telón rojo** con flecos de oro que se entreabre al pasar el ratón y se recoge al pulsar play; entonces crece el vídeo. Al cerrar el vídeo, el telón se vuelve a cerrar.
 2. **Sinopsis** (`sinopsis`). Describe sin explicar, para no destapar la parte III de la historia (que venerar a las criaturas también las rompe).
 3. **Ficha técnica** (`ficha`): Duración · Hecho con · Formato · Música. La música pone "A decidir"; cuando se elija, se cambian las dos líneas.
 4. **Fotogramas clave** (`fotogramas`): planos 1, 2b, 7 y 8, en 2.35:1 y en 2 × 2 grandes, ampliables.
