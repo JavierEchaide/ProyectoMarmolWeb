@@ -9,7 +9,7 @@ export const sitio = {
   autor: 'Javier Echaide',
   estudios: 'Animación 3D, Juegos y Entornos Interactivos',
   curso: '2026 – 2027',
-  url: 'https://serie-marmol.vercel.app',
+  url: 'https://proyectomarmol.vercel.app',
   descripcion:
     'Proyecto final de Javier Echaide: el teaser de Serie Mármol, su historia y cómo se ha hecho.',
 };

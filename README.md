@@ -2,7 +2,7 @@
 
 Web del Proyecto Final Mármol de Javier Echaide (Animación 3D, Juegos y Entornos Interactivos): Portada, Teaser, Historia y Proceso de **Serie Mármol**.
 
-- Publicada en https://serie-marmol.vercel.app
+- Publicada en https://proyectomarmol.vercel.app
 - Documentación completa: [NOTA-WEB.md](NOTA-WEB.md)
 
 ```bash

@@ -2,7 +2,7 @@
 
 Documento de referencia de la web del Proyecto Final Mármol (Javier Echaide, Animación 3D, Juegos y Entornos Interactivos, 2026–2027). Explica qué se ha usado, cómo funciona cada parte y **dónde se mete cada cosa** cuando lleguen los renders, el vídeo o los textos nuevos. Está pensada para que, en un chat nuevo, baste con leerla para seguir trabajando.
 
-- **Web:** https://serie-marmol.vercel.app (pendiente de importar en Vercel, ver apartado 7)
+- **Web:** https://proyectomarmol.vercel.app
 - **Repositorio:** https://github.com/JavierEchaide/ProyectoMarmolWeb
 - **Lista de lo que falta por entregar (assets):** ver [Assets pendientes](#8-assets-pendientes), también en la nota de Obsidian "Web - Pendiente de Javi - Proyecto Final Mármol".
 
@@ -16,7 +16,7 @@ Documento de referencia de la web del Proyecto Final Mármol (Javier Echaide, An
 | Tecnología | [Astro 5](https://astro.build) genera HTML estático. CSS y JavaScript propios, sin librerías |
 | Contenido | Todo en `src/data/*.js`, separado del diseño |
 | Imágenes | Si una imagen no existe, sale un placeholder con el texto de lo que falta |
-| Alojamiento | Vercel (`serie-marmol.vercel.app`) |
+| Alojamiento | Vercel (`proyectomarmol.vercel.app`), se publica al hacer push a `main` |
 | Plan B | `dist/` copiado a un USB abre con doble clic en `index.html`, sin internet ni servidor |
 
 ### Comandos
@@ -231,13 +231,7 @@ Para poner la imagen real: copiar el archivo a `public/img/...` y cambiar `src: 
 
 ## 7. Publicar y plan B
 
-- **Vercel (pendiente):** el conector de Vercel de Claude solo tenía permiso de lectura, así que el proyecto hay que crearlo a mano una vez:
-  1. vercel.com › Add New › Project › importar `JavierEchaide/ProyectoMarmolWeb`.
-  2. Nombre del proyecto: `serie-marmol` → la web queda en `serie-marmol.vercel.app`.
-  3. Framework: Astro (lo detecta solo). Build: `npm run build`. Salida: `dist`.
-  4. Vercel publica en producción la rama `main`: fusionar en `main` la rama de trabajo o cambiar la rama de producción en Settings › Git.
-  
-  A partir de ahí, cada `git push` despliega solo.
+- **Vercel:** proyecto `proyectomarmol` (https://proyectomarmol.vercel.app), enlazado al repositorio. Publica en producción la rama `main`: cada `git push` a `main` despliega solo. `vercel.json` fija el build (`npm run build`) y la salida (`dist`), así que no depende de lo que diga el panel.
 - **Plan B (USB):** `npm run build` y copiar la carpeta `dist/` entera al USB. Se abre con doble clic en `dist/index.html`. Funciona sin internet, con fuentes, imágenes y vídeo incluidos (comprobado en Chrome desde `file://`).
 - **Tamaño del vídeo:** Vercel admite archivos estáticos grandes, pero conviene exportar el MP4 en H.264 1080p (1920×817 en 2.35:1) a unos 8–10 Mbps. Para 30 s son unos 30–40 MB.
 
