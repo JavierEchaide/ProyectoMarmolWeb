@@ -13,7 +13,7 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
 ---
 <Base id="historia" descripcion="Resumen de la historia de Serie Mármol, con los spoilers tapados." scripts={['js/historia.js']}>
   <div class="contenedor cabecera-pagina">
-    <TituloSeccion antetitulo="III · Serie Mármol" titulo="Historia" nivel={1} />
+    <TituloSeccion titulo="Historia" nivel={1} />
   </div>
 
   <section class="contenedor premisa" aria-labelledby="titulo-premisa">
@@ -29,7 +29,7 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
   <Grieta semilla={21} />
 
   <section class="contenedor seccion" aria-labelledby="titulo-partes">
-    <TituloSeccion antetitulo="La serie" titulo="Las seis partes" id="titulo-partes">
+    <TituloSeccion titulo="Las seis partes" id="titulo-partes">
       <div class="aviso-spoiler">
         <p>Las partes {tapadas.join(', ').replace(/, ([^,]*)$/, ' y $1')} y el final están tapados. Pulsa un cartel para descubrirlo.</p>
         <button class="boton boton--pequeno" type="button" data-spoiler-todos aria-pressed="false">Mostrar todos</button>
@@ -51,7 +51,7 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
   </section>
 
   <section class="contenedor seccion final" aria-labelledby="titulo-final">
-    <TituloSeccion antetitulo="Cierre" titulo={final.titulo} id="titulo-final" />
+    <TituloSeccion titulo={final.titulo} id="titulo-final" />
     <Spoiler semilla={77} texto="Spoiler · El final" descripcion="el final">
       <div class="final__cuerpo">
         {final.parrafos.map((p) => <p>{p}</p>)}

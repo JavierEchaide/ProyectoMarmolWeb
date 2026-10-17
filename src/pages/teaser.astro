@@ -11,7 +11,7 @@ const { video, rima } = teaser;
 ---
 <Base id="teaser" descripcion="El teaser de 30 segundos de Serie Mármol, hecho en Blender con Cycles." scripts={['js/teaser.js']}>
   <div class="contenedor cabecera-pagina">
-    <TituloSeccion antetitulo="II · Serie Mármol" titulo="Teaser" nivel={1} />
+    <TituloSeccion titulo="Teaser" nivel={1} />
   </div>
 
   <section class="cine" aria-label="Reproductor del teaser">
@@ -58,8 +58,8 @@ const { video, rima } = teaser;
   <Grieta semilla={12} />
 
   <section class="contenedor seccion" aria-labelledby="titulo-fotogramas">
-    <TituloSeccion antetitulo="Del teaser" titulo="Fotogramas clave" id="titulo-fotogramas" />
-    <ol class="fotogramas">
+    <TituloSeccion titulo="Fotogramas clave" id="titulo-fotogramas" />
+    <ol class="fotogramas fotogramas--grandes">
       {teaser.fotogramas.map((f, i) => (
         <li class="fotograma" data-revelar style={`--i: ${i}`}>
           <Imagen imagen={f.imagen} ratio="2.35 / 1" ver grupo="teaser" pie={`Plano ${f.plano}. ${f.pie}`} />

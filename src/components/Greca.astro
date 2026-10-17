@@ -1,15 +1,17 @@
 ---
 // Banda de greca (meandro griego) dorada. Usa el patrón #greca definido una
-// sola vez en el Layout. `ancho` en px; con 'total' ocupa todo el ancho.
+// sola vez en el Layout. `ancho` en px; con 'total' ocupa todo el ancho y usa
+// la versión grande entre dos líneas (#greca-banda), que a 14 px de alto se
+// leía como una fila de cuadraditos.
 const { ancho = 120, clase = '' } = Astro.props;
 const total = ancho === 'total';
 ---
 <svg
   class:list={['greca', clase, { 'greca--total': total }]}
   width={total ? '100%' : ancho}
-  height="14"
+  height={total ? 30 : 14}
   aria-hidden="true"
   focusable="false"
 >
-  <rect width="100%" height="14" fill="url(#greca)" />
+  <rect width="100%" height={total ? 30 : 14} fill={total ? 'url(#greca-banda)' : 'url(#greca)'} />
 </svg>

@@ -4,7 +4,7 @@
 
    1. Menú a pantalla completa
    2. Transición entre páginas (cortina)
-   3. Aparición al hacer scroll y grietas doradas
+   3. Aparición al hacer scroll
    4. Inclinación 3D de las tarjetas
    5. Visor de imágenes y vídeo
    6. Diálogos (referencias de Proceso)
@@ -58,6 +58,32 @@
     });
   }
 
+  /* Cabecera: cambia de fondo al bajar y se esconde mientras se baja; al
+     subir vuelve. Así nunca tapa lo que se está leyendo. */
+  var cabecera = document.querySelector('.cabecera');
+  var ultimoScroll = window.scrollY;
+  var cabeceraPendiente = false;
+  function actualizarCabecera() {
+    cabeceraPendiente = false;
+    var y = window.scrollY;
+    cabecera.classList.toggle('cabecera--fondo', y > 8);
+    if (!html.classList.contains('menu-abierto') && Math.abs(y - ultimoScroll) > 6) {
+      cabecera.classList.toggle('cabecera--oculta', y > ultimoScroll && y > 160);
+      ultimoScroll = y;
+    }
+  }
+  if (cabecera) {
+    window.addEventListener('scroll', function () {
+      if (!cabeceraPendiente) {
+        cabeceraPendiente = true;
+        requestAnimationFrame(actualizarCabecera);
+      }
+    }, { passive: true });
+    // Si el foco del teclado entra en la cabecera, se muestra
+    cabecera.addEventListener('focusin', function () { cabecera.classList.remove('cabecera--oculta'); });
+    actualizarCabecera();
+  }
+
   /* 2. Transición entre páginas ----------------------------------------- */
 
   var cortinaTexto = document.querySelector('[data-cortina-texto]');
@@ -98,9 +124,9 @@
     }
   });
 
-  /* 3. Aparición al hacer scroll + grietas ------------------------------ */
+  /* 3. Aparición al hacer scroll (las grietas van en js/grietas.js) ------ */
 
-  var observables = document.querySelectorAll('[data-revelar], [data-grieta]');
+  var observables = document.querySelectorAll('[data-revelar]');
   if ('IntersectionObserver' in window) {
     var observador = new IntersectionObserver(
       function (entradas) {

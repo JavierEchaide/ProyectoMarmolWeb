@@ -40,10 +40,11 @@ ProyectoMarmolWeb/
 ├── NOTA-WEB.md               esta nota
 ├── public/                   se copia tal cual a dist/
 │   ├── css/site.css          TODO el estilo (índice al principio del archivo)
-│   ├── js/site.js            menú, transiciones, apariciones, visor, inclinación 3D, diálogos
-│   ├── js/portada.js         intro y parallax del hero
+│   ├── js/site.js            menú, cabecera, transiciones, apariciones, visor, inclinación 3D, diálogos
+│   ├── js/grietas.js         geometría de las grietas y divisores de oro que se dibujan con el scroll
+│   ├── js/portada.js         intro, vídeo y parallax del hero
 │   ├── js/teaser.js          reproductor del teaser
-│   ├── js/historia.js        carteles de SPOILER
+│   ├── js/historia.js        losas de SPOILER que se rompen en 3D
 │   ├── js/proceso.js         comparadores antes/después
 │   ├── fonts/                Cinzel y EB Garamond (woff2, autoalojadas)
 │   ├── img/                  imágenes (ver "Assets pendientes")
@@ -51,7 +52,7 @@ ProyectoMarmolWeb/
 │   └── favicon.svg
 ├── scripts/
 │   ├── relativizar.mjs       se ejecuta tras el build: falla si hay rutas absolutas
-│   └── generar-marmol.py     textura de mármol PROVISIONAL (se tira cuando llegue la real)
+│   └── generar-marmol.py     texturas PROVISIONALES: mármol, mármol de marcos y piedra negra
 └── src/
     ├── data/                 ← CONTENIDO. Aquí se edita casi todo
     │   ├── sitio.js          nombre, autor, lista de páginas del menú
@@ -61,7 +62,7 @@ ProyectoMarmolWeb/
     │   └── proceso.js
     ├── layouts/Base.astro    <head>, cabecera, menú, cortina, visor y pie (común)
     ├── components/           piezas reutilizables (ver apartado 5)
-    ├── lib/grietas.js        genera las grietas doradas en SVG
+    ├── lib/grietas.js        grieta plana de los divisores para cuando no hay JavaScript
     └── pages/                una por página: index, teaser, historia, proceso
 ```
 
@@ -97,17 +98,27 @@ Un solo tema claro. No hay modo oscuro.
 - **Títulos:** Cinzel (mayúsculas de inscripción romana, tipo Trajano).
 - **Texto:** EB Garamond (Garamond clásica, normal y cursiva).
 - Ambas cubren tildes, eñes, ¿ ¡ y comillas. Las flechas de los botones son SVG porque el subconjunto latino de las fuentes no trae `→`.
+- **Seis tamaños y nada por debajo de 13 px**, como variables en `:root`: `--t-display` (títulos de página, menú, intro), `--t-h2` (secciones), `--t-h3` (tarjetas), `--t-texto` (texto corrido), `--t-pequeno` (pies y secundario, 17 px) y `--t-etiqueta` (etiquetas en mayúsculas, 13 px). Para un texto nuevo se usa una de estas, no un tamaño suelto.
 
 ### Mármol
 
-Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del menú y el marco de las tarjetas con `marmol`. Todo usa la variable `--marmol` → `public/img/marmol/marmol.webp`.
+Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del menú y el marco de las tarjetas con `marmol`.
 
-**Ahora mismo es una textura provisional generada por código** (`scripts/generar-marmol.py`). Cuando llegue la textura real de Blender, se sobrescribe ese archivo con el mismo nombre y no hay que tocar nada más.
+| Variable | Archivo | Dónde |
+|---|---|---|
+| `--marmol` | `img/marmol/marmol.webp` | menú (y el hero es el render) |
+| `--marmol-marco` | `img/marmol/marmol-marco.webp` | marcos de las tarjetas: la misma piedra con las bandas finas y el rojo apagado, porque en 10 px de marco las bandas gruesas parecían manchas |
+| `--piedra` | `img/marmol/piedra-negra.webp` | losas de SPOILER de Historia (negro con grano, sin vetas) |
+
+**Las tres son provisionales y salen de código** (`python3 scripts/generar-marmol.py`). Cuando llegue la textura real de Blender, se sobrescribe el archivo con el mismo nombre y no hay que tocar nada más. Para el marco conviene una versión del mismo material con menos contraste.
 
 ### Ornamentos
 
-- **Grietas doradas (kintsugi):** divisores entre secciones (`Grieta.astro`). Cada una se genera a partir de una "semilla" (número), así que todas son distintas pero estables. Avanzan de izquierda a derecha al entrar en pantalla. Es el concepto de la serie: la corrupción se sana con oro y la grieta se sigue viendo.
-- **Greca (meandro griego):** banda dorada en el pie, la placa del menú y la vitrina del autor (`Greca.astro`, patrón `#greca` definido en `Base.astro`).
+- **Grietas doradas (kintsugi):** divisores entre secciones (`Grieta.astro` + `js/grietas.js`). Cada una sale de una "semilla" (número), así que todas son distintas pero estables. Es el concepto de la serie: la corrupción se sana con oro y la grieta se sigue viendo.
+  - Se dibujan en el navegador al tamaño real del divisor, como un cordón de oro con relieve: hueco en sombra, cuerpo de oro con canto oscuro, núcleo más claro y filo de luz.
+  - **Se abren con el scroll:** una chispa recorre la grieta mientras bajas (empieza al asomar por abajo y termina hacia la mitad de la pantalla). Al completarse, un brillo la recorre una vez. Nunca retrocede.
+  - Sin JavaScript se ve una grieta plana (la de `src/lib/grietas.js`).
+- **Greca (meandro griego):** banda dorada en el pie, la placa del menú y la vitrina del autor (`Greca.astro`). Patrones definidos en `Base.astro`: `#greca` (pequeña) y `#greca-banda` (la del pie, más grande y entre dos líneas; a 14 px se leía como una fila de cuadraditos).
 - **Tarjetas** (referencia: karma-tracks.com): doble filete dorado y escuadras con un rombo en cada esquina (`Tarjeta.astro`). Variante `marmol` con marco de mármol.
 
 ---
@@ -116,14 +127,15 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
 
 ### I · Portada — `src/pages/index.astro` + `src/data/portada.js`
 
-1. **Intro** (`portada.intro`). Pantalla crema con "Bienvenido a" y "Proyecto Mármol" letra a letra. A los 2 s se abre en dos mitades, como una cortina, y descubre el hero. Dura 2,9 s y se salta con un clic o una tecla.
+1. **Intro** (`portada.intro`). Pantalla crema con "Bienvenido a" y "Proyecto Mármol" letra a letra (en móvil, una palabra por línea). A los 2 s se abre en dos mitades, como una cortina, y descubre el hero. Dura 2,9 s y se salta con un clic o una tecla.
    - **Cuándo sale:** al recargar la Portada o al entrar por primera vez (escribiendo la dirección o desde un enlace externo). **No** sale al llegar desde el menú o desde otra página de la web, ni al volver con "atrás". Lo decide el script del `<head>` en `Base.astro`. Antes de navegar dentro de la web se guarda una marca en `sessionStorage`, y se mira el tipo de navegación (`reload`, `navigate`, `back_forward`).
    - Con "reducir movimiento" activado en el sistema, la intro es un fundido corto.
 2. **Hero** (`portada.hero`). Render del título tallado. El texto real está oculto en un `<h1>` para lectores de pantalla.
    - `escritorio`: 16:9. `movil`: versión para móviles, con su proporción en `ratioMovil` (1 = cuadrado, 0.8 = 4:5).
    - **Parallax:** la imagen baja más despacio que el scroll y se mueve un poco con el ratón.
    - **Por capas:** si se rellena `capas` (fondo / losa / cincel con transparencia), cada capa se mueve según su `profundidad` y la profundidad es real. El ejemplo está comentado en `portada.js`.
-3. **Presentación**: frase gancho (`gancho`), dos párrafos (`presentacion`) y botón **Entrar**, que lleva al Teaser.
+   - **Vídeo en bucle:** si se rellena `video` (MP4/WebM de 3-5 s sin sonido), se ve en lugar de la imagen, con la imagen de escritorio como póster. Con "reducir movimiento" se queda quieto.
+3. **Presentación**: frase gancho (`gancho`, cada frase en su línea y la segunda en rojo), dos párrafos (`presentacion`) y botón **Entrar**, que lleva al Teaser.
 4. **La historia en cuatro fotogramas** (`fotogramas`): 4 en fila en escritorio y 2×2 en móvil. Al pasar el ratón aparece "Ver" y al pulsar se amplían en el visor; se recorren con las flechas.
 5. **Las páginas** (`accesos`): tres tarjetas con marco de mármol que se inclinan en 3D siguiendo el ratón.
 6. **Hecho por** (`autor`): vitrina oscura con el render del autor (vertical 3:4), su nombre y una greca.
@@ -137,7 +149,7 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
    - Los créditos van dentro del propio vídeo. No hay página de créditos.
 2. **Sinopsis** (`sinopsis`). Describe sin explicar, para no destapar la parte III de la historia (que venerar a las criaturas también las rompe).
 3. **Ficha técnica** (`ficha`): Duración · Hecho con · Formato · Música. La música pone "A decidir"; cuando se elija, se cambian las dos líneas.
-4. **Fotogramas clave** (`fotogramas`): planos 1, 2b, 7 y 8, en 2.35:1, ampliables.
+4. **Fotogramas clave** (`fotogramas`): planos 1, 2b, 7 y 8, en 2.35:1 y en 2 × 2 grandes, ampliables.
 5. **La rima** (`rima`): los planos 4 y 6 (ojos de la pura y de la corrupta, mismo encuadre) juntos, con una línea que lo explica.
 6. **Siguiente: III · Historia.**
 
@@ -147,9 +159,9 @@ Textos escritos a partir de "Lore - Biblia completa", "Estructura narrativa - Pa
 
 1. **Premisa** (`premisa`): siempre visible, con imagen clave (4:5) y capitular roja.
 2. **Las seis partes** (`partes`): tarjetas con marco de mármol, cada una con número, imagen, título y párrafo.
-   - `spoiler: true` las tapa con el cartel negro **SPOILER**. Ahora están tapadas la III, la IV, la V y la VI. La I y la II se ven siempre.
-   - Mientras está tapado, el contenido es `inert`: no se lee, no se selecciona y no se enfoca con el teclado.
-   - Al pulsar el cartel se dibujan grietas doradas sobre el negro y el cartel cae (`js/historia.js`).
+   - `spoiler: true` las tapa con una losa de piedra negra que pone **SPOILER**. Ahora están tapadas la III, la IV, la V y la VI. La I y la II se ven siempre.
+   - Mientras está tapado, el contenido es `inert` (no se lee, no se selecciona y no se enfoca con el teclado) y el bloque se queda a una altura fija (4:3; el final, 2:1), en vez de ocupar lo que mide el texto escondido.
+   - **La losa es 3D** (`js/historia.js`, con la geometría de `js/grietas.js`): se inclina con el ratón y tiene un reflejo que lo sigue. Al pasar por encima le sale una fisura en el punto de impacto. Al pulsarla se agrieta en oro de lado a lado, se abre (asoma luz dorada por las juntas) y se rompe en unas 14-20 esquirlas que caen girando en perspectiva mientras el bloque crece hasta la altura del texto. Dura 2 s. Con "reducir movimiento" solo se destapa.
    - El botón **Mostrar todos** destapa todo de una vez y pasa a **Volver a taparlos**. Al recargar la página vuelven a estar tapados: no se guarda nada.
 3. **El final** (`final`): bloque ancho tapado con "SPOILER · EL FINAL", con dos párrafos y la cita del tema de la serie.
 4. **Siguiente: IV · Proceso.**
@@ -158,17 +170,18 @@ Textos escritos a partir de "Lore - Biblia completa", "Estructura narrativa - Pa
 
 Datos sacados de "Proyecto Final Mármol - Proyecto" (calendario y pipeline), "Registro S01" y "Registro S02", y las notas de Referencias.
 
+0. **Avance**, junto a la intro: la semana actual en grande, una barra de 35 semanas (oro = hecha, rojo = en curso), qué se está haciendo ahora y el próximo hito (la próxima semana cuyo plan dice "evaluación"). **Sale solo de los estados de las semanas**: no hay que tocarlo.
 1. **Línea de tiempo S01–S35** (`bloques`): los 7 bloques reales de la pipeline (Cimientos, Previz, Assets, Look dev, Animación, Render, Post y entrega). Cada uno se despliega (`<details>`, funciona sin JavaScript) y enseña:
    - el objetivo,
    - cada semana con su plan y su **estado**: `'hecho'`, `'en-curso'` o `'pendiente'`. El estado del bloque se calcula solo,
    - lo que se hizo (`registro`: una lista de frases),
    - capturas opcionales (`capturas`: "Mis notas de Obsidian", "Grafo del proyecto", "Storyboard"...).
    - **Para actualizar una semana:** cambiar su `estado` y rellenar su `registro`.
-2. **Referencias** (`referencias`): 7 categorías (Personajes, Sets, Color y luz, Cámara y encuadre, Materiales, Sonido y música, Producción). Cada tarjeta abre un diálogo con **todas** sus referencias, y cada referencia trae imagen, **Qué es / Qué cojo / Dónde aplica**.
+2. **Referencias** (`referencias`): 7 categorías (Personajes, Sets, Color y luz, Cámara y encuadre, Materiales, Sonido y música, Producción), en un índice de dos columnas con miniatura y los nombres de sus referencias. Cada fila abre un diálogo con **todas** sus referencias, y cada referencia trae imagen, **Qué es / Qué cojo / Dónde aplica**.
    - Una categoría sin referencias pone "Por documentar" y no se abre.
    - Para añadir una referencia, se añade un objeto a su `items`.
 3. **Antes y después** (`antesDespues`): comparadores con una línea que se arrastra (ratón, dedo o flechas del teclado). Cada uno lleva imagen de `antes`, de `despues`, título y texto.
-4. **Pipeline** (`pipeline`): 8 pasos (Guion · Previz · Modelado · Rig · Look dev · Animación · Render · Post), cada uno con su estado.
+4. **Pipeline** (`pipeline`): 8 pasos (Guion · Previz · Modelado · Rig · Look dev · Animación · Render · Post), numerados en romanos (I-VIII), cada uno con su estado.
 5. **Archivo completo, plegado** (`archivo`): WIPs (`wips`), versiones antiguas (`versiones`, ahora las tres del shader de las ventanas) y fallos (`fallos`, los tres reales de S01).
 6. **Volver a la Portada.**
 
@@ -189,9 +202,9 @@ El menú, la numeración y los enlaces "Siguiente" se recalculan solos: Proceso 
 |---|---|
 | `Imagen.astro` | Imagen real o placeholder. Props: `imagen` (`{ src, alt, falta }`), `ratio`, `ver` (ampliable), `grupo` (se recorren con flechas), `pie`, `oscuro` |
 | `Tarjeta.astro` | Tarjeta con doble filete y escuadras. Props: `marmol`, `href`, `inclinar`, `etiqueta`, `posicion` (qué trozo de mármol se ve) |
-| `Grieta.astro` | Divisor de grieta dorada. Prop: `semilla` |
+| `Grieta.astro` | Divisor de grieta dorada (la rehace `js/grietas.js`). Prop: `semilla` |
 | `Greca.astro` | Banda de meandro. Prop: `ancho` (px o `'total'`) |
-| `Spoiler.astro` | Cartel negro que tapa su contenido. Props: `activo`, `semilla`, `texto`, `descripcion` |
+| `Spoiler.astro` | Losa negra que tapa su contenido y se rompe al pulsarla. Props: `activo`, `semilla` (forma de la rotura), `texto`, `descripcion`. La altura tapada se cambia con la variable CSS `--ratio-tapado` |
 | `AntesDespues.astro` | Comparador. Props: `antes`, `despues`, `titulo`, `ratio` |
 | `TituloSeccion.astro` | Antetítulo + título de sección (`nivel` 1 para el título de página) |
 | `Siguiente.astro` | Botón al final de cada página hacia la siguiente del menú |
@@ -212,8 +225,9 @@ Para poner la imagen real: copiar el archivo a `public/img/...` y cambiar `src: 
   - Se cierra con el botón (que pasa a "Cerrar" y a una X), con Esc o eligiendo página.
   - Mientras está abierto, el resto de la página queda `inert` y el foco no sale del menú.
   - En móvil el mármol queda arriba y la lista debajo.
+- **Cabecera** sin filete: al bajar cambia a un fondo un poco más oscuro y se esconde; al subir vuelve. Así no tapa lo que se está leyendo.
 - **Cortina entre páginas.** Al pulsar un enlace interno sube una cortina crema con el número y el nombre de la página de destino. En la página nueva, la cortina se retira hacia arriba.
-- **Aparición al hacer scroll.** Los elementos con `data-revelar` suben y aparecen al entrar en pantalla. Las grietas avanzan.
+- **Aparición al hacer scroll.** Los elementos con `data-revelar` suben y aparecen al entrar en pantalla; sus imágenes se destapan de abajo arriba con un leve zoom de salida.
 - **Inclinación 3D** de las tarjetas con `data-inclinar` (solo con ratón).
 - **Visor** (`<dialog>`) para imágenes, placeholders y el vídeo. Crece desde el elemento pulsado, con el fondo oscurecido y desenfocado. Se recorre con flechas y se cierra con Esc, con el botón o con un clic fuera.
 - **Diálogos** de referencias: `data-abrir-dialogo="id"` / `data-cerrar-dialogo`.
@@ -246,6 +260,7 @@ Formato recomendado: **WebP** (o JPG) calidad ~85. Renders con el mismo nombre q
 | 1 | Render final del título tallado (pondrá "Proyecto Mármol" por ahora) | 16:9 · 2560×1440 | `img/portada/hero.webp` | se sobrescribe |
 | 2 | Mismo render en vertical, para móvil | 4:5 · 1080×1350 | `img/portada/hero-movil.webp` | se sobrescribe y `ratioMovil: 0.8` |
 | 3 | *(Opcional)* el hero en 3 capas con transparencia: fondo, losa, cincel | 16:9 cada una | `img/portada/capa-*.webp` | `portada.hero.capas` |
+| 3b | *(Opcional)* el hero como vídeo en bucle de 3-5 s (la luz moviéndose sobre la losa, polvo cayendo...) | 16:9 · 1920×1080, sin sonido, menos de 4 MB | `video/hero-bucle.mp4` | `portada.hero.video` |
 | 4 | Textura plana del mármol del hero (render cenital del material, sin luz dramática) | 2000×1500 o mayor | `img/marmol/marmol.webp` | se sobrescribe |
 | 5–8 | 4 fotogramas del prólogo: Creador de espaldas ante la ventana · sus ojos · la criatura en el bosque · la jaula en la bodega | 16:9 | `img/portada/prologo-1..4.webp` | `portada.fotogramas[i].imagen.src` |
 | 9–11 | Imágenes de las 3 tarjetas de acceso (Teaser, Historia, Proceso) | 4:3 | `img/portada/acceso-*.webp` | `portada.accesos[i].imagen.src` |
@@ -273,7 +288,8 @@ Formato recomendado: **WebP** (o JPG) calidad ~85. Renders con el mismo nombre q
 - La intro solo sale al recargar o al entrar por primera vez.
 - Menú: mármol a un lado con una placa de museo, y la lista en números romanos.
 - Ornamentos: grecas finas y escuadras tipo karma-tracks (las esquineras Art Déco de la referencia tenían marca de agua y no son grecorromanas).
-- Animación de nivel medio: aparición al hacer scroll, parallax del hero, inclinación de tarjetas, grietas doradas y cortina entre páginas. Sin 3D en tiempo real; un visor `.glb` encajaría en la página de Personajes.
+- Animación de nivel medio: aparición al hacer scroll, parallax del hero, inclinación de tarjetas, grietas doradas y cortina entre páginas. Las losas de SPOILER se rompen en 3D con CSS (perspectiva y transformaciones), sin WebGL. Un visor `.glb` encajaría en la página de Personajes.
+- Revisión con la skill Taste (octubre 2026): seis tamaños de letra, nada por debajo de 13 px, fuera los antetítulos que repetían la cabecera, pipeline en romanos, sin sombra en reposo en las tarjetas de mármol y cabecera sin filete. Se mantienen a propósito, por ser decisiones de diseño: los filetes dorados, la paleta crema / oro / rojo, los marcos dobles y los números romanos.
 - Tipografía elegida: Cinzel + EB Garamond.
 - Pipeline de 8 pasos, que refleja la previz antes del modelado y el look dev antes de animar.
 - No se incluyen las referencias descartadas.

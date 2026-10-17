@@ -1,22 +1,23 @@
 ---
-// Tapa el contenido con un cartel negro de SPOILER. Al pulsarlo, el cartel
-// se agrieta en oro y cae (js/historia.js). Con `activo={false}` no tapa nada.
-// Mientras está tapado, el contenido es `inert`: no se lee ni se enfoca.
-import { grietaRadial } from '../lib/grietas.js';
+// Tapa el contenido con una losa de piedra negra que pone SPOILER. Al
+// pulsarla se agrieta en oro y se rompe en esquirlas (js/historia.js).
+// Mientras está tapado, el contenido es `inert` (no se lee ni se enfoca) y el
+// bloque se queda a una altura fija; al destaparse crece hasta su tamaño real.
+// Con `activo={false}` no tapa nada.
 const { activo = true, semilla = 1, texto = 'Spoiler', descripcion = 'contenido' } = Astro.props;
-const trazos = activo ? grietaRadial(semilla) : [];
 ---
-<div class:list={['spoiler', { 'spoiler--activo': activo }]} data-spoiler={activo ? 'tapado' : undefined}>
+<div class:list={['spoiler', { 'spoiler--activo': activo }]} data-spoiler={activo ? 'tapado' : undefined} data-semilla={semilla}>
   <div class="spoiler__contenido" inert={activo}>
     <slot />
   </div>
   {activo && (
     <button class="spoiler__tapa" type="button" aria-label={`${texto}: pulsa para descubrir ${descripcion}`} data-spoiler-tapa>
-      <svg class="spoiler__grietas" viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-        {trazos.map((d) => <path d={d} pathLength="1" />)}
-      </svg>
-      <span class="spoiler__texto">{texto}</span>
-      <span class="spoiler__ayuda">Pulsa para descubrirlo</span>
+      <span class="spoiler__luz" aria-hidden="true"></span>
+      <span class="spoiler__cara" aria-hidden="true">
+        <svg class="spoiler__grietas" focusable="false"></svg>
+        <span class="spoiler__texto">{texto}</span>
+        <span class="spoiler__ayuda">Pulsa para descubrirlo</span>
+      </span>
     </button>
   )}
 </div>

@@ -27,8 +27,14 @@ export const portada = {
     //   { src: 'img/portada/capa-cincel.webp', profundidad: 1 },
     // ],
     capas: [],
+    // Vídeo en bucle de 3-5 s del título (MP4 H.264 o WebM, sin sonido,
+    // 1920×1080, menos de 4 MB). Si existe, se ve en lugar de la imagen; la
+    // imagen de escritorio hace de póster mientras carga. Con "reducir
+    // movimiento" activado se queda quieto. Ejemplo: 'video/hero-bucle.mp4'
+    video: null,
   },
 
+  // Cada frase va en su propia línea
   gancho: 'Él las talló perfectas. Nunca bajó a mirar.',
 
   presentacion: [

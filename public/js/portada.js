@@ -23,6 +23,13 @@
     setTimeout(retirar, movimientoReducido ? 1900 : 3000);
   }
 
+  /* Vídeo en bucle del hero: con "reducir movimiento" se queda en el primer fotograma */
+  var video = document.querySelector('[data-hero-video]');
+  if (video && movimientoReducido) {
+    video.removeAttribute('autoplay');
+    video.pause();
+  }
+
   /* Parallax del hero: la imagen se desplaza más despacio que el scroll
      y se mueve un poco con el ratón. Si algún día hay render por capas,
      cada capa con data-profundidad se mueve en proporción. */

@@ -10,7 +10,10 @@ import { portada } from '../data/portada.js';
 import { pagina } from '../data/sitio.js';
 
 const romanos = ['I', 'II', 'III', 'IV'];
-const letras = [...portada.intro.titulo];
+// Letras agrupadas por palabras: en móvil el título parte entre palabras
+let n = 0;
+const palabras = portada.intro.titulo.split(' ').map((p) => [...p].map((l) => ({ l, i: n++ })));
+const frases = portada.gancho.match(/[^.!?]+[.!?]*/g).map((f) => f.trim());
 ---
 <Base id="portada" scripts={['js/portada.js']}>
   {/* Intro: solo se ve si el <head> ha puesto la clase .intro-activa (recarga o primera entrada) */}
@@ -20,8 +23,13 @@ const letras = [...portada.intro.titulo];
     <div class="intro__texto">
       <span class="intro__saludo">{portada.intro.saludo}</span>
       <span class="intro__titulo">
-        {letras.map((l, i) => (
-          <span class="intro__letra" style={`--i: ${i}`}>{l === ' ' ? ' ' : l}</span>
+        {palabras.map((letras, j) => (
+          <>
+            {j > 0 && ' '}
+            <span class="intro__palabra">
+              {letras.map(({ l, i }) => <span class="intro__letra" style={`--i: ${i}`}>{l}</span>)}
+            </span>
+          </>
         ))}
       </span>
     </div>
@@ -30,7 +38,19 @@ const letras = [...portada.intro.titulo];
   <section class="hero" aria-labelledby="titulo-portada" data-hero style={`--ratio-movil: ${portada.hero.ratioMovil}`}>
     <h1 id="titulo-portada" class="oculto">{portada.hero.titulo}</h1>
     <div class="hero__imagen" data-hero-imagen>
-      {portada.hero.capas.length ? (
+      {portada.hero.video ? (
+        <video
+          class="hero__video"
+          src={portada.hero.video}
+          poster={portada.hero.escritorio}
+          autoplay
+          muted
+          loop
+          playsinline
+          aria-label={portada.hero.alt}
+          data-hero-video
+        ></video>
+      ) : portada.hero.capas.length ? (
         portada.hero.capas.map((c, i) => (
           <img
             class="hero__capa"
@@ -51,7 +71,9 @@ const letras = [...portada.intro.titulo];
   </section>
 
   <section class="contenedor presentacion" aria-label="Presentación">
-    <p class="presentacion__gancho" data-revelar>{portada.gancho}</p>
+    <p class="presentacion__gancho" data-revelar>
+      {frases.map((f) => <span class="presentacion__frase">{f}</span>)}
+    </p>
     <div class="presentacion__texto" data-revelar>
       {portada.presentacion.map((p) => <p>{p}</p>)}
       <a class="boton" href="teaser.html">
@@ -64,7 +86,7 @@ const letras = [...portada.intro.titulo];
   <Grieta semilla={3} />
 
   <section class="contenedor seccion" aria-labelledby="titulo-prologo">
-    <TituloSeccion antetitulo="Prólogo" titulo="La historia en cuatro fotogramas" id="titulo-prologo" />
+    <TituloSeccion titulo="La historia en cuatro fotogramas" id="titulo-prologo" />
     <ol class="fotogramas">
       {portada.fotogramas.map((f, i) => (
         <li class="fotograma" data-revelar style={`--i: ${i}`}>
@@ -78,7 +100,7 @@ const letras = [...portada.intro.titulo];
   <Grieta semilla={8} />
 
   <section class="contenedor seccion" aria-labelledby="titulo-paginas">
-    <TituloSeccion antetitulo="Índice" titulo="Las páginas" id="titulo-paginas" />
+    <TituloSeccion titulo="Las páginas" id="titulo-paginas" />
     <ul class="accesos">
       {portada.accesos.map((a, i) => {
         const p = pagina(a.pagina);

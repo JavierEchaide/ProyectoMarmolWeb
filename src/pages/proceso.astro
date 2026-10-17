@@ -17,12 +17,49 @@ const estadoBloque = (semanas) =>
       : 'pendiente';
 const rango = (semanas) => `${semanas[0].semana} – ${semanas[semanas.length - 1].semana}`;
 const slug = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-');
+const romano = (n) =>
+  [['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1]].reduce((r, [l, v]) => {
+    while (n >= v) { r += l; n -= v; }
+    return r;
+  }, '');
+
+// Avance: sale solo de los estados de las semanas
+const semanas = proceso.bloques.flatMap((b) => b.semanas.map((s) => ({ ...s, bloque: b })));
+const actual = semanas.filter((s) => s.estado !== 'pendiente').at(-1) ?? semanas[0];
+const numeroActual = semanas.indexOf(actual) + 1;
+const hechas = semanas.filter((s) => s.estado === 'hecho').length;
+const hito = semanas.slice(numeroActual).find((s) => /evaluaci/i.test(s.plan));
 ---
 <Base id="proceso" descripcion="Cómo se ha hecho el teaser de Serie Mármol: calendario, referencias, pipeline y archivo." scripts={['js/proceso.js']}>
-  <div class="contenedor cabecera-pagina">
-    <TituloSeccion antetitulo="IV · Cómo se ha hecho" titulo="Proceso" nivel={1}>
+  <div class="contenedor cabecera-pagina cabecera-pagina--con-avance">
+    <TituloSeccion titulo="Proceso" nivel={1}>
       <p class="cabecera-pagina__intro">{proceso.intro}</p>
     </TituloSeccion>
+
+    <aside class="avance" aria-labelledby="titulo-avance" data-revelar>
+      <h2 id="titulo-avance" class="oculto">Avance del proyecto</h2>
+      <p class="avance__cifra">
+        <span class="avance__numero">{numeroActual}</span>
+        <span class="avance__de">Semana {numeroActual} de {semanas.length}.<br />{hechas} hechas, {semanas.filter((s) => s.estado === 'en-curso').length} en curso.</span>
+      </p>
+      <ol class="avance__barra" aria-label={`${hechas} semanas hechas de ${semanas.length}`}>
+        {semanas.map((s) => (
+          <li class={`avance__semana avance__semana--${s.estado}`} title={`${s.semana} · ${s.plan}`}></li>
+        ))}
+      </ol>
+      <dl class="avance__datos">
+        <div>
+          <dt>Ahora</dt>
+          <dd>Bloque {actual.bloque.numero} · {actual.bloque.titulo}: {actual.plan.charAt(0).toLowerCase() + actual.plan.slice(1)}</dd>
+        </div>
+        {hito && (
+          <div>
+            <dt>Próximo hito</dt>
+            <dd>{hito.plan.split('·').at(-1).trim()} · {hito.semana} ({hito.fechas})</dd>
+          </div>
+        )}
+      </dl>
+    </aside>
   </div>
 
   <section class="contenedor seccion" aria-labelledby="titulo-tiempo">
@@ -90,17 +127,23 @@ const slug = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').rep
     <TituloSeccion antetitulo="Qué es · Qué cojo · Dónde aplica" titulo="Referencias" id="titulo-referencias" />
     <ul class="referencias">
       {proceso.referencias.map((r, i) => (
-        <Tarjeta etiqueta="li" clase="referencia" inclinar={r.items.length > 0}>
-          <Imagen imagen={r.portada} ratio="4 / 3" />
-          <h3 class="referencia__titulo">{r.categoria}</h3>
-          {r.items.length > 0 ? (
-            <button class="referencia__abrir" type="button" data-abrir-dialogo={`ref-${slug(r.categoria)}`}>
-              Ver {r.items.length} {r.items.length === 1 ? 'referencia' : 'referencias'}
-            </button>
-          ) : (
-            <p class="referencia__vacia">Por documentar</p>
-          )}
-        </Tarjeta>
+        <li class:list={['referencia', { 'referencia--vacia': !r.items.length }]} data-revelar style={`--i: ${i % 2}`}>
+          <Imagen imagen={r.portada} ratio="4 / 3" clase="referencia__miniatura" />
+          <div class="referencia__texto">
+            <h3 class="referencia__titulo">{r.categoria}</h3>
+            {r.items.length > 0 ? (
+              <>
+                <p class="referencia__lista">{r.items.map((it) => it.titulo).join(' · ')}</p>
+                <button class="referencia__abrir" type="button" data-abrir-dialogo={`ref-${slug(r.categoria)}`}>
+                  Ver {r.items.length} {r.items.length === 1 ? 'referencia' : 'referencias'}
+                  <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
+                </button>
+              </>
+            ) : (
+              <p class="referencia__lista">Por documentar</p>
+            )}
+          </div>
+        </li>
       ))}
     </ul>
 
@@ -133,7 +176,7 @@ const slug = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').rep
   <Grieta semilla={44} />
 
   <section class="contenedor seccion" aria-labelledby="titulo-antes">
-    <TituloSeccion antetitulo="Capturas del proceso" titulo="Antes y después" id="titulo-antes" />
+    <TituloSeccion titulo="Antes y después" id="titulo-antes" />
     <ul class="comparadores">
       {proceso.antesDespues.map((c) => (
         <li class="comparador-item" data-revelar>
@@ -152,7 +195,7 @@ const slug = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').rep
     <ol class="pipeline">
       {proceso.pipeline.map((p, i) => (
         <Tarjeta etiqueta="li" clase={`paso paso--${p.estado}`}>
-          <span class="paso__numero">{String(i + 1).padStart(2, '0')}</span>
+          <span class="paso__numero">{romano(i + 1)}</span>
           <h3 class="paso__titulo">{p.paso}</h3>
           <p class="paso__texto">{p.texto}</p>
           <span class={`estado estado--${p.estado}`}>{etiquetaEstado[p.estado]}</span>
@@ -164,10 +207,7 @@ const slug = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').rep
   <section class="contenedor seccion" aria-labelledby="titulo-archivo">
     <details class="archivo">
       <summary class="archivo__resumen">
-        <span>
-          <span class="antetitulo">Plegado</span>
-          <span id="titulo-archivo" class="archivo__titulo" role="heading" aria-level="2">Archivo completo</span>
-        </span>
+        <span id="titulo-archivo" class="archivo__titulo" role="heading" aria-level="2">Archivo completo</span>
         <span class="archivo__ayuda">WIPs, versiones antiguas y fallos</span>
         <span class="bloque__chevron" aria-hidden="true"></span>
       </summary>

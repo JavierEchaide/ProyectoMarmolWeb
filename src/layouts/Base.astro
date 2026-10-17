@@ -57,6 +57,10 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
         <pattern id="greca" width="16" height="14" patternUnits="userSpaceOnUse">
           <path d="M0 12.5H16M12.5 12.5V1.5H2.5V9.5H9V5H6" fill="none" stroke="#CDA434" stroke-width="1.1" />
         </pattern>
+        {/* La misma greca más grande y entre dos líneas, para la banda del pie */}
+        <pattern id="greca-banda" width="24" height="30" patternUnits="userSpaceOnUse">
+          <path d="M0 1H24M0 29H24M0 24.5H24M19 24.5V8.5H4V20.5H14V13.5H9.5" fill="none" stroke="#CDA434" stroke-width="1.4" />
+        </pattern>
       </defs>
     </svg>
 
@@ -124,6 +128,7 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
       </button>
     </dialog>
 
+    <script is:inline src="js/grietas.js" defer></script>
     <script is:inline src="js/site.js" defer></script>
     {scripts.map((s) => <script is:inline src={s} defer></script>)}
   </body>

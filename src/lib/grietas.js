@@ -1,4 +1,5 @@
-// Genera las grietas doradas (kintsugi) como trazados SVG.
+// Grieta dorada (kintsugi) plana para los divisores cuando no hay JavaScript.
+// Con JavaScript, public/js/grietas.js la rehace con relieve al tamaño real.
 // Son deterministas: la misma semilla da siempre la misma grieta, así que
 // cada divisor es distinto pero no cambia entre compilaciones.
 
@@ -52,17 +53,4 @@ export function grietaHorizontal(semilla, ancho = 1200, alto = 40) {
     ramas.push(trazado(quiebro(azar, origen, angulo, 40 + azar() * 110, 16, 0.9)));
   }
   return { principal: trazado(principal), ramas };
-}
-
-// Grieta que sale de un punto hacia los bordes (para romper el cartel de SPOILER).
-export function grietaRadial(semilla, ancho = 400, alto = 250) {
-  const azar = aleatorio(semilla);
-  const centro = [ancho * (0.35 + azar() * 0.3), alto * (0.35 + azar() * 0.3)];
-  const trazos = [];
-  const n = 6 + Math.floor(azar() * 3);
-  for (let i = 0; i < n; i++) {
-    const angulo = (i / n) * Math.PI * 2 + (azar() - 0.5) * 0.6;
-    trazos.push(trazado(quiebro(azar, centro, angulo, Math.max(ancho, alto), 22, 0.8)));
-  }
-  return trazos;
 }

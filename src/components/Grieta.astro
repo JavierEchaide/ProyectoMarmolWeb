@@ -1,11 +1,12 @@
 ---
-// Divisor de sección: una grieta dorada (kintsugi) que avanza de izquierda a
-// derecha al entrar en pantalla. Cada semilla da una grieta distinta.
+// Divisor de sección: una veta de oro (kintsugi) que se dibuja al hacer
+// scroll. js/grietas.js la rehace con relieve al tamaño real del divisor;
+// este SVG plano es lo que se ve sin JavaScript. Cada semilla da una grieta.
 import { grietaHorizontal } from '../lib/grietas.js';
 const { semilla = 1 } = Astro.props;
 const { principal, ramas } = grietaHorizontal(semilla);
 ---
-<div class="grieta" data-grieta aria-hidden="true">
+<div class="grieta" data-grieta data-semilla={semilla} aria-hidden="true">
   <svg viewBox="0 0 1200 40" preserveAspectRatio="none" focusable="false">
     <path d={principal} class="grieta__trazo" />
     {ramas.map((d) => <path d={d} class="grieta__trazo grieta__rama" />)}
