@@ -7,6 +7,9 @@
                                        gruesas parecían manchas)
   public/img/marmol/piedra-negra.webp  piedra negra con grano, para las losas
                                        de SPOILER de Historia
+  public/img/marmol/carta-*.webp       las tres piedras de las cartas de la
+                                       Portada (negra, rosso y dorada), sacadas
+                                       de las vetas del mármol de los marcos
 
 Solo hace falta mientras no exista la textura real sacada de Blender
 (ver NOTA-WEB.md, "Assets pendientes"). Cuando llegue, se sustituye
@@ -124,3 +127,23 @@ def piedra_negra():
 guardar(marmol(0.72, 0.95, 0.0), "public/img/marmol/marmol.webp")
 guardar(marmol(0.86, 0.55, 0.45), "public/img/marmol/marmol-marco.webp")
 guardar(piedra_negra(), "public/img/marmol/piedra-negra.webp", 900)
+
+
+def piedra_tenida(marco, fondo, veta, banda):
+    """A partir de las vetas del mármol de los marcos: fondo oscuro, vetas
+    claras (las líneas finas) y bandas suaves de otro tono."""
+    lum = marco.mean(axis=2) / 255.0
+    vetas = np.clip((0.93 - lum) / 0.35, 0, 1) ** 0.8      # líneas oscuras del original
+    rojo = np.clip((marco[..., 0] - marco[..., 1]) / 80.0, 0, 1)  # bandas granate del original
+    c = np.empty_like(marco)
+    c[:] = fondo
+    c = mezclar(c, banda, rojo * 0.55)
+    c = mezclar(c, veta, vetas)
+    return c
+
+
+marco = marmol(0.86, 0.55, 0.45)
+guardar(piedra_tenida(marco, [16, 15, 15], [214, 208, 198], [60, 56, 54]), "public/img/marmol/carta-negra.webp", 1000)
+guardar(piedra_tenida(marco, [58, 14, 16], [226, 200, 182], [120, 34, 34]), "public/img/marmol/carta-rosso.webp", 1000)
+guardar(piedra_tenida(marco, [40, 30, 14], [226, 182, 82], [92, 66, 26]), "public/img/marmol/carta-dorada.webp", 1000)
+

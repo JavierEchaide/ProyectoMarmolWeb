@@ -30,6 +30,55 @@
     video.pause();
   }
 
+  /* Cartas de "Las páginas": con ratón se desplazan por capas (las más
+     cercanas, más) y giran un poco hacia el cursor. Usa las propiedades
+     `translate` y `rotate`, que se suman a la posición base de cada carta. */
+  var cartas = document.querySelector('[data-cartas]');
+  if (cartas && !movimientoReducido && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    var sala = cartas.closest('.sala-cartas');
+    var lista = Array.prototype.slice.call(cartas.querySelectorAll('[data-carta]'));
+    var profundidad = [0.6, 1, 0.8];
+    var cursor = { x: 0, y: 0 };
+    var cartasPendiente = false;
+    var moverCartas = function () {
+      cartasPendiente = false;
+      lista.forEach(function (c, i) {
+        var k = profundidad[i] || 0.8;
+        c.style.translate = (cursor.x * -28 * k).toFixed(1) + 'px ' + (cursor.y * -18 * k).toFixed(1) + 'px';
+        var angulo = Math.hypot(cursor.x, cursor.y) * 9 * k;
+        c.style.rotate = angulo ? (-cursor.y).toFixed(3) + ' ' + cursor.x.toFixed(3) + ' 0 ' + angulo.toFixed(2) + 'deg' : '';
+      });
+    };
+    sala.addEventListener('pointermove', function (e) {
+      var r = sala.getBoundingClientRect();
+      cursor.x = (e.clientX - r.left) / r.width - 0.5;
+      cursor.y = (e.clientY - r.top) / r.height - 0.5;
+      if (!cartasPendiente) {
+        cartasPendiente = true;
+        requestAnimationFrame(moverCartas);
+      }
+    });
+    sala.addEventListener('pointerleave', function () {
+      cursor.x = 0;
+      cursor.y = 0;
+      moverCartas();
+    });
+  }
+
+  /* Busto 3D de "Hecho por": three.js pesa, así que js/busto.js solo se
+     descarga cuando la sección está a punto de entrar en pantalla. */
+  var busto = document.querySelector('[data-busto]');
+  if (busto && 'IntersectionObserver' in window) {
+    var cargaBusto = new IntersectionObserver(function (entradas) {
+      if (!entradas[0].isIntersecting) return;
+      cargaBusto.disconnect();
+      var s = document.createElement('script');
+      s.src = 'js/busto.js';
+      document.body.appendChild(s);
+    }, { rootMargin: '900px 0px' });
+    cargaBusto.observe(busto);
+  }
+
   /* Parallax del hero: la imagen se desplaza más despacio que el scroll
      y se mueve un poco con el ratón. Si algún día hay render por capas,
      cada capa con data-profundidad se mueve en proporción. */

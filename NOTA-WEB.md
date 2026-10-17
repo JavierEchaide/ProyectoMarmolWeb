@@ -45,6 +45,8 @@ ProyectoMarmolWeb/
 │   ├── js/portada.js         intro, vídeo y parallax del hero
 │   ├── js/teaser.js          reproductor del teaser
 │   ├── js/historia.js        losas de SPOILER que se rompen en 3D
+│   ├── js/tallado.js         títulos que se tallan y ornamentos que se dibujan
+│   ├── js/busto.js           GENERADO: el busto 3D con three.js (no editar; ver src/3d/busto.js)
 │   ├── js/proceso.js         comparadores antes/después
 │   ├── fonts/                Cinzel y EB Garamond (woff2, autoalojadas)
 │   ├── img/                  imágenes (ver "Assets pendientes")
@@ -52,7 +54,8 @@ ProyectoMarmolWeb/
 │   └── favicon.svg
 ├── scripts/
 │   ├── relativizar.mjs       se ejecuta tras el build: falla si hay rutas absolutas
-│   └── generar-marmol.py     texturas PROVISIONALES: mármol, mármol de marcos y piedra negra
+│   ├── construir-3d.mjs      empaqueta src/3d/busto.js con three.js en public/js/busto.js
+│   └── generar-marmol.py     texturas PROVISIONALES: mármoles, piedra negra y piedras de las cartas
 └── src/
     ├── data/                 ← CONTENIDO. Aquí se edita casi todo
     │   ├── sitio.js          nombre, autor, lista de páginas del menú
@@ -63,13 +66,14 @@ ProyectoMarmolWeb/
     ├── layouts/Base.astro    <head>, cabecera, menú, cortina, visor y pie (común)
     ├── components/           piezas reutilizables (ver apartado 5)
     ├── lib/grietas.js        grieta plana de los divisores para cuando no hay JavaScript
+    ├── 3d/busto.js           el busto que se abre en "Hecho por" (three.js)
     └── pages/                una por página: index, teaser, historia, proceso
 ```
 
 ### Por qué así
 
 - **Astro** solo se usa para generar HTML: compone las páginas a partir de componentes y de los archivos de datos. El resultado (`dist/`) es HTML + CSS + JS normales, sin nada que se ejecute en un servidor.
-- **Sin librerías de animación** (ni GSAP ni three.js). Todo es CSS y JavaScript propio: pesa poco, se entiende línea a línea y funciona sin internet.
+- **Sin librerías de animación** (ni GSAP). Todo es CSS y JavaScript propio, salvo el busto 3D de "Hecho por", que usa **three.js**. three.js se empaqueta con esbuild en un script clásico (`npm run 3d`, y también dentro de `npm run build` y `npm run dev`) y solo se descarga cuando el visitante se acerca a esa sección (unos 150 KB comprimido).
 - **Rutas relativas y JavaScript "clásico"** (sin `type="module"`): es lo que permite abrir la web desde un USB con doble clic. Los módulos de JavaScript y las rutas que empiezan por `/` no funcionan en `file://`. `scripts/relativizar.mjs` lo comprueba en cada build.
 - **Fuentes autoalojadas** en `public/fonts/` (licencia OFL): no dependen de Google Fonts ni de internet.
 - **Nada guarda datos:** no hay cookies ni almacenamiento salvo una marca temporal en `sessionStorage` para saber si se llega desde otra página de la web (ver Intro).
@@ -137,8 +141,16 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
    - **Vídeo en bucle:** si se rellena `video` (MP4/WebM de 3-5 s sin sonido), se ve en lugar de la imagen, con la imagen de escritorio como póster. Con "reducir movimiento" se queda quieto.
 3. **Presentación**: frase gancho (`gancho`, cada frase en su línea y la segunda en rojo), dos párrafos (`presentacion`) y botón **Entrar**, que lleva al Teaser.
 4. **La historia en cuatro fotogramas** (`fotogramas`): 4 en fila en escritorio y 2×2 en móvil. Al pasar el ratón aparece "Ver" y al pulsar se amplían en el visor; se recorren con las flechas.
-5. **Las páginas** (`accesos`): tres tarjetas con marco de mármol que se inclinan en 3D siguiendo el ratón.
-6. **Hecho por** (`autor`): vitrina oscura con el render del autor (vertical 3:4), su nombre y una greca.
+5. **Las páginas** (`accesos`): sala oscura con tres cartas que **flotan en 3D** (referencia: karma-tracks). Cada una está a una profundidad y un ángulo distintos, se balancea sola y, con ratón, se desplaza por capas y gira hacia el cursor; la que señalas se adelanta.
+   - Por dentro, una piedra que se mueve despacio (`piedra`: `'negra'`, `'rosso'` o `'dorada'`; texturas `img/marmol/carta-*.webp`).
+   - Si una carta tiene imagen (`imagen.src`), se ve la imagen en lugar de la piedra.
+   - Cada carta lleva "Sala II/III/IV", el dato (`subtitulo`) y una frase (`frase`).
+6. **Hecho por** (`autor`): sala oscura con un **busto 3D que se abre al bajar** (referencia: Billelis). La escena se queda fija mientras se recorre la sección; tu nombre va enorme detrás, y a la derecha va la cartela con estudios y curso.
+   - Ahora son tres esferas provisionales: el casquete y la base son de mármol blanco, partidos por una rotura irregular con una costura de oro; en medio está el hueso, de bronce con pátina verde y vetas de oro que se encienden al abrirse.
+   - Con el ratón la cabeza gira un poco. Con "reducir movimiento" se queda quieta y medio abierta.
+   - **Para poner el modelo real:** un `.glb` con tres objetos llamados exactamente `arriba`, `hueso` y `abajo`, centrados en el origen y de 1 unidad de radio más o menos (como una esfera de 1 m en Blender). Se copia a `public/modelos/busto.glb` y se pone `modelo: 'modelos/busto.glb'` en `portada.autor`. Cada pieza sustituye a su esfera y se mueve igual. Conviene que pese menos de 5 MB (Decimate y texturas de 2K).
+   - Ojo: desde el USB (`file://`) el navegador no deja cargar archivos `.glb`, así que ahí se verían las esferas. En la web publicada se ve el modelo.
+   - Si el navegador no puede mostrar 3D, se ve la imagen del autor (`autor.imagen`).
 7. **Siguiente: II · Teaser.**
 
 ### II · Teaser — `src/pages/teaser.astro` + `src/data/teaser.js`
@@ -226,7 +238,11 @@ Para poner la imagen real: copiar el archivo a `public/img/...` y cambiar `src: 
   - Mientras está abierto, el resto de la página queda `inert` y el foco no sale del menú.
   - En móvil el mármol queda arriba y la lista debajo.
 - **Cabecera** sin filete: al bajar cambia a un fondo un poco más oscuro y se esconde; al subir vuelve. Así no tapa lo que se está leyendo.
-- **Cortina entre páginas.** Al pulsar un enlace interno sube una cortina crema con el número y el nombre de la página de destino. En la página nueva, la cortina se retira hacia arriba.
+- **Cortina entre páginas.** Al pulsar un enlace interno sube una placa de mármol con el número y el nombre de la página de destino. En la página nueva, esa placa **se agrieta en oro y cae en esquirlas** (el mismo motor que las losas de SPOILER, en `js/grietas.js`), con la página nueva en penumbra que se aclara. Dura algo más de 1 s y no bloquea: se puede hacer scroll mientras cae. Si algo fallara, la placa se retira sola a los 2,5 s.
+- **Tallado** (`js/tallado.js`, referencia: heronaiapp, "en vez de crear, tallar"):
+  - Los títulos de sección aparecen primero como un boceto en contorno fino y luego un cincel los descubre de izquierda a derecha, con una chispa y polvo de mármol.
+  - El doble filete dorado de las tarjetas se traza solo, y después crecen las escuadras desde su esquina.
+  - Las grecas se dibujan de izquierda a derecha.
 - **Aparición al hacer scroll.** Los elementos con `data-revelar` suben y aparecen al entrar en pantalla; sus imágenes se destapan de abajo arriba con un leve zoom de salida.
 - **Inclinación 3D** de las tarjetas con `data-inclinar` (solo con ratón).
 - **Visor** (`<dialog>`) para imágenes, placeholders y el vídeo. Crece desde el elemento pulsado, con el fondo oscurecido y desenfocado. Se recorre con flechas y se cierra con Esc, con el botón o con un clic fuera.
@@ -263,8 +279,9 @@ Formato recomendado: **WebP** (o JPG) calidad ~85. Renders con el mismo nombre q
 | 3b | *(Opcional)* el hero como vídeo en bucle de 3-5 s (la luz moviéndose sobre la losa, polvo cayendo...) | 16:9 · 1920×1080, sin sonido, menos de 4 MB | `video/hero-bucle.mp4` | `portada.hero.video` |
 | 4 | Textura plana del mármol del hero (render cenital del material, sin luz dramática) | 2000×1500 o mayor | `img/marmol/marmol.webp` | se sobrescribe |
 | 5–8 | 4 fotogramas del prólogo: Creador de espaldas ante la ventana · sus ojos · la criatura en el bosque · la jaula en la bodega | 16:9 | `img/portada/prologo-1..4.webp` | `portada.fotogramas[i].imagen.src` |
-| 9–11 | Imágenes de las 3 tarjetas de acceso (Teaser, Historia, Proceso) | 4:3 | `img/portada/acceso-*.webp` | `portada.accesos[i].imagen.src` |
-| 12 | Render del autor, estética estatua/calavera | 3:4 vertical | `img/portada/autor.webp` | `portada.autor.imagen.src` |
+| 9–11 | *(Opcional)* imágenes para las 3 cartas (Teaser, Historia, Proceso); sin ellas se ve la piedra en movimiento | 5:7 vertical | `img/portada/acceso-*.webp` | `portada.accesos[i].imagen.src` |
+| 12 | Busto del autor en 3D partido en tres piezas (`arriba`, `hueso`, `abajo`), estética estatua/calavera | `.glb`, menos de 5 MB | `modelos/busto.glb` | `portada.autor.modelo` |
+| 12b | *(Respaldo)* render del busto para navegadores sin 3D | 3:4 vertical | `img/portada/autor.webp` | `portada.autor.imagen.src` |
 | 13 | **Teaser** en MP4 (H.264, 2.35:1, créditos dentro) | 1920×817 | `video/teaser.mp4` | `teaser.video.src` |
 | 14 | Póster del teaser (fotograma antes de pulsar play) | 2.35:1 | `img/teaser/poster.webp` | `teaser.video.poster` |
 | 15–20 | Fotogramas clave: planos 1, 2b, 7, 8 y la pareja 4 + 6 | 2.35:1 | `img/teaser/plano-*.webp` | `teaser.fotogramas` y `teaser.rima` |

@@ -111,7 +111,10 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
     </footer>
 
     <div class="cortina" aria-hidden="true" data-cortina>
-      <span class="cortina__texto" data-cortina-texto>{pagina.numero} · {pagina.titulo}</span>
+      <div class="cortina__cara" data-cortina-cara>
+        <svg class="cortina__grietas" focusable="false" data-cortina-grietas></svg>
+        <span class="cortina__texto" data-cortina-texto>{pagina.numero} · {pagina.titulo}</span>
+      </div>
     </div>
 
     <dialog class="visor" aria-label="Imagen ampliada" data-visor-dialogo>
@@ -130,6 +133,7 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
 
     <script is:inline src="js/grietas.js" defer></script>
     <script is:inline src="js/site.js" defer></script>
+    <script is:inline src="js/tallado.js" defer></script>
     {scripts.map((s) => <script is:inline src={s} defer></script>)}
   </body>
 </html>

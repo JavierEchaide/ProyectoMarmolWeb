@@ -116,6 +116,36 @@
     setTimeout(function () { window.location.href = destino; }, 560);
   });
 
+  // Al llegar desde otra página de la web, la placa de la cortina se agrieta
+  // en oro y cae en esquirlas (motor de js/grietas.js). No bloquea la página:
+  // la cortina no recibe clics mientras cae.
+  if (html.classList.contains('entrando')) {
+    var G = window.marmolGrietas;
+    var cortina = document.querySelector('[data-cortina]');
+    var caraCortina = document.querySelector('[data-cortina-cara]');
+    if (!G || movimientoReducido || !cortina || !caraCortina || !caraCortina.animate) {
+      html.classList.remove('entrando');
+    } else {
+      var semilla = Math.floor(Math.random() * 100000);
+      var geoCortina = G.rotura(semilla, window.innerWidth, window.innerHeight);
+      geoCortina.w = window.innerWidth;
+      geoCortina.h = window.innerHeight;
+      G.dibujar(document.querySelector('[data-cortina-grietas]'), geoCortina);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { cortina.classList.add('agrietando'); });
+      });
+      setTimeout(function () {
+        var capa = G.esquirlas(cortina, caraCortina, geoCortina, { semilla: semilla, duracion: 1000, retraso: 140, caida: 0.8 });
+        cortina.classList.add('cortina--rota');
+        setTimeout(function () {
+          html.classList.remove('entrando');
+          cortina.classList.remove('agrietando', 'cortina--rota');
+          capa.remove();
+        }, 1300);
+      }, 360);
+    }
+  }
+
   // Al volver con el botón "atrás" la página puede salir de la caché con la cortina puesta
   window.addEventListener('pageshow', function (e) {
     if (e.persisted) {

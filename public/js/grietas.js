@@ -6,7 +6,8 @@
    Se genera en el navegador, al tamaño real en píxeles de cada divisor, para
    que el grosor y el relieve no se deformen al estirar el SVG. Sin JS se ve la
    grieta plana que sale de src/components/Grieta.astro.
-   La rotura de los carteles de SPOILER (js/historia.js) usa window.marmolGrietas. */
+   window.marmolGrietas también rompe placas en esquirlas: las losas de
+   SPOILER (js/historia.js) y la cortina entre páginas (js/site.js). */
 (function () {
   'use strict';
 
@@ -206,6 +207,95 @@
     return { centro: centro, grietas: grietas, anillo: anillo, esquirlas: esquirlas };
   }
 
+  var NS_SVG = 'http://www.w3.org/2000/svg';
+
+  /* Dibuja las grietas de una rotura en un <svg> (tres pasadas por trazo:
+     hueco oscuro, oro y filo de luz). Se animan con CSS: .rotura__capa */
+  function dibujar(svg, geo) {
+    svg.setAttribute('viewBox', '0 0 ' + geo.w + ' ' + geo.h);
+    svg.innerHTML = '';
+    ['sombra', 'oro', 'luz'].forEach(function (nombre) {
+      var g = document.createElementNS(NS_SVG, 'g');
+      g.setAttribute('class', 'rotura__capa rotura__capa--' + nombre);
+      geo.grietas.concat(geo.anillo).forEach(function (puntos, i) {
+        var p = document.createElementNS(NS_SVG, 'path');
+        p.setAttribute('d', trazado(puntos));
+        p.setAttribute('pathLength', '1');
+        if (i >= geo.grietas.length) p.setAttribute('class', 'rotura__anillo');
+        g.appendChild(p);
+      });
+      svg.appendChild(g);
+    });
+  }
+
+  function centroide(puntos) {
+    var x = 0;
+    var y = 0;
+    puntos.forEach(function (p) { x += p[0]; y += p[1]; });
+    return [x / puntos.length, y / puntos.length];
+  }
+
+  /* Rompe `cara` en esquirlas dentro de `contenedor`: cada esquirla es una
+     copia de la cara recortada con clip-path. Primero se abren un poco
+     (asoma lo de detrás por las juntas) y luego caen girando en 3D.
+     opciones: semilla, duracion (ms), retraso (ms máx. según distancia al
+     impacto), caida (cuánto bajan, en altos de la placa).
+     Devuelve la capa de esquirlas para quitarla al terminar. */
+  function esquirlas(contenedor, cara, geo, opciones) {
+    var o = opciones || {};
+    var azar = aleatorio((o.semilla || 1) * 13 + 5);
+    var duracion = o.duracion || 1250;
+    var retraso = o.retraso == null ? 170 : o.retraso;
+    var caidaFactor = o.caida || 1;
+    var capa = document.createElement('span');
+    capa.className = 'rotura__esquirlas';
+    capa.setAttribute('aria-hidden', 'true');
+    capa.style.perspectiveOrigin = ((geo.centro[0] / geo.w) * 100).toFixed(1) + '% ' + ((geo.centro[1] / geo.h) * 100).toFixed(1) + '%';
+    var radioMax = Math.hypot(geo.w, geo.h) / 2;
+    var escala = Math.max(1, Math.min(geo.w, geo.h) / 300);
+
+    geo.esquirlas.forEach(function (poli) {
+      var c = centroide(poli);
+      var dx = c[0] - geo.centro[0];
+      var dy = c[1] - geo.centro[1];
+      var d = Math.hypot(dx, dy) || 1;
+      var ux = dx / d;
+      var uy = dy / d;
+      var el = document.createElement('span');
+      el.className = 'esquirla';
+      el.style.clipPath =
+        'polygon(' +
+        poli.map(function (p) { return ((p[0] / geo.w) * 100).toFixed(3) + '% ' + ((p[1] / geo.h) * 100).toFixed(3) + '%'; }).join(',') +
+        ')';
+      el.style.transformOrigin = ((c[0] / geo.w) * 100).toFixed(2) + '% ' + ((c[1] / geo.h) * 100).toFixed(2) + '%';
+      el.appendChild(cara.cloneNode(true));
+      capa.appendChild(el);
+
+      var signo = azar() < 0.5 ? -1 : 1;
+      var abierta =
+        'translate3d(' + (ux * 7 * escala).toFixed(1) + 'px,' + (uy * 7 * escala).toFixed(1) + 'px,' + (12 + azar() * 26).toFixed(1) + 'px) ' +
+        'rotateX(' + (uy * -6).toFixed(1) + 'deg) rotateY(' + (ux * 8).toFixed(1) + 'deg)';
+      var lejos = (70 + azar() * 140) * escala;
+      var caida =
+        'translate3d(' + (ux * lejos).toFixed(1) + 'px,' + (uy * lejos * 0.6 + geo.h * (0.7 + azar() * 0.6) * caidaFactor).toFixed(1) + 'px,' +
+        (140 + azar() * 220).toFixed(1) + 'px) ' +
+        'rotateX(' + (signo * (40 + azar() * 70)).toFixed(1) + 'deg) rotateY(' + (-signo * (30 + azar() * 70)).toFixed(1) + 'deg) ' +
+        'rotateZ(' + ((azar() - 0.5) * 70).toFixed(1) + 'deg)';
+      // La caída acelera como un objeto que cae (no es una entrada de UI)
+      el.animate(
+        [
+          { transform: 'none', opacity: 1, offset: 0 },
+          { transform: abierta, opacity: 1, offset: 0.24, easing: 'cubic-bezier(0.5, 0, 0.75, 0)' },
+          { transform: caida, opacity: 1, offset: 0.78 },
+          { transform: caida, opacity: 0, offset: 1 },
+        ],
+        { duration: duracion, delay: 60 + (d / radioMax) * retraso, easing: 'linear', fill: 'forwards' }
+      );
+    });
+    contenedor.appendChild(capa);
+    return capa;
+  }
+
   window.marmolGrietas = {
     aleatorio: aleatorio,
     trazado: trazado,
@@ -213,6 +303,8 @@
     cinta: cinta,
     horizontal: horizontal,
     rotura: rotura,
+    dibujar: dibujar,
+    esquirlas: esquirlas,
   };
 
   /* 2. Divisores -------------------------------------------------------- */

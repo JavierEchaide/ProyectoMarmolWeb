@@ -12,7 +12,6 @@
   'use strict';
 
   var G = window.marmolGrietas;
-  var NS = 'http://www.w3.org/2000/svg';
   var movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var punteroFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   var spoilers = Array.prototype.slice.call(document.querySelectorAll('.spoiler--activo'));
@@ -30,28 +29,7 @@
     var geo = G.rotura(parseInt(s.dataset.semilla, 10) || 1, w, h);
     geo.w = w;
     geo.h = h;
-    var svg = s.querySelector('.spoiler__grietas');
-    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-    svg.innerHTML = '';
-    // Tres pasadas por trazo: hueco oscuro, oro y filo de luz
-    ['sombra', 'oro', 'luz'].forEach(function (capa) {
-      var g = document.createElementNS(NS, 'g');
-      g.setAttribute('class', 'spoiler__capa spoiler__capa--' + capa);
-      geo.grietas.forEach(function (puntos) {
-        var p = document.createElementNS(NS, 'path');
-        p.setAttribute('d', G.trazado(puntos));
-        p.setAttribute('pathLength', '1');
-        g.appendChild(p);
-      });
-      geo.anillo.forEach(function (puntos) {
-        var p = document.createElementNS(NS, 'path');
-        p.setAttribute('d', G.trazado(puntos));
-        p.setAttribute('pathLength', '1');
-        p.setAttribute('class', 'spoiler__anillo');
-        g.appendChild(p);
-      });
-      svg.appendChild(g);
-    });
+    G.dibujar(s.querySelector('.spoiler__grietas'), geo);
     s._geo = geo;
     return geo;
   }
@@ -75,70 +53,14 @@
     });
   }
 
-  /* Rotura ---------------------------------------------------------------- */
-
-  function centroide(puntos) {
-    var x = 0;
-    var y = 0;
-    puntos.forEach(function (p) { x += p[0]; y += p[1]; });
-    return [x / puntos.length, y / puntos.length];
-  }
+  /* Rotura (motor común en js/grietas.js) -------------------------------- */
 
   function romper(s, tapa, geo) {
-    var cara = tapa.querySelector('.spoiler__cara');
-    var azar = G.aleatorio((parseInt(s.dataset.semilla, 10) || 1) * 13 + 5);
-    var capa = document.createElement('span');
-    capa.className = 'spoiler__esquirlas';
-    capa.setAttribute('aria-hidden', 'true');
-    var radioMax = Math.hypot(geo.w, geo.h) / 2;
-
-    var piezas = geo.esquirlas.map(function (poli) {
-      var c = centroide(poli);
-      var dx = c[0] - geo.centro[0];
-      var dy = c[1] - geo.centro[1];
-      var d = Math.hypot(dx, dy) || 1;
-      var el = document.createElement('span');
-      el.className = 'esquirla';
-      el.style.clipPath =
-        'polygon(' +
-        poli.map(function (p) { return ((p[0] / geo.w) * 100).toFixed(3) + '% ' + ((p[1] / geo.h) * 100).toFixed(3) + '%'; }).join(',') +
-        ')';
-      el.style.transformOrigin = ((c[0] / geo.w) * 100).toFixed(2) + '% ' + ((c[1] / geo.h) * 100).toFixed(2) + '%';
-      el.appendChild(cara.cloneNode(true));
-      capa.appendChild(el);
-      return { el: el, ux: dx / d, uy: dy / d, d: d };
-    });
-
-    tapa.appendChild(capa);
+    G.esquirlas(tapa, tapa.querySelector('.spoiler__cara'), geo, { semilla: parseInt(s.dataset.semilla, 10) || 1 });
     // La luz sale del punto de impacto
     tapa.style.setProperty('--cx', ((geo.centro[0] / geo.w) * 100).toFixed(1) + '%');
     tapa.style.setProperty('--cy', ((geo.centro[1] / geo.h) * 100).toFixed(1) + '%');
     tapa.classList.add('tapa--rota');
-
-    piezas.forEach(function (p) {
-      var cerca = p.d / radioMax;
-      var signo = azar() < 0.5 ? -1 : 1;
-      // 2. Se abre: un poco hacia fuera y hacia delante
-      var abierta =
-        'translate3d(' + (p.ux * 7).toFixed(1) + 'px,' + (p.uy * 7).toFixed(1) + 'px,' + (12 + azar() * 26).toFixed(1) + 'px) ' +
-        'rotateX(' + (p.uy * -6).toFixed(1) + 'deg) rotateY(' + (p.ux * 8).toFixed(1) + 'deg)';
-      // 3. Cae: hacia fuera, hacia el espectador y hacia abajo, girando
-      var lejos = 70 + azar() * 140;
-      var caida =
-        'translate3d(' + (p.ux * lejos).toFixed(1) + 'px,' + (p.uy * lejos * 0.6 + geo.h * (0.7 + azar() * 0.6)).toFixed(1) + 'px,' +
-        (140 + azar() * 220).toFixed(1) + 'px) ' +
-        'rotateX(' + (signo * (40 + azar() * 70)).toFixed(1) + 'deg) rotateY(' + (-signo * (30 + azar() * 70)).toFixed(1) + 'deg) ' +
-        'rotateZ(' + ((azar() - 0.5) * 70).toFixed(1) + 'deg)';
-      p.el.animate(
-        [
-          { transform: 'none', opacity: 1, offset: 0 },
-          { transform: abierta, opacity: 1, offset: 0.24, easing: 'cubic-bezier(0.5, 0, 0.75, 0)' },
-          { transform: caida, opacity: 1, offset: 0.78 },
-          { transform: caida, opacity: 0, offset: 1 },
-        ],
-        { duration: 1250, delay: 60 + cerca * 170, easing: 'linear', fill: 'forwards' }
-      );
-    });
   }
 
   function destapar(s, enfocar) {
@@ -183,7 +105,7 @@
       s.classList.add('destapado');
       tapa.style.width = '';
       tapa.style.height = '';
-      var capa = tapa.querySelector('.spoiler__esquirlas');
+      var capa = tapa.querySelector('.rotura__esquirlas');
       if (capa) capa.remove();
       tapa.classList.remove('tapa--rota');
       if (tarjeta) tarjeta.classList.remove('tarjeta--encima');

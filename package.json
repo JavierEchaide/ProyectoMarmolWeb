@@ -4,11 +4,16 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build && node scripts/relativizar.mjs",
-    "preview": "astro preview"
+    "dev": "node scripts/construir-3d.mjs && astro dev",
+    "build": "node scripts/construir-3d.mjs && astro build && node scripts/relativizar.mjs",
+    "preview": "astro preview",
+    "3d": "node scripts/construir-3d.mjs"
   },
   "dependencies": {
-    "astro": "^5.18.2"
+    "astro": "^5.18.2",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
   }
 }

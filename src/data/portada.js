@@ -61,20 +61,28 @@ export const portada = {
     },
   ],
 
+  // Cartas de "Las páginas": flotan en 3D sobre la sala oscura. Si una
+  // imagen tiene `src`, se ve en la carta en lugar del mármol en movimiento.
   accesos: [
     {
       pagina: 'teaser',
       subtitulo: '30 s',
+      frase: 'Treinta segundos, tres lugares y una ventana.',
+      piedra: 'negra', // mármol de la carta: 'negra', 'rosso' o 'dorada'
       imagen: { src: null, alt: 'Fotograma del teaser.', falta: 'Fotograma del teaser para la tarjeta' },
     },
     {
       pagina: 'historia',
       subtitulo: 'Resumen',
+      frase: 'Seis partes y un final, con los spoilers tapados.',
+      piedra: 'rosso',
       imagen: { src: null, alt: 'Imagen de la historia.', falta: 'Render o fotograma para la tarjeta de Historia' },
     },
     {
       pagina: 'proceso',
       subtitulo: 'Cómo se hizo',
+      frase: 'Treinta y cinco semanas, apuntadas una a una.',
+      piedra: 'dorada',
       imagen: { src: null, alt: 'Captura del proceso en Blender.', falta: 'Captura de Blender para la tarjeta de Proceso' },
     },
   ],
@@ -87,5 +95,13 @@ export const portada = {
       alt: 'Autorretrato 3D de Javier Echaide con estética de estatua.',
       falta: 'Render: autorretrato 3D con estética de estatua y calavera (vertical 3:4)',
     },
+    // El busto 3D que se abre (src/3d/busto.js). Ahora son tres esferas
+    // provisionales. Para el modelo real: un .glb con tres objetos llamados
+    // "arriba", "hueso" y "abajo", centrados en el origen y de 1 unidad de
+    // radio aprox. Ejemplo: 'modelos/busto.glb' (en public/modelos/).
+    // La imagen de arriba solo se ve si el navegador no puede mostrar 3D.
+    modelo: null,
+    estudios: 'Animación 3D, Juegos y Entornos Interactivos',
+    curso: 'Proyecto final · 2026 – 2027',
   },
 };
