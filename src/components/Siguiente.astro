@@ -1,0 +1,23 @@
+---
+// Enlace al final de cada página hacia la siguiente del menú.
+import { siguiente } from '../data/sitio.js';
+const { actual } = Astro.props;
+const destino = siguiente(actual);
+const vuelta = destino.id === 'portada';
+---
+<nav class="siguiente contenedor" aria-label="Página siguiente" data-revelar>
+  <a class="boton boton--grande" href={destino.archivo}>
+    {vuelta ? (
+      <>
+        <svg class="flecha flecha--izq" viewBox="0 0 24 12" aria-hidden="true"><path d="M23 6H1M6 1 1 6l5 5" /></svg>
+        <span>Volver a la {destino.titulo}</span>
+      </>
+    ) : (
+      <>
+        <span class="siguiente__etiqueta">Siguiente</span>
+        <span>{destino.numero} · {destino.titulo}</span>
+        <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
+      </>
+    )}
+  </a>
+</nav>

@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import Imagen from '../components/Imagen.astro';
+import Tarjeta from '../components/Tarjeta.astro';
+import Grieta from '../components/Grieta.astro';
+import Spoiler from '../components/Spoiler.astro';
+import TituloSeccion from '../components/TituloSeccion.astro';
+import Siguiente from '../components/Siguiente.astro';
+import { historia } from '../data/historia.js';
+
+const { premisa, partes, final } = historia;
+const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
+---
+<Base id="historia" descripcion="Resumen de la historia de Serie Mármol, con los spoilers tapados." scripts={['js/historia.js']}>
+  <div class="contenedor cabecera-pagina">
+    <TituloSeccion antetitulo="III · Serie Mármol" titulo="Historia" nivel={1} />
+  </div>
+
+  <section class="contenedor premisa" aria-labelledby="titulo-premisa">
+    <div class="premisa__texto" data-revelar>
+      <h2 id="titulo-premisa" class="antetitulo">{premisa.titulo}</h2>
+      {premisa.parrafos.map((p, i) => <p class:list={{ premisa__entrada: i === 0 }}>{p}</p>)}
+    </div>
+    <div class="premisa__imagen" data-revelar>
+      <Imagen imagen={premisa.imagen} ratio="4 / 5" ver pie={premisa.imagen.alt} />
+    </div>
+  </section>
+
+  <Grieta semilla={21} />
+
+  <section class="contenedor seccion" aria-labelledby="titulo-partes">
+    <TituloSeccion antetitulo="La serie" titulo="Las seis partes" id="titulo-partes">
+      <div class="aviso-spoiler">
+        <p>Las partes {tapadas.join(', ').replace(/, ([^,]*)$/, ' y $1')} y el final están tapados. Pulsa un cartel para descubrirlo.</p>
+        <button class="boton boton--pequeno" type="button" data-spoiler-todos aria-pressed="false">Mostrar todos</button>
+      </div>
+    </TituloSeccion>
+
+    <ol class="partes">
+      {partes.map((p, i) => (
+        <Tarjeta etiqueta="li" marmol clase="parte" posicion={`${(i * 37) % 100}% ${(i * 53) % 100}%`}>
+          <p class="parte__numero">Parte {p.numero}</p>
+          <Spoiler activo={p.spoiler} semilla={40 + i} descripcion={`la parte ${p.numero}`}>
+            <Imagen imagen={p.imagen} ratio="4 / 3" ver={!p.spoiler} grupo="partes" pie={`Parte ${p.numero}. ${p.titulo}`} />
+            <h3 class="parte__titulo">{p.titulo}</h3>
+            <p class="parte__texto">{p.texto}</p>
+          </Spoiler>
+        </Tarjeta>
+      ))}
+    </ol>
+  </section>
+
+  <section class="contenedor seccion final" aria-labelledby="titulo-final">
+    <TituloSeccion antetitulo="Cierre" titulo={final.titulo} id="titulo-final" />
+    <Spoiler semilla={77} texto="Spoiler · El final" descripcion="el final">
+      <div class="final__cuerpo">
+        {final.parrafos.map((p) => <p>{p}</p>)}
+        <blockquote class="final__cita"><p>{final.cita}</p></blockquote>
+      </div>
+    </Spoiler>
+  </section>
+
+  <Siguiente actual="historia" />
+</Base>

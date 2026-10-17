@@ -1,0 +1,26 @@
+---
+// Comparador antes / después: se arrastra la línea central (o se usan las
+// flechas del teclado sobre el control) para descubrir una u otra imagen.
+import Imagen from './Imagen.astro';
+const { antes, despues, titulo, ratio = '16 / 9' } = Astro.props;
+---
+<div class="comparador" data-comparador style="--corte: 50%">
+  <div class="comparador__capa comparador__capa--despues">
+    <Imagen imagen={despues} ratio={ratio} />
+    <span class="comparador__etiqueta comparador__etiqueta--der">Después</span>
+  </div>
+  <div class="comparador__capa comparador__capa--antes" aria-hidden="false">
+    <Imagen imagen={antes} ratio={ratio} />
+    <span class="comparador__etiqueta">Antes</span>
+  </div>
+  <span class="comparador__linea" aria-hidden="true"><span class="comparador__asa"></span></span>
+  <input
+    class="comparador__control"
+    type="range"
+    min="0"
+    max="100"
+    value="50"
+    aria-label={`Comparar antes y después: ${titulo}`}
+    data-comparador-control
+  />
+</div>

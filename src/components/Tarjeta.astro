@@ -1,0 +1,25 @@
+---
+// Tarjeta con filete dorado doble y escuadras en las esquinas
+// (referencia: las cartas de karma-tracks.com).
+// Props:
+//   marmol:   añade un marco de mármol alrededor
+//   href:     convierte la tarjeta entera en enlace
+//   inclinar: se inclina en 3D siguiendo el ratón
+//   etiqueta: elemento raíz ('article', 'li', 'div'...)
+const { marmol = false, href, inclinar = false, etiqueta = 'article', clase = '', posicion = '50% 50%' } = Astro.props;
+const Raiz = etiqueta;
+const Interior = href ? 'a' : 'div';
+---
+<Raiz
+  class:list={['tarjeta', clase, { 'tarjeta--marmol': marmol, 'tarjeta--enlace': href }]}
+  style={marmol ? `--pos-marmol: ${posicion}` : undefined}
+  data-inclinar={inclinar ? '' : undefined}
+>
+  <Interior class="tarjeta__panel" href={href}>
+    <span class="esquina esquina--a" aria-hidden="true"></span>
+    <span class="esquina esquina--b" aria-hidden="true"></span>
+    <span class="esquina esquina--c" aria-hidden="true"></span>
+    <span class="esquina esquina--d" aria-hidden="true"></span>
+    <slot />
+  </Interior>
+</Raiz>

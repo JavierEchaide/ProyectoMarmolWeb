@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+import Imagen from '../components/Imagen.astro';
+import Tarjeta from '../components/Tarjeta.astro';
+import Grieta from '../components/Grieta.astro';
+import TituloSeccion from '../components/TituloSeccion.astro';
+import Siguiente from '../components/Siguiente.astro';
+import { teaser } from '../data/teaser.js';
+
+const { video, rima } = teaser;
+---
+<Base id="teaser" descripcion="El teaser de 30 segundos de Serie Mármol, hecho en Blender con Cycles." scripts={['js/teaser.js']}>
+  <div class="contenedor cabecera-pagina">
+    <TituloSeccion antetitulo="II · Serie Mármol" titulo="Teaser" nivel={1} />
+  </div>
+
+  <section class="cine" aria-label="Reproductor del teaser">
+    <div class="cine__contenedor">
+      <button
+        class="reproductor"
+        type="button"
+        data-reproductor
+        data-video={video.src ?? undefined}
+        data-falta={video.src ? undefined : video.falta}
+        aria-label="Reproducir el teaser"
+      >
+        {video.poster ? (
+          <img class="reproductor__poster" src={video.poster} alt="" />
+        ) : (
+          <span class="reproductor__falta">{video.falta}</span>
+        )}
+        <span class="reproductor__play" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <section class="contenedor seccion teaser-info" aria-labelledby="titulo-sinopsis">
+    <div class="teaser-info__sinopsis" data-revelar>
+      <p class="antetitulo">Sinopsis</p>
+      <h2 id="titulo-sinopsis" class="oculto">Sinopsis</h2>
+      {teaser.sinopsis.map((p) => <p>{p}</p>)}
+    </div>
+    <div class="teaser-info__ficha">
+      <h2 class="antetitulo" data-revelar>Ficha técnica</h2>
+      <ul class="ficha">
+        {teaser.ficha.map((f, i) => (
+          <Tarjeta etiqueta="li" clase="ficha__item">
+            <h3 class="ficha__titulo">{f.titulo}</h3>
+            {f.lineas.map((l, j) => <p class:list={{ ficha__secundaria: j > 0 }}>{l}</p>)}
+          </Tarjeta>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Grieta semilla={12} />
+
+  <section class="contenedor seccion" aria-labelledby="titulo-fotogramas">
+    <TituloSeccion antetitulo="Del teaser" titulo="Fotogramas clave" id="titulo-fotogramas" />
+    <ol class="fotogramas">
+      {teaser.fotogramas.map((f, i) => (
+        <li class="fotograma" data-revelar style={`--i: ${i}`}>
+          <Imagen imagen={f.imagen} ratio="2.35 / 1" ver grupo="teaser" pie={`Plano ${f.plano}. ${f.pie}`} />
+          <p class="fotograma__pie"><span class="fotograma__numero">Plano {f.plano}</span>{f.pie}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="rima" data-revelar>
+      <div class="rima__texto">
+        <h3 class="rima__titulo">{rima.titulo}</h3>
+        <p>{rima.texto}</p>
+      </div>
+      {[rima.antes, rima.despues].map((f) => (
+        <figure class="rima__plano">
+          <Imagen imagen={f.imagen} ratio="2.35 / 1" ver grupo="teaser" pie={`Plano ${f.plano}. ${f.pie}`} />
+          <figcaption class="fotograma__pie"><span class="fotograma__numero">Plano {f.plano}</span>{f.pie}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <Siguiente actual="teaser" />
+</Base>

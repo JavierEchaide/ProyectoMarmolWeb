@@ -1,0 +1,36 @@
+---
+// Imagen o, si todavía no existe, placeholder con el texto de lo que falta.
+// Props:
+//   imagen: { src, alt, falta }
+//   ratio:  proporción CSS ('16 / 9', '3 / 4'...)
+//   ver:    si es true, se puede ampliar en el visor (aparece "Ver" al pasar)
+//   grupo:  las imágenes con el mismo grupo se recorren con flechas en el visor
+//   pie:    texto que se muestra bajo la imagen ampliada
+//   oscuro: placeholder sobre fondo oscuro
+const { imagen, ratio = '16 / 9', ver = false, grupo = '', pie = '', oscuro = false, clase = '' } = Astro.props;
+const { src, alt = '', falta = '' } = imagen ?? {};
+const Etiqueta = ver ? 'button' : 'div';
+---
+<Etiqueta
+  class:list={['imagen', clase, { 'imagen--ver': ver, 'imagen--oscura': oscuro }]}
+  style={`aspect-ratio: ${ratio}`}
+  type={ver ? 'button' : undefined}
+  data-visor={ver ? '' : undefined}
+  data-grupo={ver && grupo ? grupo : undefined}
+  data-src={ver && src ? src : undefined}
+  data-alt={ver ? alt : undefined}
+  data-falta={ver && !src ? falta : undefined}
+  data-pie={ver ? pie : undefined}
+  data-ratio={ver ? ratio : undefined}
+  aria-label={ver ? `Ampliar: ${alt}` : undefined}
+>
+  {src ? (
+    <img src={src} alt={ver ? '' : alt} loading="lazy" decoding="async" />
+  ) : (
+    <span class="imagen__falta" role={ver ? undefined : 'img'} aria-label={ver ? undefined : alt}>
+      <span class="imagen__etiqueta">Img</span>
+      <span class="imagen__texto">{falta}</span>
+    </span>
+  )}
+  {ver && <span class="imagen__ver" aria-hidden="true">Ver</span>}
+</Etiqueta>

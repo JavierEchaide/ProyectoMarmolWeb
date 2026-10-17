@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+import Imagen from '../components/Imagen.astro';
+import Tarjeta from '../components/Tarjeta.astro';
+import Grieta from '../components/Grieta.astro';
+import Greca from '../components/Greca.astro';
+import TituloSeccion from '../components/TituloSeccion.astro';
+import Siguiente from '../components/Siguiente.astro';
+import { portada } from '../data/portada.js';
+import { pagina } from '../data/sitio.js';
+
+const romanos = ['I', 'II', 'III', 'IV'];
+const letras = [...portada.intro.titulo];
+---
+<Base id="portada" scripts={['js/portada.js']}>
+  {/* Intro: solo se ve si el <head> ha puesto la clase .intro-activa (recarga o primera entrada) */}
+  <div class="intro" aria-hidden="true" data-intro>
+    <span class="intro__panel intro__panel--izq"></span>
+    <span class="intro__panel intro__panel--der"></span>
+    <div class="intro__texto">
+      <span class="intro__saludo">{portada.intro.saludo}</span>
+      <span class="intro__titulo">
+        {letras.map((l, i) => (
+          <span class="intro__letra" style={`--i: ${i}`}>{l === ' ' ? ' ' : l}</span>
+        ))}
+      </span>
+    </div>
+  </div>
+
+  <section class="hero" aria-labelledby="titulo-portada" data-hero style={`--ratio-movil: ${portada.hero.ratioMovil}`}>
+    <h1 id="titulo-portada" class="oculto">{portada.hero.titulo}</h1>
+    <div class="hero__imagen" data-hero-imagen>
+      {portada.hero.capas.length ? (
+        portada.hero.capas.map((c, i) => (
+          <img
+            class="hero__capa"
+            src={c.src}
+            alt={i === 0 ? portada.hero.alt : ''}
+            data-profundidad={c.profundidad}
+            decoding="async"
+          />
+        ))
+      ) : (
+        <picture>
+          <source media="(max-width: 700px)" srcset={portada.hero.movil} />
+          <img src={portada.hero.escritorio} alt={portada.hero.alt} fetchpriority="high" decoding="async" />
+        </picture>
+      )}
+    </div>
+    <span class="hero__pista" aria-hidden="true"></span>
+  </section>
+
+  <section class="contenedor presentacion" aria-label="Presentación">
+    <p class="presentacion__gancho" data-revelar>{portada.gancho}</p>
+    <div class="presentacion__texto" data-revelar>
+      {portada.presentacion.map((p) => <p>{p}</p>)}
+      <a class="boton" href="teaser.html">
+        <span>Entrar</span>
+        <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
+      </a>
+    </div>
+  </section>
+
+  <Grieta semilla={3} />
+
+  <section class="contenedor seccion" aria-labelledby="titulo-prologo">
+    <TituloSeccion antetitulo="Prólogo" titulo="La historia en cuatro fotogramas" id="titulo-prologo" />
+    <ol class="fotogramas">
+      {portada.fotogramas.map((f, i) => (
+        <li class="fotograma" data-revelar style={`--i: ${i}`}>
+          <Imagen imagen={f.imagen} ratio="16 / 9" ver grupo="prologo" pie={`${romanos[i]}. ${f.pie}`} />
+          <p class="fotograma__pie"><span class="fotograma__numero">{romanos[i]}</span>{f.pie}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <Grieta semilla={8} />
+
+  <section class="contenedor seccion" aria-labelledby="titulo-paginas">
+    <TituloSeccion antetitulo="Índice" titulo="Las páginas" id="titulo-paginas" />
+    <ul class="accesos">
+      {portada.accesos.map((a, i) => {
+        const p = pagina(a.pagina);
+        return (
+          <Tarjeta etiqueta="li" marmol inclinar href={p.archivo} clase="acceso" posicion={`${20 + i * 30}% ${30 + i * 20}%`}>
+            <Imagen imagen={a.imagen} ratio="4 / 3" />
+            <span class="acceso__numero">{p.numero}</span>
+            <h3 class="acceso__titulo">{p.titulo}</h3>
+            <p class="acceso__subtitulo">{a.subtitulo}</p>
+          </Tarjeta>
+        );
+      })}
+    </ul>
+  </section>
+
+  <section class="vitrina" aria-labelledby="titulo-autor">
+    <div class="contenedor vitrina__rejilla">
+      <p class="vitrina__etiqueta" data-revelar>{portada.autor.etiqueta}</p>
+      <div class="vitrina__pieza" data-revelar>
+        <Imagen imagen={portada.autor.imagen} ratio="3 / 4" oscuro ver pie={portada.autor.nombre} />
+      </div>
+      <div class="vitrina__cartela" data-revelar>
+        <Greca ancho={96} />
+        <h2 id="titulo-autor" class="vitrina__nombre">{portada.autor.nombre}</h2>
+      </div>
+    </div>
+  </section>
+
+  <Siguiente actual="portada" />
+</Base>

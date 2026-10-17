@@ -1,0 +1,130 @@
+---
+// Plantilla común de todas las páginas: <head>, cabecera, menú, cortina de
+// transición, visor de imágenes y pie. Cada página solo aporta su <main>.
+import Greca from '../components/Greca.astro';
+import { sitio, pagina as buscarPagina, paginasActivas } from '../data/sitio.js';
+
+const { id, descripcion = sitio.descripcion, scripts = [] } = Astro.props;
+const pagina = buscarPagina(id);
+const titulo = id === 'portada' ? `${sitio.nombre} · ${sitio.autor}` : `${pagina.titulo} · ${sitio.nombre}`;
+const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archivo, sitio.url).href;
+---
+<!doctype html>
+<html lang="es" data-pagina={id}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <meta name="author" content={sitio.autor} />
+    <meta name="theme-color" content="#F1F2E3" />
+    <link rel="canonical" href={urlCanonica} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content={sitio.nombre} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={urlCanonica} />
+    <meta property="og:image" content={`${sitio.url}/img/og.jpg`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/site.css" />
+    {/* Decide antes de pintar si toca intro (solo Portada) o cortina de llegada. Ver js/site.js */}
+    <script is:inline>
+      (function () {
+        var h = document.documentElement;
+        h.classList.add('js');
+        try {
+          var interna = sessionStorage.getItem('marmol-transicion');
+          sessionStorage.removeItem('marmol-transicion');
+          var nav = performance.getEntriesByType('navigation')[0];
+          var tipo = nav ? nav.type : 'navigate';
+          if (interna && tipo !== 'reload') h.classList.add('entrando');
+          if (h.dataset.pagina === 'portada' && tipo !== 'back_forward' && (!interna || tipo === 'reload')) {
+            h.classList.add('intro-activa');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+    <svg class="defs" aria-hidden="true" focusable="false" width="0" height="0">
+      <defs>
+        <pattern id="greca" width="16" height="14" patternUnits="userSpaceOnUse">
+          <path d="M0 12.5H16M12.5 12.5V1.5H2.5V9.5H9V5H6" fill="none" stroke="#CDA434" stroke-width="1.1" />
+        </pattern>
+      </defs>
+    </svg>
+
+    <header class="cabecera">
+      <a class="cabecera__marca" href="index.html">
+        <span>Mármol</span><span class="cabecera__punto" aria-hidden="true">·</span><span>{pagina.titulo}</span>
+      </a>
+      <button class="boton-menu" type="button" aria-expanded="false" aria-controls="menu" data-boton-menu>
+        <span class="boton-menu__icono" aria-hidden="true"><span></span><span></span></span>
+        <span class="boton-menu__texto" data-texto-menu>Menú</span>
+      </button>
+    </header>
+
+    <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menú de páginas" data-menu>
+      <div class="menu__marmol">
+        <div class="menu__placa">
+          <p class="antetitulo">{sitio.serie}</p>
+          <p class="menu__placa-titulo">{sitio.nombre}</p>
+          <Greca ancho={96} />
+          <p class="menu__placa-autor">{sitio.autor}</p>
+        </div>
+      </div>
+      <nav class="menu__lista" aria-label="Páginas">
+        <ol>
+          {paginasActivas().map((p) => (
+            <li class="menu__item">
+              <a href={p.archivo} aria-current={p.id === id ? 'page' : undefined}>
+                <span class="menu__numero">{p.numero}</span>
+                <span class="menu__titulo">{p.titulo}</span>
+                <span class="menu__resumen">{p.id === id ? 'Estás aquí' : p.resumen}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </div>
+
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="pie">
+      <Greca ancho="total" />
+      <div class="contenedor pie__texto">
+        <p><span class="pie__nombre">{sitio.serie}</span> (título provisional)</p>
+        <p>Proyecto final de {sitio.autor} · {sitio.estudios} · {sitio.curso}</p>
+      </div>
+    </footer>
+
+    <div class="cortina" aria-hidden="true" data-cortina>
+      <span class="cortina__texto" data-cortina-texto>{pagina.numero} · {pagina.titulo}</span>
+    </div>
+
+    <dialog class="visor" aria-label="Imagen ampliada" data-visor-dialogo>
+      <div class="visor__marco" data-visor-marco>
+        <div class="visor__medio" data-visor-medio></div>
+        <p class="visor__pie" data-visor-pie></p>
+      </div>
+      <button class="visor__boton visor__cerrar" type="button" data-visor-cerrar>Cerrar</button>
+      <button class="visor__boton visor__anterior" type="button" data-visor-anterior aria-label="Anterior">
+        <svg viewBox="0 0 24 12" aria-hidden="true"><path d="M23 6H1M6 1 1 6l5 5" /></svg>
+      </button>
+      <button class="visor__boton visor__siguiente" type="button" data-visor-siguiente aria-label="Siguiente">
+        <svg viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
+      </button>
+    </dialog>
+
+    <script is:inline src="js/site.js" defer></script>
+    {scripts.map((s) => <script is:inline src={s} defer></script>)}
+  </body>
+</html>

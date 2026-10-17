@@ -1,0 +1,10 @@
+---
+// Cabecera de sección: antetítulo pequeño + título en mayúsculas romanas.
+const { antetitulo, titulo, id, nivel = 2, centrado = false } = Astro.props;
+const H = `h${nivel}`;
+---
+<header class:list={['titulo-seccion', { 'titulo-seccion--centrado': centrado }]} data-revelar>
+  {antetitulo && <p class="antetitulo">{antetitulo}</p>}
+  <H id={id} class="titulo-seccion__titulo">{titulo}</H>
+  <slot />
+</header>

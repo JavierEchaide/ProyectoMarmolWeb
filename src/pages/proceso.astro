@@ -1,0 +1,207 @@
+---
+import Base from '../layouts/Base.astro';
+import Imagen from '../components/Imagen.astro';
+import Tarjeta from '../components/Tarjeta.astro';
+import Grieta from '../components/Grieta.astro';
+import AntesDespues from '../components/AntesDespues.astro';
+import TituloSeccion from '../components/TituloSeccion.astro';
+import Siguiente from '../components/Siguiente.astro';
+import { proceso } from '../data/proceso.js';
+
+const etiquetaEstado = { hecho: 'Hecho', 'en-curso': 'En curso', pendiente: 'Planificado' };
+const estadoBloque = (semanas) =>
+  semanas.every((s) => s.estado === 'hecho')
+    ? 'hecho'
+    : semanas.some((s) => s.estado !== 'pendiente')
+      ? 'en-curso'
+      : 'pendiente';
+const rango = (semanas) => `${semanas[0].semana} – ${semanas[semanas.length - 1].semana}`;
+const slug = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-');
+---
+<Base id="proceso" descripcion="Cómo se ha hecho el teaser de Serie Mármol: calendario, referencias, pipeline y archivo." scripts={['js/proceso.js']}>
+  <div class="contenedor cabecera-pagina">
+    <TituloSeccion antetitulo="IV · Cómo se ha hecho" titulo="Proceso" nivel={1}>
+      <p class="cabecera-pagina__intro">{proceso.intro}</p>
+    </TituloSeccion>
+  </div>
+
+  <section class="contenedor seccion" aria-labelledby="titulo-tiempo">
+    <TituloSeccion antetitulo="S01 – S35" titulo="Línea de tiempo" id="titulo-tiempo">
+      <ul class="leyenda" aria-label="Leyenda de estados">
+        {Object.entries(etiquetaEstado).map(([k, v]) => <li><span class={`punto punto--${k}`} aria-hidden="true"></span>{v}</li>)}
+      </ul>
+    </TituloSeccion>
+
+    <ol class="linea-tiempo">
+      {proceso.bloques.map((b) => {
+        const estado = estadoBloque(b.semanas);
+        return (
+          <li class={`bloque bloque--${estado}`} data-revelar>
+            <details>
+              <summary class="bloque__resumen">
+                <span class={`punto punto--${estado}`} aria-hidden="true"></span>
+                <span class="bloque__semanas">{rango(b.semanas)}</span>
+                <span class="bloque__titulo">Bloque {b.numero} · {b.titulo}</span>
+                <span class="bloque__fechas">{b.fechas}</span>
+                <span class={`estado estado--${estado}`}>{etiquetaEstado[estado]}</span>
+                <span class="bloque__chevron" aria-hidden="true"></span>
+              </summary>
+              <div class="bloque__cuerpo">
+                <p class="bloque__objetivo">{b.objetivo}</p>
+                <ol class="semanas">
+                  {b.semanas.map((s) => (
+                    <li class={`semana semana--${s.estado}`}>
+                      <p class="semana__cabecera">
+                        <span class="semana__numero">{s.semana}</span>
+                        <span class="semana__fechas">{s.fechas}</span>
+                        <span class={`estado estado--${s.estado}`}>{etiquetaEstado[s.estado]}</span>
+                      </p>
+                      <p class="semana__plan">{s.plan}</p>
+                      {s.registro.length > 0 && (
+                        <ul class="semana__registro">
+                          {s.registro.map((r) => <li>{r}</li>)}
+                        </ul>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+                {b.capturas.length > 0 && (
+                  <ul class="capturas">
+                    {b.capturas.map((c) => (
+                      <Tarjeta etiqueta="li" clase="captura">
+                        <Imagen imagen={c.imagen} ratio="16 / 10" ver grupo={`bloque-${b.numero}`} pie={c.titulo} />
+                        <h4 class="captura__titulo">{c.titulo}</h4>
+                        <p class="captura__texto">{c.texto}</p>
+                      </Tarjeta>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </details>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
+  <Grieta semilla={31} />
+
+  <section class="contenedor seccion" aria-labelledby="titulo-referencias">
+    <TituloSeccion antetitulo="Qué es · Qué cojo · Dónde aplica" titulo="Referencias" id="titulo-referencias" />
+    <ul class="referencias">
+      {proceso.referencias.map((r, i) => (
+        <Tarjeta etiqueta="li" clase="referencia" inclinar={r.items.length > 0}>
+          <Imagen imagen={r.portada} ratio="4 / 3" />
+          <h3 class="referencia__titulo">{r.categoria}</h3>
+          {r.items.length > 0 ? (
+            <button class="referencia__abrir" type="button" data-abrir-dialogo={`ref-${slug(r.categoria)}`}>
+              Ver {r.items.length} {r.items.length === 1 ? 'referencia' : 'referencias'}
+            </button>
+          ) : (
+            <p class="referencia__vacia">Por documentar</p>
+          )}
+        </Tarjeta>
+      ))}
+    </ul>
+
+    {proceso.referencias.filter((r) => r.items.length).map((r) => (
+      <dialog class="dialogo" id={`ref-${slug(r.categoria)}`} aria-labelledby={`ref-${slug(r.categoria)}-titulo`}>
+        <div class="dialogo__cabecera">
+          <p class="antetitulo">Referencias</p>
+          <h3 id={`ref-${slug(r.categoria)}-titulo`} class="dialogo__titulo">{r.categoria}</h3>
+          <button class="boton boton--pequeno" type="button" data-cerrar-dialogo>Cerrar</button>
+        </div>
+        <ul class="fichas-ref">
+          {r.items.map((it) => (
+            <li class="ficha-ref">
+              <Imagen imagen={it.imagen} ratio="4 / 3" ver grupo={`ref-${slug(r.categoria)}`} pie={it.titulo} />
+              <div class="ficha-ref__texto">
+                <h4 class="ficha-ref__titulo">{it.titulo}</h4>
+                <dl>
+                  <dt>Qué es</dt><dd>{it.que}</dd>
+                  <dt>Qué cojo</dt><dd>{it.cojo}</dd>
+                  <dt>Dónde aplica</dt><dd>{it.donde}</dd>
+                </dl>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </dialog>
+    ))}
+  </section>
+
+  <Grieta semilla={44} />
+
+  <section class="contenedor seccion" aria-labelledby="titulo-antes">
+    <TituloSeccion antetitulo="Capturas del proceso" titulo="Antes y después" id="titulo-antes" />
+    <ul class="comparadores">
+      {proceso.antesDespues.map((c) => (
+        <li class="comparador-item" data-revelar>
+          <AntesDespues antes={c.antes} despues={c.despues} titulo={c.titulo} />
+          <h3 class="comparador-item__titulo">{c.titulo}</h3>
+          <p>{c.texto}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <Grieta semilla={57} />
+
+  <section class="contenedor seccion" aria-labelledby="titulo-pipeline">
+    <TituloSeccion antetitulo="Del guion a la entrega" titulo="Pipeline" id="titulo-pipeline" />
+    <ol class="pipeline">
+      {proceso.pipeline.map((p, i) => (
+        <Tarjeta etiqueta="li" clase={`paso paso--${p.estado}`}>
+          <span class="paso__numero">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="paso__titulo">{p.paso}</h3>
+          <p class="paso__texto">{p.texto}</p>
+          <span class={`estado estado--${p.estado}`}>{etiquetaEstado[p.estado]}</span>
+        </Tarjeta>
+      ))}
+    </ol>
+  </section>
+
+  <section class="contenedor seccion" aria-labelledby="titulo-archivo">
+    <details class="archivo">
+      <summary class="archivo__resumen">
+        <span>
+          <span class="antetitulo">Plegado</span>
+          <span id="titulo-archivo" class="archivo__titulo" role="heading" aria-level="2">Archivo completo</span>
+        </span>
+        <span class="archivo__ayuda">WIPs, versiones antiguas y fallos</span>
+        <span class="bloque__chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="archivo__cuerpo">
+        <h3 class="archivo__subtitulo">WIPs</h3>
+        <ul class="galeria-mini">
+          {proceso.archivo.wips.map((w) => (
+            <li><Imagen imagen={w} ratio="16 / 10" ver grupo="wips" pie={w.falta} /></li>
+          ))}
+        </ul>
+
+        <h3 class="archivo__subtitulo">Versiones antiguas</h3>
+        <ul class="versiones">
+          {proceso.archivo.versiones.map((v) => (
+            <li class="version">
+              <Imagen imagen={v.imagen} ratio="16 / 10" ver grupo="versiones" pie={v.titulo} />
+              <h4>{v.titulo}</h4>
+              <p>{v.texto}</p>
+            </li>
+          ))}
+        </ul>
+
+        <h3 class="archivo__subtitulo">Fallos</h3>
+        <ul class="fallos">
+          {proceso.archivo.fallos.map((f) => (
+            <li class="fallo">
+              <h4>{f.titulo}</h4>
+              <p>{f.texto}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <Siguiente actual="proceso" />
+</Base>
