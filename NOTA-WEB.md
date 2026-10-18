@@ -47,7 +47,7 @@ ProyectoMarmolWeb/
 │   ├── js/historia.js        SPOILER que se rompen en 3D, cabecera con ventana y veta de las seis partes
 │   ├── js/tallado.js         filetes de las tarjetas y grecas que se dibujan
 │   ├── js/busto.js           GENERADO: el busto 3D con three.js (no editar; ver src/3d/busto.js)
-│   ├── js/proceso.js         comparadores antes/después
+│   ├── js/proceso.js         comparadores antes/después y bloques que se despliegan animados
 │   ├── fonts/                Cinzel y EB Garamond (woff2, autoalojadas)
 │   ├── img/                  imágenes (ver "Assets pendientes")
 │   ├── video/                aquí irá teaser.mp4

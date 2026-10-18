@@ -2658,6 +2658,11 @@ h1.titulo-seccion__titulo {
 details[open] > summary .bloque__chevron {
   transform: rotate(-135deg);
 }
+/* js/proceso.js: mientras se pliega, el detalle sigue abierto; la flecha
+   ya apunta hacia abajo */
+details.plegando > summary .bloque__chevron {
+  transform: rotate(45deg) translate(-2px, -2px);
+}
 .bloque__cuerpo {
   padding: 0 0 28px 7.5em;
 }
