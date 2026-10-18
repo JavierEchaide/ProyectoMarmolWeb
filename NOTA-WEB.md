@@ -119,11 +119,15 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
 ### Ornamentos
 
 - **Grietas doradas (kintsugi):** divisores entre secciones (`Grieta.astro` + `js/grietas.js`). Cada una sale de una "semilla" (número), así que todas son distintas pero estables. Es el concepto de la serie: la corrupción se sana con oro y la grieta se sigue viendo.
-  - Se dibujan en el navegador al tamaño real del divisor, como un cordón de oro con relieve: hueco en sombra, cuerpo de oro con canto oscuro, núcleo más claro y filo de luz.
+  - Se dibujan en el navegador al tamaño real del divisor, como una costura de kintsugi en piedra: casi recta, con quiebros finos y alguna mella donde el oro se ensancha. Salen 1-2 ramas cortas de oro y varias fisuras finas oscuras sin reparar, y los extremos se desvanecen. El oro cambia de tono a lo largo, como el metal batido; debajo lleva un filo de sombra y encima un filo de luz.
   - **Se abren con el scroll:** una chispa recorre la grieta mientras bajas (empieza al asomar por abajo y termina hacia la mitad de la pantalla). Al completarse, un brillo la recorre una vez. Nunca retrocede.
   - Sin JavaScript se ve una grieta plana (la de `src/lib/grietas.js`).
 - **Greca (meandro griego):** banda dorada en el pie, la placa del menú y la vitrina del autor (`Greca.astro`). Patrones definidos en `Base.astro`: `#greca` (pequeña) y `#greca-banda` (la del pie, más grande y entre dos líneas; a 14 px se leía como una fila de cuadraditos).
-- **Tarjetas** (referencia: karma-tracks.com): doble filete dorado y escuadras con un rombo en cada esquina (`Tarjeta.astro`). Variante `marmol` con marco de mármol.
+- **Tarjetas** (referencia: karma-tracks.com): doble filete dorado y escuadras con un rombo en cada esquina (`Tarjeta.astro`). Variante `sobria`, con un filete fino de tinta y sin escuadras (pipeline). Variante `marmol`, con marco de mármol.
+- **Dónde va el oro:** solo donde significa algo: cartas de la Portada, tarjetas de Historia, la veta de las seis partes, los SPOILER, los divisores, el "estás aquí" del menú y la línea de los antes/después. La ficha técnica, la pipeline y el marco de los antes/después van en tinta.
+- **Grano:** el crema lleva un grano muy suave de papel o piedra (`img/grano.png`, variable `--grano`), en el fondo, la cabecera y las tarjetas.
+- **Rótulo de sala:** las cabeceras de Teaser, Historia, Proceso y la 404 llevan "Sala II" encima y el número en romanos grande y hueco delante del título (`TituloSeccion` con `numero`). El número sale de `sitio.js`.
+- **Pies de foto como cartelas:** filete corto encima, número en Cinzel y descripción en cursiva, iguales en Portada, Teaser y Proceso.
 
 ---
 
@@ -161,7 +165,7 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
    - `video.poster`: fotograma que se ve antes de pulsar.
    - Los créditos van dentro del propio vídeo. No hay página de créditos.
 2. **Sinopsis** (`sinopsis`). Describe sin explicar, para no destapar la parte III de la historia (que venerar a las criaturas también las rompe).
-3. **Ficha técnica** (`ficha`): Duración · Hecho con · Formato · Música. La música pone "A decidir"; cuando se elija, se cambian las dos líneas.
+3. **Ficha técnica** (`ficha`): Duración · Hecho con · Formato · Música, como la cartela de una pieza de museo (dato a la izquierda, valor a la derecha, filetes finos). La música pone "A decidir"; cuando se elija, se cambian las dos líneas.
 4. **Fotogramas clave** (`fotogramas`): planos 1, 2b, 7 y 8, en 2.35:1 y en 2 × 2 grandes, ampliables.
 5. **La rima** (`rima`): los planos 4 y 6 (ojos de la pura y de la corrupta, mismo encuadre) juntos, con una línea que lo explica.
 6. **Siguiente: III · Historia.**
@@ -216,12 +220,12 @@ El menú, la numeración y los enlaces "Siguiente" se recalculan solos: Proceso 
 | Componente | Qué hace |
 |---|---|
 | `Imagen.astro` | Imagen real o placeholder. Props: `imagen` (`{ src, alt, falta }`), `ratio`, `ver` (ampliable), `grupo` (se recorren con flechas), `pie`, `oscuro` |
-| `Tarjeta.astro` | Tarjeta con doble filete y escuadras. Props: `marmol`, `href`, `inclinar`, `etiqueta`, `posicion` (qué trozo de mármol se ve) |
+| `Tarjeta.astro` | Tarjeta con doble filete y escuadras. Props: `marmol`, `sobria`, `href`, `etiqueta`, `posicion` (qué trozo de mármol se ve) |
 | `Grieta.astro` | Divisor de grieta dorada (la rehace `js/grietas.js`). Prop: `semilla` |
 | `Greca.astro` | Banda de meandro. Prop: `ancho` (px o `'total'`) |
 | `Spoiler.astro` | Losa negra que tapa su contenido y se rompe al pulsarla. Props: `activo`, `semilla` (forma de la rotura), `texto`, `descripcion`. La altura tapada se cambia con la variable CSS `--ratio-tapado` |
 | `AntesDespues.astro` | Comparador. Props: `antes`, `despues`, `titulo`, `ratio` |
-| `TituloSeccion.astro` | Antetítulo + título de sección (`nivel` 1 para el título de página) |
+| `TituloSeccion.astro` | Antetítulo + título de sección (`nivel` 1 para el título de página; `numero` para el rótulo de sala) |
 | `Siguiente.astro` | Botón al final de cada página hacia la siguiente del menú |
 
 ### El formato de imagen, en todas partes
@@ -240,6 +244,7 @@ Para poner la imagen real: copiar el archivo a `public/img/...` y cambiar `src: 
   - Se cierra con el botón (que pasa a "Cerrar" y a una X), con Esc o eligiendo página.
   - Mientras está abierto, el resto de la página queda `inert` y el foco no sale del menú.
   - En móvil el mármol queda arriba y la lista debajo.
+- **Página 404** (`src/pages/404.astro`): "Sala vacía", sala CDIV, con un botón a la Portada y la lista de salas. Vercel la sirve en cualquier dirección que no exista; lleva `<base href="/">` para que cargue bien también en direcciones como `/algo/mal`, y no se indexa.
 - **Cabecera** sin filete: al bajar cambia a un fondo un poco más oscuro y se esconde; al subir vuelve. Así no tapa lo que se está leyendo.
 - **Cortina entre páginas.** Al pulsar un enlace interno sube una placa de mármol con el número y el nombre de la página de destino. En la página nueva:
   - **En ordenador**, la placa **se agrieta en oro y cae en esquirlas** (el mismo motor que las losas de SPOILER, en `js/grietas.js`), con la página nueva en penumbra que se aclara. Dura algo más de 1 s.

@@ -5,6 +5,7 @@ import Tarjeta from '../components/Tarjeta.astro';
 import Grieta from '../components/Grieta.astro';
 import AntesDespues from '../components/AntesDespues.astro';
 import TituloSeccion from '../components/TituloSeccion.astro';
+import { pagina } from '../data/sitio.js';
 import Siguiente from '../components/Siguiente.astro';
 import { proceso } from '../data/proceso.js';
 
@@ -32,7 +33,7 @@ const hito = semanas.slice(numeroActual).find((s) => /evaluaci/i.test(s.plan));
 ---
 <Base id="proceso" descripcion="Cómo se ha hecho el teaser de Serie Mármol: calendario, referencias, pipeline y archivo." scripts={['js/proceso.js']}>
   <div class="contenedor cabecera-pagina cabecera-pagina--con-avance">
-    <TituloSeccion titulo="Proceso" nivel={1}>
+    <TituloSeccion titulo="Proceso" nivel={1} numero={pagina('proceso').numero}>
       <p class="cabecera-pagina__intro">{proceso.intro}</p>
     </TituloSeccion>
 
@@ -194,7 +195,7 @@ const hito = semanas.slice(numeroActual).find((s) => /evaluaci/i.test(s.plan));
     <TituloSeccion antetitulo="Del guion a la entrega" titulo="Pipeline" id="titulo-pipeline" />
     <ol class="pipeline">
       {proceso.pipeline.map((p, i) => (
-        <Tarjeta etiqueta="li" clase={`paso paso--${p.estado}`}>
+        <Tarjeta etiqueta="li" clase={`paso paso--${p.estado}`} sobria>
           <span class="paso__numero">{romano(i + 1)}</span>
           <h3 class="paso__titulo">{p.paso}</h3>
           <p class="paso__texto">{p.texto}</p>

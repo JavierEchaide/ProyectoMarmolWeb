@@ -3,14 +3,15 @@
 // (referencia: las cartas de karma-tracks.com).
 // Props:
 //   marmol:   añade un marco de mármol alrededor
+//   sobria:   filete fino de tinta en vez del doble filete dorado
 //   href:     convierte la tarjeta entera en enlace
 //   etiqueta: elemento raíz ('article', 'li', 'div'...)
-const { marmol = false, href, etiqueta = 'article', clase = '', posicion = '50% 50%' } = Astro.props;
+const { marmol = false, sobria = false, href, etiqueta = 'article', clase = '', posicion = '50% 50%' } = Astro.props;
 const Raiz = etiqueta;
 const Interior = href ? 'a' : 'div';
 ---
 <Raiz
-  class:list={['tarjeta', clase, { 'tarjeta--marmol': marmol, 'tarjeta--enlace': href }]}
+  class:list={['tarjeta', clase, { 'tarjeta--marmol': marmol, 'tarjeta--sobria': sobria, 'tarjeta--enlace': href }]}
   style={marmol ? `--pos-marmol: ${posicion}` : undefined}
 >
   <Interior class="tarjeta__panel" href={href}>

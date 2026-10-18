@@ -55,6 +55,9 @@
   --marmol: url('../img/marmol/marmol.webp');
   --marmol-marco: url('../img/marmol/marmol-marco.webp');
   --piedra: url('../img/marmol/piedra-negra.webp');
+  /* Grano de papel o piedra sobre el crema (img/grano.png, 180 px que se
+     repiten; de media un 1 % de tinta). Quita el aspecto de color plano */
+  --grano: url('../img/grano.png');
 
   /* Escala tipográfica: seis tamaños y ninguno por debajo de 13 px */
   --t-display: clamp(2.6rem, 1.6rem + 5vw, 5.6rem);   /* títulos de página, menú, intro */
@@ -80,7 +83,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--crema);
+  background: var(--grano) var(--crema);
   color: var(--tinta);
   font-family: var(--f-texto);
   font-size: var(--t-texto);
@@ -198,6 +201,32 @@ h1.titulo-seccion__titulo {
 }
 .titulo-seccion--centrado {
   text-align: center;
+}
+/* Rótulo de sala (Teaser, Historia, Proceso, 404): el número en romanos,
+   grande y hueco, delante del título */
+.titulo-seccion--sala .titulo-seccion__titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.3em;
+}
+.titulo-seccion__numero {
+  font-size: 1.3em;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--linea);
+}
+@supports (-webkit-text-stroke: 1px black) {
+  .titulo-seccion__numero {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--tinta-2);
+  }
+}
+@media (max-width: 600px) {
+  .titulo-seccion__numero {
+    font-size: 1em;
+  }
 }
 
 .cabecera-pagina {
@@ -411,13 +440,13 @@ h1.titulo-seccion__titulo {
   justify-content: space-between;
   gap: 16px;
   padding-inline: var(--margen);
-  background: var(--crema);
+  background: var(--grano) var(--crema);
   transition: background-color 0.4s, transform 0.45s var(--curva);
 }
 /* Sin filete: al bajar, la cabecera cambia de fondo para separarse del
    contenido y se esconde; al subir vuelve a aparecer (js/site.js) */
 .cabecera--fondo {
-  background: var(--superficie);
+  background-color: var(--superficie);
 }
 .cabecera--oculta {
   transform: translateY(-100%);
@@ -813,14 +842,14 @@ h1.titulo-seccion__titulo {
 .grieta svg {
   display: block;
   width: 100%;
-  height: 34px;
+  height: 32px;
   overflow: visible;
 }
 /* Sin JS: la grieta plana de Grieta.astro */
 .grieta__trazo {
   fill: none;
   stroke: var(--oro);
-  stroke-width: 1.6;
+  stroke-width: 1.4;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -828,36 +857,36 @@ h1.titulo-seccion__titulo {
 .grieta__rama {
   stroke-width: 1;
 }
-/* Con JS (js/grietas.js): veta de oro con relieve, al tamaño real.
-   De abajo arriba: el hueco en sombra, el oro, el filo que recibe la luz
-   y la chispa que va abriendo la grieta mientras se hace scroll. */
+/* Con JS (js/grietas.js): costura de oro al tamaño real. De abajo arriba:
+   fisuras finas sin reparar, la sombra de la grieta (un filo oscuro debajo),
+   el oro con reflejos, su núcleo claro, el filo que recibe la luz y la
+   chispa que va abriendo la grieta mientras se hace scroll. */
 .grieta .grieta__svg {
   width: auto;
   height: auto;
 }
-.grieta__sombra path {
-  fill: rgb(54 41 38 / 0.38);
-  stroke: rgb(54 41 38 / 0.38);
-  stroke-width: 1.5;
+.grieta__fisuras path {
+  fill: none;
+  stroke: rgb(54 41 38 / 0.42);
+  stroke-width: 0.7;
+  stroke-linecap: round;
   stroke-linejoin: round;
-  transform: translate(0.9px, 1.9px);
-  filter: blur(0.9px);
 }
-.grieta__oro path {
-  fill: #b38a24;
-  stroke: #6e5112;
-  stroke-width: 0.9;
-  stroke-linejoin: round;
+.grieta__sombra path {
+  fill: rgb(54 41 38 / 0.32);
+  transform: translate(0.4px, 0.9px);
 }
 .grieta__nucleo path {
-  fill: #e9cd6f;
+  fill: #f1dc8f;
+  opacity: 0.75;
 }
 .grieta__luz path {
   fill: none;
-  stroke: #fff3c2;
-  stroke-width: 0.9;
+  stroke: #fff6d2;
+  stroke-width: 0.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  opacity: 0.9;
 }
 .grieta__brillo {
   mix-blend-mode: screen;
@@ -970,13 +999,22 @@ h1.titulo-seccion__titulo {
   display: block;
   height: 100%;
   padding: 22px;
-  background: var(--crema);
+  background: var(--grano) var(--crema);
   color: inherit;
   text-decoration: none;
   /* Doble filete dorado */
   box-shadow: inset 0 0 0 1px var(--oro), inset 0 0 0 5px var(--crema), inset 0 0 0 6px var(--oro);
 }
 
+/* Tarjeta sobria (pipeline): un filete fino de tinta, sin oro ni escuadras.
+   El oro se reserva para lo que significa algo: cartas, Historia, la veta,
+   los SPOILER y el "estás aquí" */
+.tarjeta--sobria .tarjeta__panel {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--linea) 75%, transparent);
+}
+.tarjeta--sobria .esquina {
+  display: none;
+}
 .esquina {
   position: absolute;
   width: 14px;
@@ -1383,21 +1421,31 @@ h1.titulo-seccion__titulo {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(12px, 2vw, 24px);
 }
+/* Pies de foto como cartelas de museo, iguales en toda la web: un filete
+   corto, el número en Cinzel y la descripción en cursiva */
+.fotograma__pie,
+.captura__texto,
+.version p {
+  font-style: italic;
+}
 .fotograma__pie {
   margin: 0.8em 0 0;
+  padding-top: 0.6em;
+  border-top: 1px solid color-mix(in srgb, var(--linea) 60%, transparent);
   font-size: var(--t-pequeno);
   line-height: 1.4;
-  color: var(--tinta);
+  color: var(--tinta-2);
 }
 .fotograma__numero {
   display: block;
   font-family: var(--f-titulo);
   font-size: var(--t-etiqueta);
+  font-style: normal;
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--tinta-2);
-  margin-bottom: 0.2em;
+  color: var(--tinta);
+  margin-bottom: 0.25em;
 }
 .fotogramas--grandes {
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1954,6 +2002,20 @@ h1.titulo-seccion__titulo {
   background: var(--rojo);
   border-color: var(--rojo);
 }
+/* En pantallas estrechas el texto del hueco (dos líneas) chocaba con el botón:
+   el botón sube un poco y el texto se queda abajo, más compacto */
+@media (max-width: 700px) {
+  .reproductor__play {
+    top: 40%;
+    width: 48px;
+  }
+  .reproductor__falta {
+    padding: 0 1.2em 12px;
+    letter-spacing: 0.14em;
+    line-height: 1.45;
+    text-align: center;
+  }
+}
 @media (hover: hover) and (pointer: fine) {
   .reproductor:hover .reproductor__play {
     transform: translate(-50%, -50%) scale(1.1);
@@ -1975,24 +2037,32 @@ h1.titulo-seccion__titulo {
 .teaser-info__sinopsis p:last-child {
   font-style: italic;
 }
+/* Ficha técnica como la cartela de una pieza de museo: dato a la izquierda,
+   valor a la derecha, filetes finos entre filas */
 .ficha {
-  list-style: none;
   margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  border-top: 1px solid var(--tinta);
 }
-.ficha__item .tarjeta__panel {
-  padding: 22px 24px;
+.ficha__fila {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 10rem) minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 0 15px;
+  border-bottom: 1px solid color-mix(in srgb, var(--linea) 55%, transparent);
 }
 .ficha__titulo {
+  font-family: var(--f-titulo);
   font-size: var(--t-etiqueta);
+  font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  margin-bottom: 0.6em;
+  color: var(--tinta-2);
+  padding-top: 0.45em;
 }
-.ficha__item p {
+.ficha__valor {
+  margin: 0;
+}
+.ficha__valor p {
   margin: 0;
   font-size: var(--t-texto);
 }
@@ -2003,11 +2073,6 @@ h1.titulo-seccion__titulo {
 }
 @media (max-width: 900px) {
   .teaser-info {
-    grid-template-columns: 1fr;
-  }
-}
-@media (max-width: 480px) {
-  .ficha {
     grid-template-columns: 1fr;
   }
 }
@@ -2726,11 +2791,15 @@ details.plegando > summary .bloque__chevron {
 .captura .tarjeta__panel {
   padding: 16px;
 }
-.captura__titulo {
-  font-size: var(--t-pequeno);
+.captura__titulo,
+.version h4 {
+  font-size: var(--t-etiqueta);
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: 0.9em 0 0.2em;
+  letter-spacing: 0.24em;
+  margin: 0.9em 0 0.25em;
+  padding-top: 0.6em;
+  border-top: 1px solid color-mix(in srgb, var(--linea) 60%, transparent);
 }
 .captura__texto {
   margin: 0;
@@ -2881,7 +2950,7 @@ details.plegando > summary .bloque__chevron {
 }
 .comparador {
   position: relative;
-  box-shadow: inset 0 0 0 1px var(--oro);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--linea) 75%, transparent);
   padding: 6px;
   background: var(--crema);
 }
@@ -2910,7 +2979,7 @@ details.plegando > summary .bloque__chevron {
   text-transform: uppercase;
   padding: 0.25em 0.7em;
   background: var(--crema);
-  box-shadow: inset 0 0 0 1px var(--oro);
+  box-shadow: inset 0 0 0 1px var(--linea);
 }
 .comparador__etiqueta--der {
   left: auto;
@@ -3097,7 +3166,6 @@ details.plegando > summary .bloque__chevron {
 .versiones {
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
-.version h4,
 .fallo h4 {
   font-size: var(--t-pequeno);
   text-transform: uppercase;
@@ -3431,4 +3499,47 @@ details.plegando > summary .bloque__chevron {
     filter: none;
     transform: none;
   }
+}
+
+/* 404: sala vacía */
+.sala-vacia {
+  padding-bottom: clamp(32px, 5vw, 64px);
+}
+.sala-vacia__boton {
+  margin-top: 2em;
+}
+.sala-vacia__salas ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  border-top: 1px solid var(--tinta);
+}
+.sala-vacia__salas a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8em;
+  padding: 18px 4px;
+  border-bottom: 1px solid color-mix(in srgb, var(--linea) 55%, transparent);
+  font-family: var(--f-titulo);
+  font-size: var(--t-h3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.sala-vacia__numero {
+  font-size: var(--t-etiqueta);
+  letter-spacing: 0.2em;
+  color: var(--tinta-2);
+}
+@media (hover: hover) and (pointer: fine) {
+  .sala-vacia__salas a:hover {
+    color: var(--rojo);
+  }
+}
+.sala-vacia__salas a:focus-visible {
+  color: var(--rojo);
 }

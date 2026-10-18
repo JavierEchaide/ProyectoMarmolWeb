@@ -5,6 +5,7 @@ import Tarjeta from '../components/Tarjeta.astro';
 import Grieta from '../components/Grieta.astro';
 import Spoiler from '../components/Spoiler.astro';
 import TituloSeccion from '../components/TituloSeccion.astro';
+import { pagina } from '../data/sitio.js';
 import Siguiente from '../components/Siguiente.astro';
 import { historia } from '../data/historia.js';
 
@@ -24,7 +25,7 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
     <svg class="ventana__borde" data-ventana-borde aria-hidden="true" focusable="false"><path /></svg>
     <div class="contenedor ventana__pie">
       <div class="ventana__cartela">
-        <TituloSeccion titulo="Historia" nivel={1} />
+        <TituloSeccion titulo="Historia" nivel={1} numero={pagina('historia').numero} />
         <p class="ventana__lema">Las criaturas no nacen: se tallan.</p>
         <p class="ventana__pista">Pasa el cursor por el mármol: detrás hay otros mundos.</p>
       </div>

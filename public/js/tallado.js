@@ -37,7 +37,8 @@
 
   // Doble filete de las tarjetas: dos rectángulos SVG que se trazan y luego
   // dejan su sitio al filete de CSS de siempre
-  var paneles = Array.prototype.slice.call(document.querySelectorAll('.tarjeta__panel'));
+  // (las tarjetas sobrias no llevan filete dorado: no hay nada que trazar)
+  var paneles = Array.prototype.slice.call(document.querySelectorAll('.tarjeta:not(.tarjeta--sobria) > .tarjeta__panel'));
   paneles.forEach(function (p) { p.classList.add('filete-pendiente'); });
   alEntrar(paneles, 0.25, function (p) {
     var svg = document.createElementNS(NS, 'svg');

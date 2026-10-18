@@ -1,0 +1,33 @@
+---
+// Página de error: Vercel la sirve cuando una dirección no existe.
+// Va como una sala de museo vacía, con el número de la sala en romanos (404).
+import Base from '../layouts/Base.astro';
+import TituloSeccion from '../components/TituloSeccion.astro';
+import Grieta from '../components/Grieta.astro';
+import { paginasActivas } from '../data/sitio.js';
+
+const pagina = { id: 'error', numero: 'CDIV', titulo: 'Sala vacía', archivo: '404.html' };
+---
+<Base id="error" pagina={pagina} base="/" descripcion="Esta sala no existe.">
+  <section class="contenedor cabecera-pagina sala-vacia">
+    <TituloSeccion titulo="Sala vacía" nivel={1} numero="CDIV" />
+    <p class="cabecera-pagina__intro">
+      Aquí no hay nada expuesto. O la dirección está mal escrita, o la pieza todavía se está tallando.
+    </p>
+    <a class="boton sala-vacia__boton" href="index.html">
+      <svg class="flecha flecha--izq" viewBox="0 0 24 12" aria-hidden="true"><path d="M23 6H1M6 1 1 6l5 5" /></svg>
+      Volver a la Portada
+    </a>
+  </section>
+
+  <Grieta semilla={404} />
+
+  <nav class="contenedor seccion sala-vacia__salas" aria-label="Otras salas">
+    <p class="antetitulo">O entra en otra sala</p>
+    <ol>
+      {paginasActivas().map((p) => (
+        <li><a href={p.archivo}><span class="sala-vacia__numero">{p.numero}</span>{p.titulo}</a></li>
+      ))}
+    </ol>
+  </nav>
+</Base>

@@ -1,10 +1,17 @@
 ---
 // Cabecera de sección: antetítulo pequeño + título en mayúsculas romanas.
-const { antetitulo, titulo, id, nivel = 2, centrado = false } = Astro.props;
+// numero: en las cabeceras de página, el número de la sala en romanos. Sale
+// grande y hueco delante del título (como el rótulo de una sala de museo),
+// y el antetítulo pasa a ser "Sala II".
+const { antetitulo, titulo, id, nivel = 2, centrado = false, numero } = Astro.props;
 const H = `h${nivel}`;
+const ante = antetitulo ?? (numero ? `Sala ${numero}` : undefined);
 ---
-<header class:list={['titulo-seccion', { 'titulo-seccion--centrado': centrado }]} data-revelar>
-  {antetitulo && <p class="antetitulo">{antetitulo}</p>}
-  <H id={id} class="titulo-seccion__titulo">{titulo}</H>
+<header class:list={['titulo-seccion', { 'titulo-seccion--centrado': centrado, 'titulo-seccion--sala': numero }]} data-revelar>
+  {ante && <p class="antetitulo">{ante}</p>}
+  <H id={id} class="titulo-seccion__titulo">
+    {numero && <span class="titulo-seccion__numero" aria-hidden="true">{numero}</span>}
+    {titulo}
+  </H>
   <slot />
 </header>

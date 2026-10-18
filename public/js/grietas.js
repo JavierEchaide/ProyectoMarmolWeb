@@ -1,7 +1,7 @@
 /* Grietas de kintsugi: geometría compartida y divisores de sección.
 
    1. Geometría (deterministas: la misma semilla da siempre la misma grieta)
-   2. Divisores: una veta de oro con relieve que se dibuja al hacer scroll
+   2. Divisores: una costura de oro fina que se dibuja al hacer scroll
 
    Se genera en el navegador, al tamaño real en píxeles de cada divisor, para
    que el grosor y el relieve no se deformen al estirar el SVG. Sin JS se ve la
@@ -64,45 +64,63 @@
     };
   }
 
-  // Grieta horizontal de lado a lado con 2-4 ramas que avanzan hacia la derecha
+  // Grieta horizontal de lado a lado, como una costura de kintsugi en piedra:
+  // casi recta, con un quiebro fino cada pocos píxeles, una deriva lenta y algún
+  // escalón brusco que se recupera. Devuelve la línea principal (que se rellena
+  // de oro), 1-2 ramas cortas también de oro y 4-7 fisuras finas sin reparar.
   function horizontal(semilla, ancho, alto) {
     var azar = aleatorio(semilla);
     var medio = alto / 2;
-    var principal = [[0, medio]];
-    var x = 0;
-    var y = medio;
-    while (x < ancho) {
-      // Tramos cortos y quebrados; de vez en cuando un salto más brusco.
-      // La deriva vuelve poco a poco al centro para no salirse de la banda.
-      var salto = azar() < 0.12 ? 0.7 : 0.28;
-      x = Math.min(ancho, x + 5 + azar() * 17);
-      y += (azar() - 0.5) * alto * salto + (medio - y) * 0.08;
-      y = Math.max(alto * 0.15, Math.min(alto * 0.85, y));
-      principal.push([x, y]);
+    var f1 = 0.004 + azar() * 0.004;
+    var f2 = 0.011 + azar() * 0.008;
+    var p1 = azar() * 6.28;
+    var p2 = azar() * 6.28;
+    function deriva(x) {
+      return (Math.sin(x * f1 + p1) * 0.65 + Math.sin(x * f2 + p2) * 0.35) * alto * 0.16;
     }
-    var ramas = [];
-    var n = 2 + Math.floor(azar() * 3);
-    for (var i = 0; i < n; i++) {
-      var origen = principal[1 + Math.floor(azar() * (principal.length - 3))];
-      var sentido = azar() < 0.5 ? -1 : 1;
-      var angulo = sentido * (0.3 + azar() * 0.35);
+    var principal = [[0, medio + deriva(0)]];
+    var x = 0;
+    var escalon = 0;
+    while (x < ancho) {
+      x = Math.min(ancho, x + 3 + azar() * 9);
+      if (azar() < 0.05) escalon += (azar() < 0.5 ? -1 : 1) * alto * (0.12 + azar() * 0.1);
+      escalon *= 0.9;
+      var y = medio + deriva(x) + escalon + (azar() - 0.5) * alto * 0.1;
+      principal.push([x, Math.max(alto * 0.12, Math.min(alto * 0.88, y))]);
+    }
+
+    function brote(largoMin, largoMax, tramoMax) {
+      var origen = principal[2 + Math.floor(azar() * (principal.length - 5))];
+      var angulo = (azar() < 0.5 ? -1 : 1) * (0.35 + azar() * 0.75) + (azar() < 0.3 ? Math.PI : 0);
       var puntos = [origen.slice()];
       var px = origen[0];
       var py = origen[1];
-      var largo = 50 + azar() * 120;
+      var largo = largoMin + azar() * (largoMax - largoMin);
       var hecho = 0;
       while (hecho < largo) {
-        var tramo = 5 + azar() * 10;
-        var a = angulo + (azar() - 0.5) * 1.1;
+        var tramo = 2.5 + azar() * tramoMax;
+        var a = angulo + (azar() - 0.5) * 0.9;
         px += Math.cos(a) * tramo;
         py += Math.sin(a) * tramo;
-        if (py < 2 || py > alto - 2 || px > ancho) break;
+        if (py < 1 || py > alto - 1 || px < 0 || px > ancho) break;
         hecho += tramo;
         puntos.push([px, py]);
       }
-      if (puntos.length > 2) ramas.push(puntos);
+      return puntos;
     }
-    return { principal: principal, ramas: ramas };
+    var ramas = [];
+    var nRamas = 1 + Math.floor(azar() * 2);
+    for (var i = 0; i < nRamas; i++) {
+      var r = brote(26, 70, 7);
+      if (r.length > 3) ramas.push(r);
+    }
+    var fisuras = [];
+    var nFisuras = 4 + Math.floor(azar() * 4);
+    for (var k = 0; k < nFisuras; k++) {
+      var f = brote(8, 34, 5);
+      if (f.length > 2) fisuras.push(f);
+    }
+    return { principal: principal, ramas: ramas, fisuras: fisuras };
   }
 
   // Posición de un punto del borde del rectángulo medida en el sentido de las
@@ -321,27 +339,37 @@
     return el;
   }
 
-  // Grosor de la veta principal: fina en los extremos, gruesa en el centro, con pulsos
+  // Grosor de la costura de oro: casi nada en los extremos, un trazo fino y
+  // regular en el centro y, de vez en cuando, un ensanche corto (donde la
+  // piedra saltó al romperse y el oro rellena la mella)
   function grosorPrincipal(azar, maximo) {
     var pulsos = [];
-    for (var i = 0; i < 40; i++) pulsos.push(0.65 + azar() * 0.7);
+    for (var i = 0; i < 60; i++) pulsos.push(0.7 + azar() * 0.45);
+    var mellas = [];
+    var n = 2 + Math.floor(azar() * 3);
+    for (var m = 0; m < n; m++) mellas.push([0.12 + azar() * 0.76, 0.012 + azar() * 0.02, 0.7 + azar() * 0.9]);
     return function (t) {
-      // interpolado entre pulsos para que el grosor cambie sin escalones
-      var f = t * 39;
-      var k = Math.min(38, Math.floor(f));
+      var f = t * 59;
+      var k = Math.min(58, Math.floor(f));
       var pulso = pulsos[k] + (pulsos[k + 1] - pulsos[k]) * (f - k);
-      return maximo * (0.22 + 0.78 * Math.pow(Math.sin(Math.PI * t), 0.6)) * pulso;
+      var mella = 1;
+      mellas.forEach(function (c) {
+        var d = (t - c[0]) / c[1];
+        mella += c[2] * Math.exp(-d * d);
+      });
+      return maximo * (0.08 + 0.92 * Math.pow(Math.sin(Math.PI * t), 0.35)) * pulso * mella;
     };
   }
 
   function construir(d, indice) {
     var ancho = d.clientWidth - parseFloat(getComputedStyle(d).paddingLeft) * 2;
     if (ancho <= 0) return;
-    var alto = window.innerWidth < 700 ? 36 : 44;
+    var estrecho = window.innerWidth < 700;
+    var alto = estrecho ? 26 : 32;
     var semilla = parseInt(d.dataset.semilla, 10) || 1;
     var geo = horizontal(semilla, ancho, alto);
     var azar = aleatorio(semilla * 7 + 3);
-    var maximo = window.innerWidth < 700 ? 3.6 : 5;
+    var maximo = estrecho ? 1.9 : 2.4;
     var id = 'grieta-' + indice;
 
     var svg = nodo('svg', {
@@ -361,17 +389,34 @@
     nodo('stop', { offset: '0', 'stop-color': '#fff6d8', 'stop-opacity': '0' }, brilloGrad);
     nodo('stop', { offset: '0.5', 'stop-color': '#fffbea', 'stop-opacity': '0.95' }, brilloGrad);
     nodo('stop', { offset: '1', 'stop-color': '#fff6d8', 'stop-opacity': '0' }, brilloGrad);
+    // Oro con reflejos a lo largo: tonos que cambian como en el metal batido
+    var oroGrad = nodo('linearGradient', { id: id + '-oro', gradientUnits: 'userSpaceOnUse', x1: 0, x2: ancho, y1: 0, y2: 0 }, defs);
+    var tonos = ['#a37a1c', '#c99f36', '#e3c46a', '#b78c27', '#d8b551', '#9c741a'];
+    for (var o = 0; o <= 12; o++) {
+      nodo('stop', { offset: (o / 12).toFixed(3), 'stop-color': tonos[Math.floor(azar() * tonos.length)] }, oroGrad);
+    }
+    // Los extremos se desvanecen en vez de cortarse en seco
+    var fundido = nodo('linearGradient', { id: id + '-fundido', x1: '0', x2: '1', y1: '0', y2: '0' }, defs);
+    nodo('stop', { offset: '0', 'stop-color': '#fff', 'stop-opacity': '0' }, fundido);
+    nodo('stop', { offset: '0.07', 'stop-color': '#fff', 'stop-opacity': '1' }, fundido);
+    nodo('stop', { offset: '0.93', 'stop-color': '#fff', 'stop-opacity': '1' }, fundido);
+    nodo('stop', { offset: '1', 'stop-color': '#fff', 'stop-opacity': '0' }, fundido);
+    var mascara = nodo('mask', { id: id + '-mascara', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: ancho, height: alto }, defs);
+    nodo('rect', { x: 0, y: 0, width: ancho, height: alto, fill: 'url(#' + id + '-fundido)' }, mascara);
 
     var cintas = [cinta(geo.principal, grosorPrincipal(azar, maximo))];
     geo.ramas.forEach(function (r) {
-      var base = maximo * (0.45 + azar() * 0.2);
-      cintas.push(cinta(r, function (t) { return base * Math.pow(1 - t, 0.8) + 0.3; }));
+      var base = maximo * (0.5 + azar() * 0.2);
+      cintas.push(cinta(r, function (t) { return base * Math.pow(1 - t, 0.9) + 0.15; }));
     });
 
-    // Capas, de abajo arriba: hueco en sombra, oro y filo de luz
-    var capas = nodo('g', { 'clip-path': 'url(#' + id + '-abierto)' }, svg);
+    // Capas, de abajo arriba: fisuras sin reparar, la sombra fina de la
+    // grieta, el oro, su núcleo claro y el filo que recibe la luz
+    var capas = nodo('g', { 'clip-path': 'url(#' + id + '-abierto)', mask: 'url(#' + id + '-mascara)' }, svg);
+    var fisuras = nodo('g', { class: 'grieta__fisuras' }, capas);
+    geo.fisuras.forEach(function (f) { nodo('path', { d: trazado(f) }, fisuras); });
     var sombra = nodo('g', { class: 'grieta__sombra' }, capas);
-    var oro = nodo('g', { class: 'grieta__oro' }, capas);
+    var oro = nodo('g', { class: 'grieta__oro', fill: 'url(#' + id + '-oro)' }, capas);
     var nucleo = nodo('g', { class: 'grieta__nucleo' }, capas);
     var luz = nodo('g', { class: 'grieta__luz' }, capas);
     cintas.forEach(function (c) {
@@ -384,7 +429,7 @@
     });
     var destello = nodo('g', { 'clip-path': 'url(#' + id + '-recorte)' }, capas);
     var brillo = nodo('rect', { class: 'grieta__brillo', x: -140, y: 0, width: 140, height: alto, fill: 'url(#' + id + '-brillo)' }, destello);
-    var chispa = nodo('circle', { class: 'grieta__chispa', r: maximo * 0.9, cx: 0, cy: alto / 2 }, svg);
+    var chispa = nodo('circle', { class: 'grieta__chispa', r: maximo * 0.8, cx: 0, cy: alto / 2 }, svg);
 
     d.innerHTML = '';
     d.appendChild(svg);

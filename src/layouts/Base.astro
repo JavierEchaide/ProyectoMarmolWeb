@@ -4,8 +4,10 @@
 import Greca from '../components/Greca.astro';
 import { sitio, pagina as buscarPagina, paginasActivas } from '../data/sitio.js';
 
-const { id, descripcion = sitio.descripcion, scripts = [] } = Astro.props;
-const pagina = buscarPagina(id);
+// base: solo para la página 404, que Vercel sirve en cualquier dirección
+// (también en /algo/mal), donde las rutas relativas no encontrarían nada.
+const { id, descripcion = sitio.descripcion, scripts = [], base, pagina: propia } = Astro.props;
+const pagina = buscarPagina(id) ?? propia;
 const titulo = id === 'portada' ? `${sitio.nombre} · ${sitio.autor}` : `${pagina.titulo} · ${sitio.nombre}`;
 const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archivo, sitio.url).href;
 ---
@@ -13,6 +15,8 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
 <html lang="es" data-pagina={id}>
   <head>
     <meta charset="utf-8" />
+    {base && <base href={base} />}
+    {propia && <meta name="robots" content="noindex" />}
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />

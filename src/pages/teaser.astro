@@ -1,9 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import Imagen from '../components/Imagen.astro';
-import Tarjeta from '../components/Tarjeta.astro';
 import Grieta from '../components/Grieta.astro';
 import TituloSeccion from '../components/TituloSeccion.astro';
+import { pagina } from '../data/sitio.js';
 import Siguiente from '../components/Siguiente.astro';
 import { teaser } from '../data/teaser.js';
 
@@ -11,7 +11,7 @@ const { video, rima } = teaser;
 ---
 <Base id="teaser" descripcion="El teaser de 30 segundos de Serie Mármol, hecho en Blender con Cycles." scripts={['js/teaser.js']}>
   <div class="contenedor cabecera-pagina">
-    <TituloSeccion titulo="Teaser" nivel={1} />
+    <TituloSeccion titulo="Teaser" nivel={1} numero={pagina('teaser').numero} />
   </div>
 
   <section class="cine" aria-label="Reproductor del teaser">
@@ -44,14 +44,16 @@ const { video, rima } = teaser;
     </div>
     <div class="teaser-info__ficha">
       <h2 class="antetitulo" data-revelar>Ficha técnica</h2>
-      <ul class="ficha">
-        {teaser.ficha.map((f, i) => (
-          <Tarjeta etiqueta="li" clase="ficha__item">
-            <h3 class="ficha__titulo">{f.titulo}</h3>
-            {f.lineas.map((l, j) => <p class:list={{ ficha__secundaria: j > 0 }}>{l}</p>)}
-          </Tarjeta>
+      <dl class="ficha" data-revelar>
+        {teaser.ficha.map((f) => (
+          <div class="ficha__fila">
+            <dt class="ficha__titulo">{f.titulo}</dt>
+            <dd class="ficha__valor">
+              {f.lineas.map((l, j) => <p class:list={{ ficha__secundaria: j > 0 }}>{l}</p>)}
+            </dd>
+          </div>
         ))}
-      </ul>
+      </dl>
     </div>
   </section>
 
