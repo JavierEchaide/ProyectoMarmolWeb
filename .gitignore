@@ -9,3 +9,6 @@ dist/
 .claude/
 .taste-skill/
 skills-lock.json
+
+# Capturas de las pruebas automáticas
+pruebas/capturas/
