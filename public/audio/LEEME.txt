@@ -1,0 +1,4 @@
+Aquí va la pista del reproductor de música: darkness-is-coming.mp3
+("Darkness is Coming", Kevin MacLeod, incompetech.com, CC BY 4.0), a unos 128 kbps.
+La descarga y la sube Javi. Mientras no esté, el botón se queda apagado.
+Los datos de la pista y su crédito están en src/data/musica.js.

@@ -1,17 +1,20 @@
 ---
-// Comparador antes / después: se arrastra la línea central (o se usan las
-// flechas del teclado sobre el control) para descubrir una u otra imagen.
+// Comparador con una línea que se arrastra (ratón, dedo o flechas del teclado
+// sobre el control) para descubrir una u otra imagen. js/site.js, bloque 6.
+// Props: antes, despues (imágenes), titulo, ratio, y las etiquetas de cada
+// lado (por defecto "Antes" / "Después"; en la rima del Teaser, "En el
+// bosque" / "En la jaula").
 import Imagen from './Imagen.astro';
-const { antes, despues, titulo, ratio = '16 / 9' } = Astro.props;
+const { antes, despues, titulo, ratio = '16 / 9', etiquetaAntes = 'Antes', etiquetaDespues = 'Después' } = Astro.props;
 ---
 <div class="comparador" data-comparador style="--corte: 50%">
   <div class="comparador__capa comparador__capa--despues">
     <Imagen imagen={despues} ratio={ratio} />
-    <span class="comparador__etiqueta comparador__etiqueta--der">Después</span>
+    <span class="comparador__etiqueta comparador__etiqueta--der">{etiquetaDespues}</span>
   </div>
   <div class="comparador__capa comparador__capa--antes" aria-hidden="false">
     <Imagen imagen={antes} ratio={ratio} />
-    <span class="comparador__etiqueta">Antes</span>
+    <span class="comparador__etiqueta">{etiquetaAntes}</span>
   </div>
   <span class="comparador__linea" aria-hidden="true"><span class="comparador__asa"></span></span>
   <input
@@ -20,7 +23,7 @@ const { antes, despues, titulo, ratio = '16 / 9' } = Astro.props;
     min="0"
     max="100"
     value="50"
-    aria-label={`Comparar antes y después: ${titulo}`}
+    aria-label={`Comparar ${etiquetaAntes.toLowerCase()} y ${etiquetaDespues.toLowerCase()}: ${titulo}`}
     data-comparador-control
   />
 </div>

@@ -13,8 +13,10 @@ const { premisa, partes, final } = historia;
 const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
 ---
 <Base id="historia" descripcion="Resumen de la historia de Serie Mármol, con los spoilers tapados." scripts={['js/historia.js']}>
-  {/* Cabecera de mármol: el cursor abre una grieta-ventana a otro mundo (js/historia.js) */}
+  {/* Cabecera de mármol: al pulsarla (clic, toque o teclado) se abre una
+      grieta-ventana a otro mundo; al pulsar otra vez, se cierra (js/historia.js) */}
   <header class="ventana" data-ventana>
+    <button class="ventana__boton" type="button" aria-pressed="false" aria-label="Abrir en el mármol una ventana a otro mundo" data-ventana-boton></button>
     <div class="ventana__mundo" data-ventana-mundo aria-hidden="true">
       {historia.ventana.src ? (
         <img src={historia.ventana.src} alt="" decoding="async" />
@@ -27,18 +29,38 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
       <div class="ventana__cartela">
         <TituloSeccion titulo="Historia" nivel={1} numero={pagina('historia').numero} />
         <p class="ventana__lema">Las criaturas no nacen: se tallan.</p>
-        <p class="ventana__pista">Pasa el cursor por el mármol: detrás hay otros mundos.</p>
+        <p class="ventana__pista">
+          <span class="ventana__pista--raton">Pulsa el mármol: detrás hay otros mundos.</span>
+          <span class="ventana__pista--tactil">Toca el mármol: detrás hay otros mundos.</span>
+        </p>
       </div>
     </div>
   </header>
 
+  {/* Nivel 1 · Premisa: bloque corto con la imagen clave. Premisa, influencias
+      e idea del kintsugi van separadas. */}
   <section class="contenedor premisa" aria-labelledby="titulo-premisa">
-    <div class="premisa__texto" data-revelar>
+    <div class="premisa__texto texto-largo" data-revelar>
       <h2 id="titulo-premisa" class="antetitulo">{premisa.titulo}</h2>
       {premisa.parrafos.map((p, i) => <p class:list={{ premisa__entrada: i === 0 }}>{p}</p>)}
+      <p class="premisa__terminologia">{premisa.terminologia}</p>
     </div>
     <div class="premisa__imagen" data-revelar>
       <Imagen imagen={premisa.imagen} ratio="4 / 5" ver pie={premisa.imagen.alt} />
+    </div>
+    <div class="premisa__apartes" data-revelar>
+      <div class="premisa__aparte">
+        <h3 class="antetitulo">{premisa.influencias.titulo}</h3>
+        {premisa.influencias.texto ? (
+          <p>{premisa.influencias.texto}</p>
+        ) : (
+          <p class="hueco-texto"><span class="hueco-texto__insignia">Placeholder</span>{premisa.influencias.placeholder}</p>
+        )}
+      </div>
+      <div class="premisa__aparte premisa__aparte--kintsugi">
+        <h3 class="antetitulo">{premisa.kintsugi.titulo}</h3>
+        <p>{premisa.kintsugi.texto}</p>
+      </div>
     </div>
   </section>
 
@@ -48,7 +70,7 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
     <TituloSeccion titulo="Las seis partes" id="titulo-partes">
       <div class="aviso-spoiler">
         <p>Las partes {tapadas.join(', ').replace(/, ([^,]*)$/, ' y $1')} y el final están tapados. Pulsa un cartel para descubrirlo.</p>
-        <button class="boton boton--pequeno" type="button" data-spoiler-todos aria-pressed="false">Mostrar todos</button>
+        <button class="boton boton--pequeno" type="button" data-spoiler-todos>Mostrar todos</button>
       </div>
     </TituloSeccion>
 
@@ -61,11 +83,18 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
       {partes.map((p, i) => (
         <Tarjeta etiqueta="li" clase={`parte parte--${i < 2 ? 'pura' : i < 4 ? 'rota' : 'oro'}`}>
           <span class="parte__nodo" aria-hidden="true"><span>{p.numero}</span></span>
-          <p class="parte__numero">Parte {p.numero}</p>
+          <p class="parte__numero"><span class="parte__numero-etiqueta">Parte</span> <span class="parte__numero-cifra">{p.numero}</span></p>
           <Spoiler activo={p.spoiler} semilla={40 + i} descripcion={`la parte ${p.numero}`}>
             <Imagen imagen={p.imagen} ratio="4 / 3" ver={!p.spoiler} grupo="partes" pie={`Parte ${p.numero}. ${p.titulo}`} />
             <h3 class="parte__titulo">{p.titulo}</h3>
-            <p class="parte__texto">{p.texto}</p>
+            <p class="parte__resumen">{p.resumen}{historia.resumenBorrador && <span class="borrador">Borrador</span>}</p>
+            <button class="parte__mas" type="button" aria-expanded="false" aria-controls={`parte-${p.numero}-completa`} data-leer-mas>
+              <span data-leer-mas-texto>Leer más</span><span class="oculto">: parte {p.numero}, {p.titulo}</span>
+              <span class="bloque__chevron" aria-hidden="true"></span>
+            </button>
+            <div class="parte__completa" id={`parte-${p.numero}-completa`} data-leer-mas-cuerpo>
+              <p class="parte__texto">{p.texto}</p>
+            </div>
           </Spoiler>
         </Tarjeta>
       ))}
@@ -73,8 +102,11 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
     </div>
   </section>
 
+  <Grieta semilla={63} />
+
+  {/* Nivel 3 · El final: sección aparte, tapada, con la cita como remate */}
   <section class="contenedor seccion final" aria-labelledby="titulo-final">
-    <TituloSeccion titulo={final.titulo} id="titulo-final" />
+    <TituloSeccion antetitulo="Spoiler" titulo={final.titulo} id="titulo-final" />
     <Spoiler semilla={77} texto="Spoiler · El final" descripcion="el final">
       <div class="final__cuerpo">
         {final.parrafos.map((p) => <p>{p}</p>)}

@@ -1,4 +1,4 @@
-/* SPOILER: destapar todos, alturas, volver a taparlos y romper uno; también con "reducir movimiento".
+/* SPOILER: romper uno, destapar todos y comprobar que NO se pueden volver a tapar (V2); también con "reducir movimiento".
    Uso: ver NOTA-WEB.md, apartado "Pruebas". Necesita la web servida en BASE
    (por defecto http://localhost:4400) y Playwright con Chromium. */
 const BASE = process.env.BASE || 'http://localhost:4400';
@@ -16,19 +16,27 @@ const { chromium } = require('playwright');
     await page.goto(BASE + '/historia.html');
     await page.waitForTimeout(500);
     const estado = () => page.evaluate(() => [...document.querySelectorAll('.spoiler--activo')].map((s) => s.dataset.spoiler + (s.classList.contains('destapado') ? '+' : '')).join(','));
-    await page.click('[data-spoiler-todos]');
-    await page.waitForTimeout(3200);
-    const a = await estado();
-    const alturas = await page.evaluate(() => [...document.querySelectorAll('.spoiler--activo .spoiler__contenido')].map((c) => c.offsetHeight).join(','));
-    await page.click('[data-spoiler-todos]');
-    await page.waitForTimeout(1200);
-    const b2 = await estado();
-    const visibles = await page.evaluate(() => [...document.querySelectorAll('.spoiler--activo .spoiler__tapa')].map((t) => getComputedStyle(t).display + '/' + getComputedStyle(t.querySelector('.spoiler__cara')).visibility).join(','));
-    await page.locator('.spoiler--activo').first().locator('.spoiler__tapa').click();
+    // 1. Romper uno con el teclado (el cartel es un <button>: Enter)
+    await page.locator('.spoiler--activo').first().locator('.spoiler__tapa').focus();
+    await page.keyboard.press('Enter');
     await page.waitForTimeout(2600);
+    const a = await estado();
+    // 2. Mostrar todos
+    await page.click('[data-spoiler-todos]');
+    await page.waitForTimeout(3400);
+    const b2 = await estado();
+    const alturas = await page.evaluate(() => [...document.querySelectorAll('.spoiler--activo .spoiler__contenido')].map((c) => c.offsetHeight).join(','));
+    // 3. No hay control para volver a taparlos: el botón queda desactivado
+    const boton = await page.evaluate(() => { const b = document.querySelector('[data-spoiler-todos]'); return b.textContent + (b.disabled ? ' (desactivado)' : ' (ACTIVO)'); });
+    await page.click('[data-spoiler-todos]', { force: true }).catch(() => {});
+    await page.waitForTimeout(600);
     const c = await estado();
-    const boton = await page.textContent('[data-spoiler-todos]');
-    console.log(reducido ? 'REDUCIDO' : 'NORMAL', '\n tras mostrar:', a, '\n alturas:', alturas, '\n tras tapar:', b2, '\n tapas:', visibles, '\n tras romper 1:', c, '\n boton:', boton, '\n errores:', err.length ? err : 'ninguno');
+    const hayTapar = await page.evaluate(() => /volver a tapar/i.test(document.body.textContent));
+    // 4. Al recargar vuelven a estar tapados
+    await page.reload(); await page.waitForTimeout(500);
+    const d = await estado();
+    const ok = !/(^|,)tapado/.test(b2) && b2 === c && !hayTapar && /^tapado(,tapado)*$/.test(d) && /desactivado/.test(boton);
+    console.log(reducido ? 'REDUCIDO' : 'NORMAL', '\n tras romper 1 (Enter):', a, '\n tras mostrar todos:', b2, '\n alturas:', alturas, '\n botón:', boton, '\n tras pulsarlo otra vez:', c, '\n texto "volver a tapar":', hayTapar, '\n tras recargar:', d, '\n correcto:', ok, '\n errores:', err.length ? err : 'ninguno');
     await ctx.close();
   }
   await b.close();

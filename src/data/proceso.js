@@ -5,11 +5,34 @@
 // El estado de cada bloque se calcula solo a partir de sus semanas.
 // Para añadir lo hecho en una semana: rellenar su lista `registro`.
 
-const img = (falta, alt = falta) => ({ src: null, alt, falta });
+// semana: id de la semana en la que está previsto tener la imagen (opcional)
+const img = (falta, semana, alt = falta) => ({ src: null, alt, falta, semana });
 
 export const proceso = {
   intro:
-    'El proyecto se planificó en 35 semanas, de septiembre de 2026 a mayo de 2027, con un registro semanal de lo que se hace y cuánto se tarda. Arriba está lo pulido: el calendario, las referencias, el antes y el después y la pipeline. Abajo, plegado, el archivo completo con los WIPs, las versiones viejas y los fallos.',
+    'El proyecto se planificó en 35 semanas, de septiembre de 2026 a mayo de 2027, con un registro semanal de lo que se hace y cuánto se tarda. Primero va el estado y lo pulido: el desarrollo visual y el método. Después, el calendario semana a semana y, plegado, el archivo con los WIPs, las versiones viejas, los fallos y el cuaderno.',
+
+  // Estado: la semana, la barra, la fase y el próximo hito salen solos de los
+  // estados de las semanas. Lo único que se escribe a mano es el último
+  // resultado (una frase). Mientras sea null se ve el hueco.
+  estado: {
+    ultimoResultado: null,
+    faltaResultado: 'Aquí va, en una frase, el último resultado que se puede enseñar (un plano cerrado, un render, una prueba).',
+  },
+
+  // Desarrollo visual: tarjetas cortas de sets y Creador (versión pública, sin
+  // spoilers de las partes III a VI ni del final). VACÍO A PROPÓSITO: se
+  // añadirán más adelante. Formato de cada una:
+  //   { titulo: 'El Taller', borrador: true, texto: '2-3 frases.', imagen: img('Qué render va', 'S16') }
+  desarrolloVisual: [],
+
+  // Dato de render del método (test de S02)
+  render: {
+    propio: '57 s',
+    fabrica: '4 min 12 s',
+    calculo: '720 fotogramas × 57 s ≈ 11,4 h de render',
+    nota: 'Por fotograma, con ajustes propios frente a los de fábrica. La medida se repite con la escena real en S16.',
+  },
 
   bloques: [
     {
@@ -53,7 +76,7 @@ export const proceso = {
         { semana: 'S06', fechas: '26/10–01/11', plan: 'Lista de planos y assets · color script', estado: 'pendiente', registro: [] },
       ],
       capturas: [
-        { titulo: 'Storyboard', texto: 'Los nueve planos del teaser.', imagen: img('Storyboard o thumbnails de los 9 planos') },
+        { titulo: 'Storyboard', texto: 'Los nueve planos del teaser.', imagen: img('Storyboard o thumbnails de los 9 planos', 'S03') },
       ],
     },
     {
@@ -164,7 +187,8 @@ export const proceso = {
     },
     {
       categoria: 'Materiales',
-      portada: img('Referencia de mármol Rosso Levanto'),
+      // La muestra de mármol es un objeto del taller: se ve la textura (provisional)
+      portada: { src: 'img/marmol/marmol.webp', alt: 'Muestra de mármol Rosso Levanto.', falta: 'Muestra de mármol Rosso Levanto' },
       items: [
         { titulo: 'Rosso Levanto', que: 'Mármol blanco con vetas granate y craquelado blanco.', cojo: 'Las vetas y la paleta crema, rojo y oro de esta web.', donde: 'Solo en la web. Las criaturas de la historia no tienen vetas: son blanco mate, plata y azul claro.', imagen: img('Muestra de mármol Rosso Levanto') },
       ],
@@ -174,6 +198,13 @@ export const proceso = {
       portada: img('Captura de la ficha de la pista en incompetech'),
       items: [
         { titulo: 'Darkness is Coming', que: 'Pista de Kevin MacLeod (incompetech), licencia CC BY 4.0. Oscura, épica, 73 bpm.', cojo: 'La pista completa como música candidata del teaser. Provisional.', donde: 'Banda sonora del teaser, con el crédito que exige la licencia.', imagen: img('Captura de la ficha de la pista con el logo CC') },
+      ],
+    },
+    {
+      categoria: 'Narrativa',
+      portada: img('Referencia destacada de narrativa'),
+      items: [
+        { titulo: 'Attack on Titan', que: 'Manga y anime de Hajime Isayama.', cojo: 'Su premisa, dada la vuelta: aquí los monstruos no son armas por diseño, son arte que el mundo corrompe.', donde: 'La premisa de la serie.', imagen: img('Imagen de referencia de Attack on Titan') },
       ],
     },
     {
@@ -197,14 +228,14 @@ export const proceso = {
     {
       titulo: 'Del blockout al render',
       texto: 'El taller con primitivas en la previz y el mismo encuadre renderizado.',
-      antes: img('Blockout del taller (S04)'),
-      despues: img('Render final del mismo encuadre'),
+      antes: img('Blockout del taller (S04)', 'S04'),
+      despues: img('Render final del mismo encuadre', 'S28'),
     },
     {
       titulo: 'La criatura',
       texto: 'De la primera silueta en 3D al diseño final.',
-      antes: img('Primer diseño 3D de la criatura (S07)'),
-      despues: img('Criatura terminada'),
+      antes: img('Primer diseño 3D de la criatura (S07)', 'S07'),
+      despues: img('Criatura terminada', 'S15'),
     },
   ],
 
@@ -221,9 +252,9 @@ export const proceso = {
 
   archivo: {
     wips: [
-      img('WIP: blockout del taller'),
-      img('WIP: blockout del bosque'),
-      img('WIP: blockout de la bodega'),
+      img('WIP: blockout del taller', 'S04'),
+      img('WIP: blockout del bosque', 'S04'),
+      img('WIP: blockout de la bodega', 'S04'),
       img('WIP: escena del test de render (S02)'),
     ],
     versiones: [

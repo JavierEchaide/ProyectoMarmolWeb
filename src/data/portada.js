@@ -1,6 +1,7 @@
 // Contenido de la Portada.
-// Imágenes: { src, alt, falta }. Mientras `src` sea null se ve un
-// placeholder con el texto de `falta` (qué render tiene que ir ahí).
+// Imágenes: { src, alt, falta, semana }. Mientras `src` sea null se ve un
+// placeholder con el texto de `falta` (qué render tiene que ir ahí) y la
+// semana del calendario en la que está previsto (propuesta; ver proceso.js).
 // Para poner la imagen real: copiarla a public/img/... y rellenar `src`.
 
 export const portada = {
@@ -34,30 +35,33 @@ export const portada = {
     video: null,
   },
 
+  // Texto del botón que lleva al Teaser
+  boton: 'Ver el teaser',
+
   // Cada frase va en su propia línea
   gancho: 'Él las talló perfectas. Nunca bajó a mirar.',
 
   presentacion: [
-    'Serie Mármol (título provisional) es una serie de animación sobre un dios escultor que talla criaturas en mármol, las deja caer en el mundo más bonito que encuentra y nunca vuelve a mirar qué hacemos con ellas.',
+    'Serie Mármol (título provisional) es una serie de animación sobre un Creador que talla criaturas en mármol, las deja caer en el mundo más bonito que encuentra y nunca vuelve a mirar qué hacemos con ellas.',
     'Esta web acompaña al teaser de 30 segundos hecho en Blender: resume la historia de la serie y enseña cómo se ha hecho el proyecto, semana a semana.',
   ],
 
   fotogramas: [
     {
       pie: 'Un taller fuera del mundo, lleno de ventanas.',
-      imagen: { src: null, alt: 'El Creador de espaldas ante una ventana del taller.', falta: 'Render: el Creador de espaldas ante la ventana' },
+      imagen: { src: null, alt: 'El Creador de espaldas ante una ventana del taller.', falta: 'Render: el Creador de espaldas ante la ventana', semana: 'S28' },
     },
     {
       pie: 'De su cara solo se ven los ojos.',
-      imagen: { src: null, alt: 'Los ojos del Creador en primer plano.', falta: 'Render: los ojos del Creador en primer plano' },
+      imagen: { src: null, alt: 'Los ojos del Creador en primer plano.', falta: 'Render: los ojos del Creador en primer plano', semana: 'S28' },
     },
     {
       pie: 'En un bosque alto, algo nuevo abre los ojos.',
-      imagen: { src: null, alt: 'La criatura pura en un claro del bosque.', falta: 'Render: la criatura en el bosque' },
+      imagen: { src: null, alt: 'La criatura pura en un claro del bosque.', falta: 'Render: la criatura en el bosque', semana: 'S28' },
     },
     {
       pie: 'Lejos de allí, la misma criatura, encerrada.',
-      imagen: { src: null, alt: 'La jaula con la criatura en la bodega del barco.', falta: 'Render: la jaula en la bodega del barco' },
+      imagen: { src: null, alt: 'La jaula con la criatura en la bodega del barco.', falta: 'Render: la jaula en la bodega del barco', semana: 'S28' },
     },
   ],
 
@@ -69,21 +73,21 @@ export const portada = {
       subtitulo: '30 s',
       frase: 'Treinta segundos, tres lugares y una ventana.',
       piedra: 'negra', // mármol de la carta: 'negra', 'rosso' o 'dorada'
-      imagen: { src: null, alt: 'Fotograma del teaser.', falta: 'Fotograma del teaser para la tarjeta' },
+      imagen: { src: null, alt: 'Fotograma del teaser.', falta: 'Fotograma del teaser para la tarjeta', semana: 'S28' },
     },
     {
       pagina: 'historia',
       subtitulo: 'Resumen',
       frase: 'Seis partes y un final, con los spoilers tapados.',
       piedra: 'rosso',
-      imagen: { src: null, alt: 'Imagen de la historia.', falta: 'Render o fotograma para la tarjeta de Historia' },
+      imagen: { src: null, alt: 'Imagen de la historia.', falta: 'Render o fotograma para la tarjeta de Historia', semana: 'S28' },
     },
     {
       pagina: 'proceso',
       subtitulo: 'Cómo se hizo',
       frase: 'Treinta y cinco semanas, apuntadas una a una.',
       piedra: 'dorada',
-      imagen: { src: null, alt: 'Captura del proceso en Blender.', falta: 'Captura de Blender para la tarjeta de Proceso' },
+      imagen: { src: null, alt: 'Captura del proceso en Blender.', falta: 'Captura de Blender para la tarjeta de Proceso', semana: 'S04' },
     },
   ],
 
@@ -94,6 +98,7 @@ export const portada = {
       src: null,
       alt: 'Autorretrato 3D de Javier Echaide con estética de estatua.',
       falta: 'Render: autorretrato 3D con estética de estatua y calavera (vertical 3:4)',
+      semana: 'S34',
     },
     // El busto 3D que se abre (src/3d/busto.js). Ahora son tres esferas
     // provisionales. Para el modelo real: un .glb con tres objetos llamados

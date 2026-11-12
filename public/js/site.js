@@ -2,11 +2,12 @@
    Sin librerías y sin módulos (script clásico) para que la web funcione
    también abriendo los .html desde un USB, sin servidor.
 
-   1. Menú a pantalla completa
+   1. Menú a pantalla completa y atajos de teclado
    2. Transición entre páginas (cortina)
    3. Aparición al hacer scroll
    4. Visor de imágenes y vídeo
    5. Diálogos (referencias de Proceso)
+   6. Comparadores (la rima del Teaser, antes/después de Proceso)
 */
 (function () {
   'use strict';
@@ -54,6 +55,58 @@
           cerrarMenu(true);
         }
       });
+    });
+  }
+
+  /* Atajos de teclado: 1 a 4 saltan a cada sala (en el orden del menú) y M
+     abre y cierra el menú. No se disparan con Ctrl, Alt o Meta, ni escribiendo
+     en un campo de texto, ni con un diálogo abierto (visor, referencias), ni
+     durante la intro de la Portada (ahí cualquier tecla la salta). Se apagan
+     con el interruptor "Atajos" del menú; la elección dura lo que la pestaña
+     (sessionStorage). */
+  var CLAVE_ATAJOS = 'marmol-atajos';
+  var interruptor = document.querySelector('[data-atajos]');
+  var atajos = true;
+  try { atajos = sessionStorage.getItem(CLAVE_ATAJOS) !== 'no'; } catch (e) {}
+
+  function pintarAtajos() {
+    html.classList.toggle('sin-atajos', !atajos);
+    if (interruptor) interruptor.setAttribute('aria-checked', atajos ? 'true' : 'false');
+  }
+  pintarAtajos();
+  if (interruptor) {
+    interruptor.addEventListener('click', function () {
+      atajos = !atajos;
+      try { sessionStorage.setItem(CLAVE_ATAJOS, atajos ? 'si' : 'no'); } catch (e) {}
+      pintarAtajos();
+    });
+  }
+
+  function escribiendo(el) {
+    if (!el || el === document.body) return false;
+    if (el.isContentEditable) return true;
+    if (el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return true;
+    return el.tagName === 'INPUT' && !/^(range|checkbox|radio|button|submit|reset)$/.test(el.type);
+  }
+
+  if (botonMenu && menu) {
+    document.addEventListener('keydown', function (e) {
+      if (!atajos || e.defaultPrevented || e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
+      if (html.classList.contains('intro-activa') || html.classList.contains('saliendo')) return;
+      if (escribiendo(e.target) || document.querySelector('dialog[open]')) return;
+      var tecla = e.key.length === 1 ? e.key.toLowerCase() : '';
+      if (tecla === 'm') {
+        e.preventDefault();
+        if (html.classList.contains('menu-abierto')) cerrarMenu(true);
+        else abrirMenu();
+        return;
+      }
+      if (tecla >= '1' && tecla <= '9') {
+        var enlace = menu.querySelectorAll('.menu__item a')[parseInt(tecla, 10) - 1];
+        if (!enlace) return;
+        e.preventDefault();
+        enlace.click(); // misma cortina que con el ratón; si es la sala actual, solo cierra el menú
+      }
     });
   }
 
@@ -330,5 +383,18 @@
       var fuera = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
       if (fuera) e.target.close();
     }
+  });
+
+  /* 6. Comparadores ------------------------------------------------------ */
+  /* El control es un <input type="range"> invisible encima de la imagen:
+     funciona con ratón, dedo y teclado. */
+  document.querySelectorAll('[data-comparador]').forEach(function (c) {
+    var control = c.querySelector('[data-comparador-control]');
+    function actualizar() {
+      c.style.setProperty('--corte', control.value + '%');
+      c.style.setProperty('--corte-num', control.value / 100);
+    }
+    control.addEventListener('input', actualizar);
+    actualizar();
   });
 })();

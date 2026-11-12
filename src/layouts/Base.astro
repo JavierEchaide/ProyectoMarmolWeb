@@ -2,14 +2,22 @@
 // Plantilla común de todas las páginas: <head>, cabecera, menú, cortina de
 // transición, visor de imágenes y pie. Cada página solo aporta su <main>.
 import Greca from '../components/Greca.astro';
+import IndicadorSala from '../components/IndicadorSala.astro';
+import Musica from '../components/Musica.astro';
 import { sitio, pagina as buscarPagina, paginasActivas } from '../data/sitio.js';
 
 // base: solo para la página 404, que Vercel sirve en cualquier dirección
 // (también en /algo/mal), donde las rutas relativas no encontrarían nada.
-const { id, descripcion = sitio.descripcion, scripts = [], base, pagina: propia } = Astro.props;
+// subtitulo y archivo: para páginas que cuelgan de una sala (los registros
+// semanales de Proceso): cambian el <title> y la dirección canónica.
+const { id, descripcion = sitio.descripcion, scripts = [], base, pagina: propia, subtitulo, archivo } = Astro.props;
 const pagina = buscarPagina(id) ?? propia;
-const titulo = id === 'portada' ? `${sitio.nombre} · ${sitio.autor}` : `${pagina.titulo} · ${sitio.nombre}`;
-const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archivo, sitio.url).href;
+// Sala: lo que da a cada página su identidad (ver "Salas" en site.css).
+// La 404 no es una sala y mantiene el aspecto común.
+const sala = buscarPagina(id) ? id : undefined;
+const titulo = id === 'portada' ? `${sitio.nombre} · ${sitio.autor}` : `${subtitulo ? `${subtitulo} · ` : ''}${pagina.titulo} · ${sitio.nombre}`;
+const propioArchivo = archivo ?? pagina.archivo;
+const urlCanonica = new URL(propioArchivo === 'index.html' ? '' : propioArchivo, sitio.url).href;
 ---
 <!doctype html>
 <html lang="es" data-pagina={id}>
@@ -29,7 +37,7 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />
     <meta property="og:url" content={urlCanonica} />
-    <meta property="og:image" content={`${sitio.url}/img/og.jpg`} />
+    <meta property="og:image" content={`${sitio.url}/${pagina.og ?? 'img/og.jpg'}`} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -53,7 +61,7 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
       })();
     </script>
   </head>
-  <body>
+  <body data-sala={sala}>
     <a class="saltar" href="#contenido">Saltar al contenido</a>
 
     <svg class="defs" aria-hidden="true" focusable="false" width="0" height="0">
@@ -69,9 +77,12 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
     </svg>
 
     <header class="cabecera">
-      <a class="cabecera__marca" href="index.html">
-        <span>Mármol</span><span class="cabecera__punto" aria-hidden="true">·</span><span>{pagina.titulo}</span>
-      </a>
+      <div class="cabecera__izquierda">
+        <a class="cabecera__marca" href="index.html" aria-label="Mármol: ir a la Portada">
+          <span>Mármol</span>{!sala && <><span class="cabecera__punto" aria-hidden="true">·</span><span>{pagina.titulo}</span></>}
+        </a>
+        <IndicadorSala actual={id} />
+      </div>
       <button class="boton-menu" type="button" aria-expanded="false" aria-controls="menu" data-boton-menu>
         <span class="boton-menu__icono" aria-hidden="true"><span></span><span></span></span>
         <span class="boton-menu__texto" data-texto-menu>Menú</span>
@@ -89,22 +100,35 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
       </div>
       <nav class="menu__lista" aria-label="Páginas">
         <ol>
-          {paginasActivas().map((p) => (
+          {paginasActivas().map((p, i) => (
             <li class="menu__item">
-              <a href={p.archivo} aria-current={p.id === id ? 'page' : undefined}>
+              <a href={p.archivo} aria-current={p.id === id ? (archivo ? 'true' : 'page') : undefined}>
                 <span class="menu__numero">{p.numero}</span>
                 <span class="menu__titulo">{p.titulo}</span>
                 <span class="menu__resumen">{p.id === id ? 'Estás aquí' : p.resumen}</span>
+                <kbd class="menu__tecla" aria-hidden="true" data-tecla>{i + 1}</kbd>
               </a>
             </li>
           ))}
         </ol>
+        {/* Atajos de teclado: se pueden apagar (WCAG 2.1.4). js/site.js, bloque 1 */}
+        <div class="atajos" data-atajos-zona>
+          <button class="atajos__interruptor" type="button" role="switch" aria-checked="true" data-atajos>
+            <span class="atajos__pista" aria-hidden="true"></span>
+            <span>Atajos de teclado</span>
+          </button>
+          <p class="atajos__ayuda" id="ayuda-atajos">
+            <kbd>1</kbd>–<kbd>{paginasActivas().length}</kbd> cambian de sala · <kbd>M</kbd> abre y cierra el menú · <kbd>Esc</kbd> lo cierra
+          </p>
+        </div>
       </nav>
     </div>
 
     <main id="contenido" tabindex="-1">
       <slot />
     </main>
+
+    {sala && <Musica />}
 
     <footer class="pie">
       <Greca ancho="total" />
@@ -138,6 +162,7 @@ const urlCanonica = new URL(pagina.archivo === 'index.html' ? '' : pagina.archiv
     <script is:inline src="js/grietas.js" defer></script>
     <script is:inline src="js/site.js" defer></script>
     <script is:inline src="js/tallado.js" defer></script>
+    {sala && <script is:inline src="js/musica.js" defer></script>}
     {scripts.map((s) => <script is:inline src={s} defer></script>)}
   </body>
 </html>

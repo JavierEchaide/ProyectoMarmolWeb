@@ -7,7 +7,9 @@
     "dev": "node scripts/construir-3d.mjs && astro dev",
     "build": "node scripts/construir-3d.mjs && astro build && node scripts/relativizar.mjs",
     "preview": "astro preview",
-    "3d": "node scripts/construir-3d.mjs"
+    "3d": "node scripts/construir-3d.mjs",
+    "placeholders": "node scripts/placeholders.mjs",
+    "exportar": "node scripts/exportar-vault.mjs"
   },
   "dependencies": {
     "astro": "^5.18.2",

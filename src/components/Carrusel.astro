@@ -1,0 +1,41 @@
+---
+// Carrusel de planos del Teaser: un fotograma grande y, debajo, una tira de
+// miniaturas. Al pulsar una miniatura cambia el grande con un fundido suave.
+// Nada rota solo. Flechas ← → con el foco dentro del carrusel, deslizar con
+// el dedo y clic en el grande para ampliarlo en el visor. js/teaser.js.
+// Sin JavaScript se ven todos los planos, uno debajo de otro.
+// Props: planos [{ plano, estado, pie, imagen }], titulo (nombre accesible)
+import Imagen from './Imagen.astro';
+const { planos, titulo = 'Fotogramas' } = Astro.props;
+---
+<div class="carrusel" data-carrusel role="group" aria-roledescription="carrusel" aria-label={titulo}>
+  <ol class="carrusel__escena" data-carrusel-escena>
+    {planos.map((f, i) => (
+      <li class:list={['carrusel__plano', { 'carrusel__plano--actual': i === 0 }]} data-carrusel-plano>
+        <figure>
+          <Imagen imagen={f.imagen} ratio="2.35 / 1" ver grupo="teaser" pie={`Plano ${f.plano}. ${f.pie}`} carga={i < 2 ? 'eager' : 'lazy'} />
+          <figcaption class="fotograma__pie carrusel__pie">
+            <span class="fotograma__numero">Plano {f.plano} <span class="carrusel__cuenta">· {i + 1} de {planos.length}</span></span>
+            <span class="carrusel__texto">{f.pie}</span>
+            <span class:list={['estado', 'carrusel__estado', `carrusel__estado--${f.estado.replace(/\s+/g, '-')}`]}>{f.estado}</span>
+          </figcaption>
+        </figure>
+      </li>
+    ))}
+  </ol>
+  <p class="oculto" aria-live="polite" data-carrusel-aviso></p>
+  <ul class="carrusel__tira" data-carrusel-tira aria-label="Planos">
+    {planos.map((f, i) => (
+      <li>
+        <button class="carrusel__miniatura" type="button" aria-current={i === 0 ? 'true' : undefined} aria-label={`Plano ${f.plano}: ${f.pie}`} data-carrusel-miniatura>
+          {f.imagen.src ? (
+            <img src={f.imagen.src} alt="" loading="lazy" decoding="async" />
+          ) : (
+            <span class="carrusel__hueco" aria-hidden="true"></span>
+          )}
+          <span class="carrusel__numero" aria-hidden="true">{f.plano}</span>
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>

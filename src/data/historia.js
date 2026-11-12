@@ -3,76 +3,103 @@
 // `spoiler: true` tapa la parte con el cartel negro hasta que se pulsa.
 
 export const historia = {
-  // Cabecera: el cursor abre en el mármol una ventana a otro mundo, como las
+  // Cabecera: un clic (o un toque) abre en el mármol una ventana a otro mundo, como las
   // ventanas del taller del teaser. Render pendiente (horizontal, oscuro y con
   // mucha profundidad: un paisaje lejano, una nebulosa, un mar...).
   ventana: {
     src: null,
     falta: 'Render: el otro mundo al otro lado de la ventana del taller (16:9, 2560×1440)',
+    semana: 'S28',
   },
 
+  // Premisa en tres bloques separados: la premisa, las influencias y la idea
+  // del kintsugi. TEXTOS PROVISIONALES: los revisa Javi.
+  // Terminología: la web dice "el Creador"; "Dios" solo aparece cuando habla
+  // el mundo de la historia (lo explica `terminologia`).
   premisa: {
     titulo: 'Premisa',
     parrafos: [
-      'En el mundo de Serie Mármol las criaturas no nacen: se tallan. Un ser al que todos llaman Dios las esculpe en mármol, en un taller que no pertenece a ningún universo, y las deja caer por una ventana en los paisajes más bellos y más lejanos que encuentra. Llegan perfectas, simétricas, sin una sola marca.',
+      'En el mundo de Serie Mármol las criaturas no nacen: se tallan. Su Creador las esculpe en mármol, en un taller que no pertenece a ningún universo, y las deja caer por una ventana en los paisajes más bellos y más lejanos que encuentra. Llegan perfectas, simétricas, sin una sola marca.',
       'En cuanto alguien las usa para algo —para la guerra, para un templo, para demostrar que tiene razón— empiezan a agrietarse.',
-      'Es la premisa de Attack on Titan dada la vuelta: los monstruos no son armas por diseño, son arte que el mundo corrompe. Y debajo hay una idea que viene del kintsugi japonés: la corrupción no se revierte. Se sana, y la grieta se sigue viendo.',
     ],
+    terminologia: 'Los habitantes de ese mundo lo llaman Dios. Esta historia lo llama el Creador.',
+    influencias: {
+      titulo: 'Influencias',
+      // Hueco a propósito: lo escribe Javi (las referencias están en Proceso)
+      placeholder: 'Aquí van, en dos o tres líneas, las influencias de la serie y qué se coge de cada una.',
+    },
+    kintsugi: {
+      titulo: 'La idea: kintsugi',
+      texto: 'Debajo de todo hay una idea que viene del kintsugi japonés: la corrupción no se revierte. Se sana, y la grieta se sigue viendo.',
+    },
     imagen: {
       src: null,
       alt: 'El Creador ante una de sus ventanas, con una criatura de mármol a medio tallar.',
       falta: 'Imagen clave: el Creador en el taller con una criatura de mármol a medio tallar',
+      semana: 'S16',
     },
   },
+
+  // Cada parte: `resumen` (1-2 frases, lo que se ve siempre) y `texto` (lo que
+  // despliega "Leer más"). LOS RESÚMENES SON UN BORRADOR sacado del texto
+  // largo: Javi los reescribe. Cuando estén revisados, poner
+  // `resumenBorrador: false` más abajo para quitar la marca de la web.
+  resumenBorrador: true,
 
   partes: [
     {
       numero: 'I',
+      resumen: 'Cassian crece odiando a las criaturas: una de ellas arrasó su pueblo. A los quince años intenta doblegar a una criatura pura, y bajo sus manos aparecen dos grietas.',
       titulo: 'La infancia',
       spoiler: false,
       texto:
         'Cassian pierde a su familia y a su pueblo cuando una facción vecina los arrasa con una criatura. Crece odiándolas: para él son monstruos. A los quince años se cruza con una criatura pura, intacta, y se acerca para doblegarla. Ella no ataca, solo se defiende. Y bajo sus manos aparecen dos grietas finísimas donde antes no había ninguna. Cassian se detiene. Cree que la ha herido. Tardará décadas en entender lo que vio ese día.',
-      imagen: { src: null, alt: 'Cassian, con quince años, frente a una criatura pura.', falta: 'Cassian a los quince años frente a la criatura pura, con las dos primeras grietas' },
+      imagen: { src: null, alt: 'Cassian, con quince años, frente a una criatura pura.', falta: 'Cassian a los quince años frente a la criatura pura, con las dos primeras grietas', semana: 'S34' },
     },
     {
       numero: 'II',
+      resumen: 'Tras años de dudas y recaídas, Cassian deja de odiarlas y empieza a protegerlas. Descubre que una criatura rota se puede sanar: donde estaba la grieta queda una veta de oro.',
       titulo: 'La conversión',
       spoiler: false,
       texto:
         'No hay una revelación de golpe, hay años. Criaturas que no atacan, gente que le obliga a mirar lo que no quiere ver y, sobre todo, ver de cerca cómo los humanos capturan, doman y arman a las criaturas hasta romperlas. Recae, desconfía, vuelve a empezar. Cuando por fin está convencido deja de odiarlas y empieza a protegerlas, y descubre algo que nadie en el mundo sabía: una criatura rota se puede sanar. Donde estaba la grieta queda una veta de oro.',
-      imagen: { src: null, alt: 'Una criatura con las grietas selladas en oro.', falta: 'Una criatura con las grietas selladas en oro (la primera sanación)' },
+      imagen: { src: null, alt: 'Una criatura con las grietas selladas en oro.', falta: 'Una criatura con las grietas selladas en oro (la primera sanación)', semana: 'S34' },
     },
     {
       numero: 'III',
+      resumen: 'Alrededor de Cassian nace un movimiento, y con él llegan dos golpes: venerar a las criaturas también las rompe, y las grietas de Vela son más viejas que su doctrina.',
       titulo: 'El profeta y su precio',
       spoiler: true,
       texto:
         'A su alrededor nace un movimiento con una doctrina en negativo: no representarlas, no retenerlas, no pedirles nada. Entonces llegan dos golpes seguidos. Primero ve criaturas agrietadas en pueblos pacifistas donde nadie les ha puesto la mano encima: venerarlas también las rompe. Después mira de cerca a Vela, la criatura de los quince años, la prueba viva de que la sanación existe, y encuentra grietas más viejas que su propio movimiento. Hace la cuenta y la cuenta da él, dos veces. Decide seguir sabiendo el precio. Ahí deja de ser inocente.',
-      imagen: { src: null, alt: 'Vela, cubierta de vetas de oro, rodeada de seguidores.', falta: 'Vela con sus grietas de oro, rodeada de gente que la venera' },
+      imagen: { src: null, alt: 'Vela, cubierta de vetas de oro, rodeada de seguidores.', falta: 'Vela con sus grietas de oro, rodeada de gente que la venera', semana: 'S34' },
     },
     {
       numero: 'IV',
+      resumen: 'Cassian sana a una criatura en una plaza pública y la gente deduce sola lo que sus gobiernos ocultaban. Las siete facciones se hunden y el colapso acaba en la Gran Guerra.',
       titulo: 'La revelación',
       spoiler: true,
       texto:
         'Cassian no acusa a nadie: sana a una criatura en una plaza pública y la criatura se niega a cumplir su papel en la ceremonia. Si sanar era tan sencillo, ¿por qué nadie lo sabía? La gente deduce sola el resto: sus gobiernos llevaban siglos ocultando que tratar a las criaturas como un medio es lo que las rompe. Las siete facciones se hunden, se refundan o se desangran, cada una a su manera, y el colapso acaba en la Gran Guerra. Alguien se lo dice a la cara: murieron más por tu verdad que por sus criaturas. Él no puede responder que no.',
-      imagen: { src: null, alt: 'Una criatura sanada en medio de una plaza, ante una multitud.', falta: 'La primera sanación pública en una plaza' },
+      imagen: { src: null, alt: 'Una criatura sanada en medio de una plaza, ante una multitud.', falta: 'La primera sanación pública en una plaza', semana: 'S34' },
     },
     {
       numero: 'V',
+      resumen: 'Con el mundo en llamas, el Creador vuelve a mirar por su ventana. Cassian cruza al taller y habla con él; cada conversación le cuesta meses de vida.',
       titulo: 'El taller',
       spoiler: true,
       texto:
         'Con el mundo en llamas, el Creador vuelve a mirar por primera vez en siglos. No por compasión: iba a soltar una criatura nueva y no encontraba un solo paisaje intacto. Al ver lo que han hecho con su obra talla criaturas para exterminar a la humanidad, hasta que encuentra algo que ni él sabía posible: una criatura con oro en las grietas. Manda a Vela a buscar a Cassian, que se tumba en la silueta prohibida del santuario y cruza al taller. Hablan. Cada conversación le cuesta a Cassian meses de vida.',
-      imagen: { src: null, alt: 'Cassian frente al Creador en el taller.', falta: 'Cassian en el taller, frente al Creador de espaldas' },
+      imagen: { src: null, alt: 'Cassian frente al Creador en el taller.', falta: 'Cassian en el taller, frente al Creador de espaldas', semana: 'S34' },
     },
     {
       numero: 'VI',
+      resumen: 'El pacto tiene letra pequeña: las criaturas antiguas solo quedan libres si cruzan al taller, y Cassian es el único que puede llevarlas. Deja de ser profeta y se convierte en barquero.',
       titulo: 'El barquero',
       spoiler: true,
       texto:
-        'El pacto tiene letra pequeña. El Creador retira a las exterminadoras y rediseña a las criaturas nuevas para que puedan elegir, pero las antiguas solo quedan libres si cruzan al taller, una a una y por decisión propia, y Cassian es el único que puede llevarlas. Deja de ser profeta y se convierte en barquero. Sana a muchas y cruza a poquísimas, mientras su movimiento se vuelve una religión con templos, listas de espera y sacerdotes: justo lo que prohibía. Y él, que dedicó su vida a que nadie usara a nadie como medio, sigue subiendo a hablar con Dios para no estar solo.',
-      imagen: { src: null, alt: 'Una cola de criaturas sanadas ante la puerta del santuario.', falta: 'La cola de criaturas sanadas esperando ante el santuario' },
+        'El pacto tiene letra pequeña. El Creador retira a las exterminadoras y rediseña a las criaturas nuevas para que puedan elegir, pero las antiguas solo quedan libres si cruzan al taller, una a una y por decisión propia, y Cassian es el único que puede llevarlas. Deja de ser profeta y se convierte en barquero. Sana a muchas y cruza a poquísimas, mientras su movimiento se vuelve una religión con templos, listas de espera y sacerdotes: justo lo que prohibía. Y él, que dedicó su vida a que nadie usara a nadie como medio, sigue subiendo a hablar con el Creador para no estar solo.',
+      imagen: { src: null, alt: 'Una cola de criaturas sanadas ante la puerta del santuario.', falta: 'La cola de criaturas sanadas esperando ante el santuario', semana: 'S34' },
     },
   ],
 

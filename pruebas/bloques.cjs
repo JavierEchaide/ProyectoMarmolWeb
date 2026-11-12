@@ -12,8 +12,8 @@ const { chromium } = require('playwright');
   await p.goto(BASE + '/proceso.html'); await p.waitForTimeout(1500);
   await p.evaluate(() => document.querySelector('.linea-tiempo').scrollIntoView({ block: 'start', behavior: 'instant' }));
   await p.waitForTimeout(1200);
-  const muestra = async (n, cada) => { const r = []; for (let i = 0; i < n; i++) { r.push(await p.evaluate(() => { const d = document.querySelectorAll('.linea-tiempo details')[1]; return Math.round(d.getBoundingClientRect().height) + (d.open ? 'A' : 'c'); })); await p.waitForTimeout(cada); } return r.join(' '); };
-  const s = '.linea-tiempo details >> nth=1 >> summary';
+  const muestra = async (n, cada) => { const r = []; for (let i = 0; i < n; i++) { r.push(await p.evaluate(() => { const d = document.querySelectorAll('.linea-tiempo details')[2]; return Math.round(d.getBoundingClientRect().height) + (d.open ? 'A' : 'c'); })); await p.waitForTimeout(cada); } return r.join(' '); };
+  const s = '.linea-tiempo details >> nth=2 >> summary'; // el bloque 1 (el actual) ya viene abierto
   await p.click(s); console.log('abrir   ', await muestra(10, 90));
   await p.waitForTimeout(400); await p.screenshot({ path: SALIDA + '/bloque-abierto.png' });
   await p.click(s); console.log('cerrar  ', await muestra(8, 70));

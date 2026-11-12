@@ -73,10 +73,10 @@ const frases = portada.gancho.match(/[^.!?]+[.!?]*/g).map((f) => f.trim());
     <p class="presentacion__gancho" data-revelar>
       {frases.map((f) => <span class="presentacion__frase">{f}</span>)}
     </p>
-    <div class="presentacion__texto" data-revelar>
+    <div class="presentacion__texto texto-largo" data-revelar>
       {portada.presentacion.map((p) => <p>{p}</p>)}
       <a class="boton" href="teaser.html">
-        <span>Entrar</span>
+        <span>{portada.boton}</span>
         <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
       </a>
     </div>

@@ -11,7 +11,7 @@ const { activo = true, semilla = 1, texto = 'Spoiler', descripcion = 'contenido'
     <slot />
   </div>
   {activo && (
-    <button class="spoiler__tapa" type="button" aria-label={`${texto}: pulsa para descubrir ${descripcion}`} data-spoiler-tapa>
+    <button class="spoiler__tapa" type="button" aria-label={`${texto}. Pulsa para descubrirlo: ${descripcion}`} data-spoiler-tapa>
       <span class="spoiler__luz" aria-hidden="true"></span>
       <span class="spoiler__cara" aria-hidden="true">
         <svg class="spoiler__grietas" focusable="false"></svg>

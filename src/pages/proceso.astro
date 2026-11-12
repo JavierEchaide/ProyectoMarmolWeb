@@ -2,21 +2,21 @@
 import Base from '../layouts/Base.astro';
 import Imagen from '../components/Imagen.astro';
 import Tarjeta from '../components/Tarjeta.astro';
-import Grieta from '../components/Grieta.astro';
+import Veta from '../components/Veta.astro';
 import AntesDespues from '../components/AntesDespues.astro';
 import TituloSeccion from '../components/TituloSeccion.astro';
 import { pagina } from '../data/sitio.js';
 import Siguiente from '../components/Siguiente.astro';
 import { proceso } from '../data/proceso.js';
+import { semanas, semanaActual, bloqueActual, proximoHito } from '../lib/semanas.js';
+import { registroDe, archivoRegistro } from '../lib/registros.js';
+import referenciasVault from '../data/generado/referencias.json';
+import cuaderno from '../data/generado/cuaderno.json';
 
 const etiquetaEstado = { hecho: 'Hecho', 'en-curso': 'En curso', pendiente: 'Planificado' };
-const estadoBloque = (semanas) =>
-  semanas.every((s) => s.estado === 'hecho')
-    ? 'hecho'
-    : semanas.some((s) => s.estado !== 'pendiente')
-      ? 'en-curso'
-      : 'pendiente';
-const rango = (semanas) => `${semanas[0].semana} – ${semanas[semanas.length - 1].semana}`;
+const estadoBloque = (ss) =>
+  ss.every((s) => s.estado === 'hecho') ? 'hecho' : ss.some((s) => s.estado !== 'pendiente') ? 'en-curso' : 'pendiente';
+const rango = (ss) => `${ss[0].semana} – ${ss[ss.length - 1].semana}`;
 const slug = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-');
 const romano = (n) =>
   [['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1]].reduce((r, [l, v]) => {
@@ -24,225 +24,334 @@ const romano = (n) =>
     return r;
   }, '');
 
-// Avance: sale solo de los estados de las semanas
-const semanas = proceso.bloques.flatMap((b) => b.semanas.map((s) => ({ ...s, bloque: b })));
-const actual = semanas.filter((s) => s.estado !== 'pendiente').at(-1) ?? semanas[0];
+// Estado: sale solo de los estados de las semanas (src/lib/semanas.js)
+const actual = semanaActual();
 const numeroActual = semanas.indexOf(actual) + 1;
 const hechas = semanas.filter((s) => s.estado === 'hecho').length;
-const hito = semanas.slice(numeroActual).find((s) => /evaluaci/i.test(s.plan));
----
-<Base id="proceso" descripcion="Cómo se ha hecho el teaser de Serie Mármol: calendario, referencias, pipeline y archivo." scripts={['js/proceso.js']}>
-  <div class="contenedor cabecera-pagina cabecera-pagina--con-avance">
-    <TituloSeccion titulo="Proceso" nivel={1} numero={pagina('proceso').numero}>
-      <p class="cabecera-pagina__intro">{proceso.intro}</p>
-    </TituloSeccion>
+const enCurso = semanas.filter((s) => s.estado === 'en-curso').length;
+const hito = proximoHito();
+const abierto = bloqueActual();
 
-    <aside class="avance" aria-labelledby="titulo-avance" data-revelar>
-      <h2 id="titulo-avance" class="oculto">Avance del proyecto</h2>
-      <p class="avance__cifra">
-        <span class="avance__numero">{numeroActual}</span>
-        <span class="avance__de">Semana {numeroActual} de {semanas.length}.<br />{hechas} hechas, {semanas.filter((s) => s.estado === 'en-curso').length} en curso.</span>
-      </p>
-      <ol class="avance__barra" aria-label={`${hechas} semanas hechas de ${semanas.length}`}>
-        {semanas.map((s) => (
-          <li class={`avance__semana avance__semana--${s.estado}`} title={`${s.semana} · ${s.plan}`}></li>
-        ))}
-      </ol>
-      <dl class="avance__datos">
-        <div>
-          <dt>Ahora</dt>
-          <dd>Bloque {actual.bloque.numero} · {actual.bloque.titulo}: {actual.plan.charAt(0).toLowerCase() + actual.plan.slice(1)}</dd>
-        </div>
-        {hito && (
-          <div>
-            <dt>Próximo hito</dt>
-            <dd>{hito.plan.split('·').at(-1).trim()} · {hito.semana} ({hito.fechas})</dd>
-          </div>
-        )}
-      </dl>
-    </aside>
+// Referencias: las de proceso.js más las exportadas de Obsidian (por categoría)
+const referencias = proceso.referencias.map((r) => ({
+  ...r,
+  items: [...r.items, ...referenciasVault.filter((v) => slug(v.categoria) === slug(r.categoria)).map((v) => ({ ...v, imagen: v.imagen ?? { src: null, alt: v.titulo, falta: `Imagen de la referencia: ${v.titulo}` } }))],
+}));
+
+const secciones = [
+  { id: 'estado', titulo: 'Estado' },
+  { id: 'desarrollo-visual', titulo: 'Desarrollo visual' },
+  { id: 'metodo', titulo: 'Método' },
+  { id: 'calendario', titulo: 'Calendario' },
+  { id: 'archivo', titulo: 'Archivo' },
+];
+---
+<Base id="proceso" descripcion="Cómo se ha hecho el teaser de Serie Mármol: estado, desarrollo visual, método, calendario y archivo." scripts={['js/proceso.js']}>
+  <div class="contenedor cabecera-pagina">
+    <TituloSeccion titulo="Proceso" nivel={1} numero={pagina('proceso').numero}>
+      <p class="cabecera-pagina__intro texto-largo">{proceso.intro}</p>
+    </TituloSeccion>
   </div>
 
-  <section class="contenedor seccion" aria-labelledby="titulo-tiempo">
-    <TituloSeccion antetitulo="S01 – S35" titulo="Línea de tiempo" id="titulo-tiempo">
-      <ul class="leyenda" aria-label="Leyenda de estados">
-        {Object.entries(etiquetaEstado).map(([k, v]) => <li><span class={`punto punto--${k}`} aria-hidden="true"></span>{v}</li>)}
-      </ul>
-    </TituloSeccion>
+  {/* Cuaderno de taller: índice lateral fijo (con scrollspy) + contenido */}
+  <div class="contenedor cuaderno">
+    <nav class="indice" aria-label="Índice de Proceso" data-indice>
+      <p class="indice__titulo antetitulo">Índice</p>
+      <ol class="indice__lista">
+        {secciones.map((sec, i) => (
+          <li>
+            <a class="indice__placa" href={`#${sec.id}`} data-indice-enlace>
+              <span class="indice__numero" aria-hidden="true">{i + 1}</span>{sec.titulo}
+            </a>
+            {sec.id === 'calendario' && (
+              <ol class="indice__bloques" aria-label="Semanas por bloque">
+                {proceso.bloques.map((b) => (
+                  <li>
+                    <span class="indice__bloque">{b.titulo}</span>
+                    <span class="indice__semanas">
+                      {b.semanas.map((s) => (
+                        <a href={`#${s.semana.toLowerCase()}`} class:list={['indice__semana', `indice__semana--${s.estado}`]} aria-label={`Semana ${s.semana.slice(1)}: ${s.plan} (${etiquetaEstado[s.estado]})`} data-indice-semana>{s.semana.slice(1)}</a>
+                      ))}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </li>
+        ))}
+      </ol>
+      <span class="indice__plomada" aria-hidden="true"></span>
+    </nav>
 
-    <ol class="linea-tiempo">
-      {proceso.bloques.map((b) => {
-        const estado = estadoBloque(b.semanas);
-        return (
-          <li class={`bloque bloque--${estado}`} data-revelar>
-            <details>
-              <summary class="bloque__resumen">
-                <span class={`punto punto--${estado}`} aria-hidden="true"></span>
-                <span class="bloque__semanas">{rango(b.semanas)}</span>
-                <span class="bloque__titulo">Bloque {b.numero} · {b.titulo}</span>
-                <span class="bloque__fechas">{b.fechas}</span>
-                <span class={`estado estado--${estado}`}>{etiquetaEstado[estado]}</span>
-                <span class="bloque__chevron" aria-hidden="true"></span>
-              </summary>
-              <div class="bloque__cuerpo">
-                <p class="bloque__objetivo">{b.objetivo}</p>
-                <ol class="semanas">
-                  {b.semanas.map((s) => (
-                    <li class={`semana semana--${s.estado}`}>
-                      <p class="semana__cabecera">
-                        <span class="semana__numero">{s.semana}</span>
-                        <span class="semana__fechas">{s.fechas}</span>
-                        <span class={`estado estado--${s.estado}`}>{etiquetaEstado[s.estado]}</span>
-                      </p>
-                      <p class="semana__plan">{s.plan}</p>
-                      {s.registro.length > 0 && (
-                        <ul class="semana__registro">
-                          {s.registro.map((r) => <li>{r}</li>)}
-                        </ul>
-                      )}
-                    </li>
-                  ))}
-                </ol>
-                {b.capturas.length > 0 && (
-                  <ul class="capturas">
-                    {b.capturas.map((c) => (
-                      <Tarjeta etiqueta="li" clase="captura">
-                        <Imagen imagen={c.imagen} ratio="16 / 10" ver grupo={`bloque-${b.numero}`} pie={c.titulo} />
-                        <h4 class="captura__titulo">{c.titulo}</h4>
-                        <p class="captura__texto">{c.texto}</p>
-                      </Tarjeta>
-                    ))}
-                  </ul>
+    <div class="cuaderno__contenido">
+      {/* 1 · Estado */}
+      <section class="hoja" id="estado" aria-labelledby="titulo-estado" data-indice-seccion>
+        <TituloSeccion antetitulo="Hoy" titulo="Estado" id="titulo-estado" />
+        <div class="estado-hoy" data-revelar>
+          <p class="avance__cifra">
+            <span class="avance__numero">{numeroActual}</span>
+            <span class="avance__de">Semana {numeroActual} de {semanas.length}.<br />{hechas} hechas, {enCurso} en curso.</span>
+          </p>
+          <ol class="avance__barra" aria-label={`${hechas} semanas hechas de ${semanas.length}`}>
+            {semanas.map((s) => (
+              <li class={`avance__semana avance__semana--${s.estado}`} title={`${s.semana} · ${s.plan}`}></li>
+            ))}
+          </ol>
+          <p class="cota cota--barra" aria-hidden="true"><span>S01</span><span>35 semanas</span><span>S35</span></p>
+          <dl class="avance__datos avance__datos--v2">
+            <div>
+              <dt>Fase en curso</dt>
+              <dd>Bloque {actual.bloque.numero} · {actual.bloque.titulo}: {actual.plan.charAt(0).toLowerCase() + actual.plan.slice(1)} <a href={`#${actual.semana.toLowerCase()}`}>({actual.semana})</a></dd>
+            </div>
+            <div>
+              <dt>Último resultado</dt>
+              {proceso.estado.ultimoResultado ? (
+                <dd>{proceso.estado.ultimoResultado}</dd>
+              ) : (
+                <dd class="hueco-texto"><span class="hueco-texto__insignia">Placeholder</span>{proceso.estado.faltaResultado}</dd>
+              )}
+            </div>
+            {hito && (
+              <div>
+                <dt>Próximo hito</dt>
+                <dd>{hito.plan.split('·').at(-1).trim()} · {hito.semana} ({hito.fechas})</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </section>
+
+      <Veta semilla={31} />
+
+      {/* 2 · Desarrollo visual */}
+      <section class="hoja" id="desarrollo-visual" aria-labelledby="titulo-desarrollo" data-indice-seccion>
+        <TituloSeccion antetitulo="Antes y después" titulo="Desarrollo visual" id="titulo-desarrollo" />
+        <ul class="comparadores comparadores--grandes">
+          {proceso.antesDespues.map((c, i) => (
+            <li class="comparador-item" data-revelar>
+              <AntesDespues antes={c.antes} despues={c.despues} titulo={c.titulo} />
+              <div class="comparador-item__nota">
+                <h3 class="comparador-item__titulo"><span class="anotacion__numero" aria-hidden="true">fig. {i + 1}</span>{c.titulo}</h3>
+                <p>{c.texto}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+        {proceso.desarrolloVisual.length > 0 && (
+          <ul class="fichas-dv">
+            {proceso.desarrolloVisual.map((d) => (
+              <li class="ficha-dv" data-revelar>
+                <Imagen imagen={d.imagen} ratio="4 / 3" ver grupo="desarrollo" pie={d.titulo} />
+                <h3 class="ficha-dv__titulo">{d.titulo}{d.borrador && <span class="borrador">Borrador</span>}</h3>
+                <p>{d.texto}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <Veta semilla={44} />
+
+      {/* 3 · Método: pipeline, referencias y dato de render */}
+      <section class="hoja" id="metodo" aria-labelledby="titulo-metodo" data-indice-seccion>
+        <TituloSeccion antetitulo="Del guion a la entrega" titulo="Método" id="titulo-metodo" />
+
+        <h3 class="hoja__subtitulo" id="pipeline">Pipeline</h3>
+        <ol class="pipeline">
+          {proceso.pipeline.map((p, i) => (
+            <Tarjeta etiqueta="li" clase={`paso paso--${p.estado}`} sobria>
+              <span class="paso__numero">{romano(i + 1)}</span>
+              <h3 class="paso__titulo">{p.paso}</h3>
+              <p class="paso__texto">{p.texto}</p>
+              <span class={`estado estado--${p.estado}`}>{etiquetaEstado[p.estado]}</span>
+            </Tarjeta>
+          ))}
+        </ol>
+        <h3 class="hoja__subtitulo" id="referencias">Referencias <span class="hoja__subtitulo-nota">Qué es · Qué cojo · Dónde aplica</span></h3>
+        <ul class="referencias">
+          {referencias.map((r, i) => (
+            <li class:list={['referencia', { 'referencia--vacia': !r.items.length }]} data-revelar style={`--i: ${i % 2}`}>
+              <Imagen imagen={r.portada} ratio="4 / 3" clase="referencia__miniatura" />
+              <div class="referencia__texto">
+                <h3 class="referencia__titulo">{r.categoria}</h3>
+                {r.items.length > 0 ? (
+                  <>
+                    <p class="referencia__lista">{r.items.map((it) => it.titulo).join(' · ')}</p>
+                    <button class="referencia__abrir" type="button" data-abrir-dialogo={`ref-${slug(r.categoria)}`}>
+                      Ver {r.items.length} {r.items.length === 1 ? 'referencia' : 'referencias'}
+                      <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
+                    </button>
+                  </>
+                ) : (
+                  <p class="referencia__lista">Por documentar</p>
                 )}
               </div>
-            </details>
-          </li>
-        );
-      })}
-    </ol>
-  </section>
+            </li>
+          ))}
+        </ul>
 
-  <Grieta semilla={31} />
-
-  <section class="contenedor seccion" aria-labelledby="titulo-referencias">
-    <TituloSeccion antetitulo="Qué es · Qué cojo · Dónde aplica" titulo="Referencias" id="titulo-referencias" />
-    <ul class="referencias">
-      {proceso.referencias.map((r, i) => (
-        <li class:list={['referencia', { 'referencia--vacia': !r.items.length }]} data-revelar style={`--i: ${i % 2}`}>
-          <Imagen imagen={r.portada} ratio="4 / 3" clase="referencia__miniatura" />
-          <div class="referencia__texto">
-            <h3 class="referencia__titulo">{r.categoria}</h3>
-            {r.items.length > 0 ? (
-              <>
-                <p class="referencia__lista">{r.items.map((it) => it.titulo).join(' · ')}</p>
-                <button class="referencia__abrir" type="button" data-abrir-dialogo={`ref-${slug(r.categoria)}`}>
-                  Ver {r.items.length} {r.items.length === 1 ? 'referencia' : 'referencias'}
-                  <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
-                </button>
-              </>
-            ) : (
-              <p class="referencia__lista">Por documentar</p>
-            )}
-          </div>
-        </li>
-      ))}
-    </ul>
-
-    {proceso.referencias.filter((r) => r.items.length).map((r) => (
-      <dialog class="dialogo" id={`ref-${slug(r.categoria)}`} aria-labelledby={`ref-${slug(r.categoria)}-titulo`}>
-        <div class="dialogo__cabecera">
-          <p class="antetitulo">Referencias</p>
-          <h3 id={`ref-${slug(r.categoria)}-titulo`} class="dialogo__titulo">{r.categoria}</h3>
-          <button class="boton boton--pequeno" type="button" data-cerrar-dialogo>Cerrar</button>
+        {referencias.filter((r) => r.items.length).map((r) => (
+          <dialog class="dialogo" id={`ref-${slug(r.categoria)}`} aria-labelledby={`ref-${slug(r.categoria)}-titulo`}>
+            <div class="dialogo__cabecera">
+              <p class="antetitulo">Referencias</p>
+              <h3 id={`ref-${slug(r.categoria)}-titulo`} class="dialogo__titulo">{r.categoria}</h3>
+              <button class="boton boton--pequeno" type="button" data-cerrar-dialogo>Cerrar</button>
+            </div>
+            <ul class="fichas-ref">
+              {r.items.map((it) => (
+                <li class="ficha-ref">
+                  <Imagen imagen={it.imagen} ratio="4 / 3" ver grupo={`ref-${slug(r.categoria)}`} pie={it.titulo} />
+                  <div class="ficha-ref__texto">
+                    <h4 class="ficha-ref__titulo">{it.titulo}</h4>
+                    <dl>
+                      <dt>Qué es</dt><dd>{it.que}</dd>
+                      <dt>Qué cojo</dt><dd>{it.cojo}</dd>
+                      <dt>Dónde aplica</dt><dd>{it.donde}</dd>
+                    </dl>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </dialog>
+        ))}
+        <h3 class="hoja__subtitulo" id="render">Dato de render</h3>
+        <div class="dato-render" data-revelar>
+          <p class="dato-render__cifras">
+            <span class="dato-render__cifra"><strong>{proceso.render.propio}</strong><span>ajustes propios</span></span>
+            <span class="dato-render__frente" aria-hidden="true">frente a</span>
+            <span class="dato-render__cifra dato-render__cifra--menor"><strong>{proceso.render.fabrica}</strong><span>ajustes de fábrica</span></span>
+          </p>
+          <p class="cota">{proceso.render.calculo}</p>
+          <p class="dato-render__nota">{proceso.render.nota}</p>
         </div>
-        <ul class="fichas-ref">
-          {r.items.map((it) => (
-            <li class="ficha-ref">
-              <Imagen imagen={it.imagen} ratio="4 / 3" ver grupo={`ref-${slug(r.categoria)}`} pie={it.titulo} />
-              <div class="ficha-ref__texto">
-                <h4 class="ficha-ref__titulo">{it.titulo}</h4>
-                <dl>
-                  <dt>Qué es</dt><dd>{it.que}</dd>
-                  <dt>Qué cojo</dt><dd>{it.cojo}</dd>
-                  <dt>Dónde aplica</dt><dd>{it.donde}</dd>
-                </dl>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </dialog>
-    ))}
-  </section>
+      </section>
 
-  <Grieta semilla={44} />
+      <Veta semilla={57} />
 
-  <section class="contenedor seccion" aria-labelledby="titulo-antes">
-    <TituloSeccion titulo="Antes y después" id="titulo-antes" />
-    <ul class="comparadores">
-      {proceso.antesDespues.map((c) => (
-        <li class="comparador-item" data-revelar>
-          <AntesDespues antes={c.antes} despues={c.despues} titulo={c.titulo} />
-          <h3 class="comparador-item__titulo">{c.titulo}</h3>
-          <p>{c.texto}</p>
-        </li>
-      ))}
-    </ul>
-  </section>
+      {/* 4 · Calendario: los 7 bloques en acordeones; solo el actual viene abierto */}
+      <section class="hoja" id="calendario" aria-labelledby="titulo-tiempo" data-indice-seccion>
+        <TituloSeccion antetitulo="S01 – S35" titulo="Calendario" id="titulo-tiempo">
+          <ul class="leyenda" aria-label="Leyenda de estados">
+            {Object.entries(etiquetaEstado).map(([k, v]) => <li><span class={`punto punto--${k}`} aria-hidden="true"></span>{v}</li>)}
+          </ul>
+        </TituloSeccion>
 
-  <Grieta semilla={57} />
+        <ol class="linea-tiempo">
+          {proceso.bloques.map((b) => {
+            const estado = estadoBloque(b.semanas);
+            return (
+              <li class={`bloque bloque--${estado}`} data-revelar>
+                <details open={b === abierto}>
+                  <summary class="bloque__resumen">
+                    <span class={`punto punto--${estado}`} aria-hidden="true"></span>
+                    <span class="bloque__semanas">{rango(b.semanas)}</span>
+                    <span class="bloque__titulo">Bloque {b.numero} · {b.titulo}</span>
+                    <span class="bloque__fechas">{b.fechas}</span>
+                    <span class={`estado estado--${estado}`}>{etiquetaEstado[estado]}</span>
+                    <span class="bloque__chevron" aria-hidden="true"></span>
+                  </summary>
+                  <div class="bloque__cuerpo">
+                    <p class="bloque__objetivo">{b.objetivo}</p>
+                    <ol class="semanas">
+                      {b.semanas.map((s) => {
+                        const reg = registroDe({ ...s, id: s.semana });
+                        return (
+                          <li class={`semana semana--${s.estado}`} id={s.semana.toLowerCase()}>
+                            <p class="semana__cabecera">
+                              <a class="semana__numero" href={`#${s.semana.toLowerCase()}`} aria-label={`${s.semana}: enlace directo a esta semana`}>{s.semana}</a>
+                              <span class="semana__fechas">{s.fechas}</span>
+                              <span class={`estado estado--${s.estado}`}>{etiquetaEstado[s.estado]}</span>
+                            </p>
+                            <p class="semana__plan">{s.plan}</p>
+                            {s.miniatura && <Imagen imagen={s.miniatura} ratio="16 / 10" ver grupo={`bloque-${b.numero}`} pie={`${s.semana} · ${s.plan}`} clase="semana__miniatura" />}
+                            {s.registro.length > 0 && (
+                              <ul class="semana__registro">
+                                {s.registro.map((r) => <li>{r}</li>)}
+                              </ul>
+                            )}
+                            {reg && (
+                              <a class="semana__ver" href={archivoRegistro({ id: s.semana })}>
+                                Ver registro<span class="oculto"> de la semana {s.semana.slice(1)}</span>
+                                <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
+                              </a>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ol>
+                    {b.capturas.length > 0 && (
+                      <ul class="capturas">
+                        {b.capturas.map((c) => (
+                          <Tarjeta etiqueta="li" clase="captura">
+                            <Imagen imagen={c.imagen} ratio="16 / 10" ver grupo={`bloque-${b.numero}`} pie={c.titulo} />
+                            <h3 class="captura__titulo">{c.titulo}</h3>
+                            <p class="captura__texto">{c.texto}</p>
+                          </Tarjeta>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </details>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
 
-  <section class="contenedor seccion" aria-labelledby="titulo-pipeline">
-    <TituloSeccion antetitulo="Del guion a la entrega" titulo="Pipeline" id="titulo-pipeline" />
-    <ol class="pipeline">
-      {proceso.pipeline.map((p, i) => (
-        <Tarjeta etiqueta="li" clase={`paso paso--${p.estado}`} sobria>
-          <span class="paso__numero">{romano(i + 1)}</span>
-          <h3 class="paso__titulo">{p.paso}</h3>
-          <p class="paso__texto">{p.texto}</p>
-          <span class={`estado estado--${p.estado}`}>{etiquetaEstado[p.estado]}</span>
-        </Tarjeta>
-      ))}
-    </ol>
-  </section>
+      {/* 5 · Archivo, plegado y aparte */}
+      <section class="hoja" id="archivo" aria-labelledby="titulo-archivo" data-indice-seccion>
+        <details class="archivo">
+          <summary class="archivo__resumen">
+            <span id="titulo-archivo" class="archivo__titulo" role="heading" aria-level="2">Archivo</span>
+            <span class="archivo__ayuda">WIPs, versiones antiguas, fallos y cuaderno</span>
+            <span class="bloque__chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="archivo__cuerpo">
+            <h3 class="archivo__subtitulo">WIPs</h3>
+            <ul class="galeria-mini">
+              {proceso.archivo.wips.map((w) => (
+                <li><Imagen imagen={w} ratio="16 / 10" ver grupo="wips" pie={w.falta} /></li>
+              ))}
+            </ul>
 
-  <section class="contenedor seccion" aria-labelledby="titulo-archivo">
-    <details class="archivo">
-      <summary class="archivo__resumen">
-        <span id="titulo-archivo" class="archivo__titulo" role="heading" aria-level="2">Archivo completo</span>
-        <span class="archivo__ayuda">WIPs, versiones antiguas y fallos</span>
-        <span class="bloque__chevron" aria-hidden="true"></span>
-      </summary>
-      <div class="archivo__cuerpo">
-        <h3 class="archivo__subtitulo">WIPs</h3>
-        <ul class="galeria-mini">
-          {proceso.archivo.wips.map((w) => (
-            <li><Imagen imagen={w} ratio="16 / 10" ver grupo="wips" pie={w.falta} /></li>
-          ))}
-        </ul>
+            <h3 class="archivo__subtitulo">Versiones antiguas</h3>
+            <ul class="versiones">
+              {proceso.archivo.versiones.map((v) => (
+                <li class="version">
+                  <Imagen imagen={v.imagen} ratio="16 / 10" ver grupo="versiones" pie={v.titulo} />
+                  <h4>{v.titulo}</h4>
+                  <p>{v.texto}</p>
+                </li>
+              ))}
+            </ul>
 
-        <h3 class="archivo__subtitulo">Versiones antiguas</h3>
-        <ul class="versiones">
-          {proceso.archivo.versiones.map((v) => (
-            <li class="version">
-              <Imagen imagen={v.imagen} ratio="16 / 10" ver grupo="versiones" pie={v.titulo} />
-              <h4>{v.titulo}</h4>
-              <p>{v.texto}</p>
-            </li>
-          ))}
-        </ul>
-
-        <h3 class="archivo__subtitulo">Fallos</h3>
-        <ul class="fallos">
-          {proceso.archivo.fallos.map((f) => (
-            <li class="fallo">
-              <h4>{f.titulo}</h4>
-              <p>{f.texto}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </details>
-  </section>
+            <h3 class="archivo__subtitulo">Fallos</h3>
+            <ul class="fallos">
+              {proceso.archivo.fallos.map((f) => (
+                <li class="fallo">
+                  <h4>{f.titulo}</h4>
+                  <p>{f.texto}</p>
+                </li>
+              ))}
+            </ul>
+            <h3 class="archivo__subtitulo">Cuaderno</h3>
+            <div class="cuaderno-notas">
+              <Imagen imagen={cuaderno.grafo ? { src: cuaderno.grafo, alt: 'Grafo de las notas del proyecto en Obsidian.' } : { src: null, alt: 'Grafo de las notas del proyecto en Obsidian.', falta: 'Captura del grafo de Obsidian del proyecto' }} ratio="16 / 10" ver pie="Grafo del proyecto en Obsidian" />
+              {cuaderno.notas.length > 0 ? (
+                <ul class="cuaderno-notas__lista">
+                  {cuaderno.notas.map((n) => (
+                    <li>{n.enlace ? <a href={n.enlace}>{n.titulo}</a> : n.titulo}<span class="cuaderno-notas__tipo">{n.tipo}</span></li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="hueco-texto"><span class="hueco-texto__insignia">Placeholder</span>Aquí sale el índice de las notas publicadas desde Obsidian (registros semanales y referencias) cuando se ejecute <code>npm run exportar</code>.</p>
+              )}
+            </div>
+          </div>
+        </details>
+      </section>
+    </div>
+  </div>
 
   <Siguiente actual="proceso" />
 </Base>

@@ -6,8 +6,9 @@
      2. se abre: las esquirlas se separan y la luz dorada asoma por las juntas,
      3. las esquirlas caen y giran en 3D mientras el bloque crece hasta la
         altura real del contenido.
-   "Mostrar todos" destapa todas; "Volver a taparlos" las repone. No se guarda
-   nada: al recargar vuelven a estar tapadas. Necesita js/grietas.js. */
+   "Mostrar todos" destapa todas. No hay forma de volver a taparlas: al
+   recargar la página vuelven a estar tapadas (no se guarda nada).
+   Necesita js/grietas.js. */
 (function () {
   'use strict';
 
@@ -133,37 +134,15 @@
     }
   }
 
-  function tapar(s) {
-    var contenido = s.querySelector('.spoiler__contenido');
-    var tapa = s.querySelector('.spoiler__tapa');
-    var antes = contenido.offsetHeight;
-    s.classList.remove('rompiendo', 'agrietando', 'destapado');
-    s.dataset.spoiler = 'tapado';
-    contenido.inert = true;
-    contenido.removeAttribute('tabindex');
-    if (movimientoReducido || !contenido.animate) return;
-    var despues = contenido.offsetHeight;
-    contenido.style.overflow = 'hidden';
-    contenido
-      .animate([{ height: antes + 'px' }, { height: despues + 'px' }], { duration: 600, easing: 'cubic-bezier(0.65, 0, 0.35, 1)' })
-      .finished.then(function () { contenido.style.overflow = ''; });
-    tapa.animate([{ opacity: 0, transform: 'translateY(-12px)' }, { opacity: 1, transform: 'none' }], {
-      duration: 500,
-      delay: 200,
-      easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-      fill: 'backwards',
-    });
-  }
-
   function quedanTapados() {
     return spoilers.some(function (s) { return s.dataset.spoiler === 'tapado' && !s.classList.contains('rompiendo'); });
   }
 
   function actualizarBoton() {
     if (!botonTodos) return;
-    var quedan = quedanTapados();
-    botonTodos.textContent = quedan ? 'Mostrar todos' : 'Volver a taparlos';
-    botonTodos.setAttribute('aria-pressed', quedan ? 'false' : 'true');
+    // Con todo destapado el botón ya no hace nada: se desactiva
+    botonTodos.disabled = !quedanTapados();
+    botonTodos.textContent = botonTodos.disabled ? 'Todo destapado' : 'Mostrar todos';
   }
 
   spoilers.forEach(function (s) {
@@ -177,20 +156,22 @@
 
   if (botonTodos) {
     botonTodos.addEventListener('click', function () {
-      var quedan = quedanTapados();
       spoilers.forEach(function (s, i) {
-        if (quedan) setTimeout(function () { destapar(s, false); }, movimientoReducido ? 0 : i * 160);
-        else tapar(s);
+        if (s.dataset.spoiler !== 'tapado') return;
+        setTimeout(function () { destapar(s, false); }, movimientoReducido ? 0 : i * 160);
       });
-      setTimeout(actualizarBoton, quedan ? 0 : 50);
+      botonTodos.disabled = true;
+      botonTodos.textContent = 'Todo destapado';
     });
   }
 })();
 
-/* Cabecera: ventanas del taller. El cursor abre en el mármol un rasgón
-   vertical por el que se ve otro mundo, con el borde de luz dorada. La forma
-   respira un poco. Sin ratón, la ventana pasea sola mientras se ve; con
-   "reducir movimiento" se queda quieta. */
+/* Cabecera: ventanas del taller. Al pulsar el mármol (clic, toque o Enter /
+   Espacio sobre el botón) se abre un rasgón vertical por el que se ve otro
+   mundo, con el borde de luz dorada. Abierta, con ratón sigue al puntero; en
+   táctil se queda donde se tocó. Al pulsar otra vez, se cierra. No depende
+   del hover. La forma respira un poco; con "reducir movimiento" se queda
+   quieta. */
 (function () {
   'use strict';
 
@@ -198,6 +179,7 @@
   if (!cabecera) return;
   var mundo = cabecera.querySelector('[data-ventana-mundo]');
   var borde = cabecera.querySelector('[data-ventana-borde]');
+  var botonVentana = cabecera.querySelector('[data-ventana-boton]');
   var trazo = borde.querySelector('path');
   var movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var conRaton = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -239,13 +221,6 @@
   function pintar(ahora) {
     pendiente = false;
     var t = ahora / 1000;
-    if (!conRaton && !movimientoReducido) {
-      // Sin ratón: pasea por la mitad derecha
-      var w = cabecera.clientWidth;
-      var h = cabecera.clientHeight;
-      objetivo.x = w * (0.66 + Math.sin(t * 0.23) * 0.2);
-      objetivo.y = h * (0.5 + Math.sin(t * 0.37) * 0.12);
-    }
     pos.x += (objetivo.x - pos.x) * (movimientoReducido ? 1 : 0.14);
     pos.y += (objetivo.y - pos.y) * (movimientoReducido ? 1 : 0.14);
     apertura += (abrir - apertura) * (movimientoReducido ? 1 : 0.1);
@@ -272,27 +247,30 @@
     objetivo.y = e.clientY - r.top;
   }
 
-  if (conRaton && !movimientoReducido) {
-    cabecera.addEventListener('pointerenter', function (e) {
-      colocar(e);
-      pos.x = objetivo.x;
-      pos.y = objetivo.y;
-      abrir = 1;
+  if (botonVentana) {
+    botonVentana.addEventListener('click', function (e) {
+      var abierta = abrir === 1;
+      if (!abierta) {
+        // Con teclado no hay coordenadas: se abre en la mitad derecha
+        if (e.detail === 0 || (!e.clientX && !e.clientY)) {
+          objetivo.x = cabecera.clientWidth * 0.7;
+          objetivo.y = cabecera.clientHeight * 0.5;
+        } else colocar(e);
+        pos.x = objetivo.x;
+        pos.y = objetivo.y;
+      }
+      abrir = abierta ? 0 : 1;
+      botonVentana.setAttribute('aria-pressed', abierta ? 'false' : 'true');
+      botonVentana.setAttribute('aria-label', abierta ? 'Abrir en el mármol una ventana a otro mundo' : 'Cerrar la ventana a otro mundo');
       pedir();
     });
-    cabecera.addEventListener('pointermove', function (e) {
-      colocar(e);
-      pedir();
-    });
-    cabecera.addEventListener('pointerleave', function () {
-      abrir = 0;
-      pedir();
-    });
-  } else {
-    // Sin ratón o con movimiento reducido: una ventana fija o paseando
-    objetivo.x = pos.x = cabecera.clientWidth * 0.7;
-    objetivo.y = pos.y = cabecera.clientHeight * 0.5;
-    abrir = 1;
+    if (conRaton && !movimientoReducido) {
+      cabecera.addEventListener('pointermove', function (e) {
+        if (abrir !== 1) return;
+        colocar(e);
+        pedir();
+      });
+    }
   }
 
   new IntersectionObserver(function (entradas) {
@@ -411,4 +389,46 @@
   window.addEventListener('scroll', pedir, { passive: true });
   if ('ResizeObserver' in window) new ResizeObserver(construir).observe(arco);
   window.addEventListener('resize', construir);
+})();
+
+/* "Leer más" de las seis partes: despliega el texto completo dentro de la
+   misma tarjeta, con la altura animada y aria-expanded (como los bloques de
+   Proceso). La veta se rehace sola: observa los cambios de alto. Sin
+   JavaScript el texto completo se ve siempre. */
+(function () {
+  'use strict';
+
+  var movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-leer-mas]').forEach(function (boton) {
+    var cuerpo = document.getElementById(boton.getAttribute('aria-controls'));
+    var texto = boton.querySelector('[data-leer-mas-texto]');
+    if (!cuerpo) return;
+    cuerpo.hidden = true;
+    var animacion = null;
+
+    boton.addEventListener('click', function () {
+      var abrir = boton.getAttribute('aria-expanded') !== 'true';
+      boton.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+      texto.textContent = abrir ? 'Leer menos' : 'Leer más';
+      if (animacion) animacion.cancel();
+      if (movimientoReducido || !cuerpo.animate) {
+        cuerpo.hidden = !abrir;
+        return;
+      }
+      cuerpo.hidden = false;
+      var alto = cuerpo.scrollHeight;
+      cuerpo.style.overflow = 'hidden';
+      animacion = cuerpo.animate(
+        abrir
+          ? [{ height: '0px', opacity: 0 }, { height: alto + 'px', opacity: 1 }]
+          : [{ height: alto + 'px', opacity: 1 }, { height: '0px', opacity: 0 }],
+        { duration: abrir ? 480 : 320, easing: abrir ? 'cubic-bezier(0.16, 1, 0.3, 1)' : 'cubic-bezier(0.65, 0, 0.35, 1)' }
+      );
+      animacion.onfinish = function () {
+        animacion = null;
+        cuerpo.style.overflow = '';
+        if (!abrir) cuerpo.hidden = true;
+      };
+    });
+  });
 })();

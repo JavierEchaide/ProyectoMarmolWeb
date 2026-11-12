@@ -1,33 +1,44 @@
 ---
 import Base from '../layouts/Base.astro';
-import Imagen from '../components/Imagen.astro';
-import Grieta from '../components/Grieta.astro';
+import Veta from '../components/Veta.astro';
+import Carrusel from '../components/Carrusel.astro';
+import AntesDespues from '../components/AntesDespues.astro';
 import TituloSeccion from '../components/TituloSeccion.astro';
 import { pagina } from '../data/sitio.js';
+import { etiquetaSemana } from '../lib/semanas.js';
 import Siguiente from '../components/Siguiente.astro';
 import { teaser } from '../data/teaser.js';
 
 const { video, rima } = teaser;
+const prevista = video.src ? null : etiquetaSemana(video.semana);
 ---
 <Base id="teaser" descripcion="El teaser de 30 segundos de Serie Mármol, hecho en Blender con Cycles." scripts={['js/teaser.js']}>
-  <div class="contenedor cabecera-pagina">
-    <TituloSeccion titulo="Teaser" nivel={1} numero={pagina('teaser').numero} />
+  {/* Nebulosa: tres capas (lejana, media, cercana) que se mueven con el scroll
+      a distinta velocidad. El texto nunca va encima: va en paneles. js/teaser.js */}
+  <div class="nebulosa" data-nebulosa aria-hidden="true">
+    <div class="nebulosa__capa nebulosa__capa--1" data-nebulosa-capa="0.25"></div>
+    <div class="nebulosa__capa nebulosa__capa--2" data-nebulosa-capa="0.55"></div>
+    <div class="nebulosa__capa nebulosa__capa--3" data-nebulosa-capa="1"></div>
   </div>
 
+  <div class="contenedor cabecera-pagina cabecera-pagina--teaser">
+    <div class="panel panel--titulo">
+      <TituloSeccion titulo="Teaser" nivel={1} numero={pagina('teaser').numero} />
+    </div>
+  </div>
+
+  {/* 2. El vídeo, protagonista: 2.35:1 a ancho casi completo sobre un panel oscuro */}
   <section class="cine" aria-label="Reproductor del teaser">
     <div class="cine__contenedor">
-      <button
-        class="reproductor"
-        type="button"
-        data-reproductor
-        data-video={video.src ?? undefined}
-        data-falta={video.src ? undefined : video.falta}
-        aria-label="Reproducir el teaser"
-      >
+      <button class="reproductor" type="button" data-reproductor data-video={video.src ?? undefined} data-falta={video.src ? undefined : [video.falta, prevista].filter(Boolean).join(' · ')} aria-label={video.poster ? 'Reproducir el teaser' : undefined}>
+        {!video.poster && <span class="oculto">Reproducir el teaser: </span>}
         {video.poster ? (
           <img class="reproductor__poster" src={video.poster} alt="" />
         ) : (
-          <span class="reproductor__falta">{video.falta}</span>
+          <span class="reproductor__falta">
+            {!video.src && <span class="reproductor__insignia">Placeholder</span>}
+            {video.falta}{prevista && ` · ${prevista}`}
+          </span>
         )}
         <span class="reproductor__play" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
@@ -36,51 +47,50 @@ const { video, rima } = teaser;
     </div>
   </section>
 
-  <section class="contenedor seccion teaser-info" aria-labelledby="titulo-sinopsis">
-    <div class="teaser-info__sinopsis" data-revelar>
-      <p class="antetitulo">Sinopsis</p>
-      <h2 id="titulo-sinopsis" class="oculto">Sinopsis</h2>
-      {teaser.sinopsis.map((p) => <p>{p}</p>)}
-    </div>
-    <div class="teaser-info__ficha">
-      <h2 class="antetitulo" data-revelar>Ficha técnica</h2>
-      <dl class="ficha" data-revelar>
-        {teaser.ficha.map((f) => (
-          <div class="ficha__fila">
-            <dt class="ficha__titulo">{f.titulo}</dt>
-            <dd class="ficha__valor">
-              {f.lineas.map((l, j) => <p class:list={{ ficha__secundaria: j > 0 }}>{l}</p>)}
-            </dd>
-          </div>
-        ))}
-      </dl>
+  {/* 3. Sinopsis y ficha, compactas */}
+  <section class="contenedor teaser-datos" aria-labelledby="titulo-sinopsis">
+    <div class="panel teaser-datos__panel">
+      <div class="teaser-datos__sinopsis texto-largo" data-revelar>
+        <h2 id="titulo-sinopsis" class="antetitulo">Sinopsis</h2>
+        {teaser.sinopsis.map((p) => <p>{p}</p>)}
+      </div>
+      <div class="teaser-datos__ficha" data-revelar>
+        <h2 class="antetitulo">Ficha técnica</h2>
+        <dl class="ficha ficha--franja">
+          {teaser.ficha.map((f) => (
+            <div class="ficha__fila">
+              <dt class="ficha__titulo">{f.titulo}</dt>
+              <dd class="ficha__valor">
+                {f.lineas.map((l, j) => <p class:list={{ ficha__secundaria: j > 0 }}>{l}</p>)}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </div>
   </section>
 
-  <Grieta semilla={12} />
+  <Veta semilla={12} />
 
-  <section class="contenedor seccion" aria-labelledby="titulo-fotogramas">
-    <TituloSeccion titulo="Fotogramas clave" id="titulo-fotogramas" />
-    <ol class="fotogramas fotogramas--grandes">
-      {teaser.fotogramas.map((f, i) => (
-        <li class="fotograma" data-revelar style={`--i: ${i}`}>
-          <Imagen imagen={f.imagen} ratio="2.35 / 1" ver grupo="teaser" pie={`Plano ${f.plano}. ${f.pie}`} />
-          <p class="fotograma__pie"><span class="fotograma__numero">Plano {f.plano}</span>{f.pie}</p>
-        </li>
-      ))}
-    </ol>
+  {/* 4. Fotogramas clave */}
+  <section class="contenedor seccion seccion--panel" aria-labelledby="titulo-fotogramas">
+    <div class="panel">
+      <TituloSeccion titulo="Fotogramas clave" id="titulo-fotogramas" />
+      <Carrusel planos={teaser.planos} titulo="Fotogramas clave del teaser" />
+    </div>
+  </section>
 
-    <div class="rima" data-revelar>
-      <div class="rima__texto">
-        <h3 class="rima__titulo">{rima.titulo}</h3>
+  <Veta semilla={19} />
+
+  {/* 5. La rima */}
+  <section class="contenedor seccion seccion--panel" aria-labelledby="titulo-rima">
+    <div class="panel rima-v2" data-revelar>
+      <div class="rima-v2__texto">
+        <TituloSeccion antetitulo={`Planos ${rima.antes.plano} y ${rima.despues.plano}`} titulo={rima.titulo} id="titulo-rima" />
         <p>{rima.texto}</p>
+        <p class="rima-v2__ayuda">Arrastra la línea, o usa las flechas del teclado, para pasar de un plano al otro.</p>
       </div>
-      {[rima.antes, rima.despues].map((f) => (
-        <figure class="rima__plano">
-          <Imagen imagen={f.imagen} ratio="2.35 / 1" ver grupo="teaser" pie={`Plano ${f.plano}. ${f.pie}`} />
-          <figcaption class="fotograma__pie"><span class="fotograma__numero">Plano {f.plano}</span>{f.pie}</figcaption>
-        </figure>
-      ))}
+      <AntesDespues antes={rima.antes.imagen} despues={rima.despues.imagen} titulo={rima.titulo} ratio="2.35 / 1" etiquetaAntes={rima.antes.etiqueta} etiquetaDespues={rima.despues.etiqueta} />
     </div>
   </section>
 

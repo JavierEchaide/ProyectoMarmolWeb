@@ -24,6 +24,7 @@ Documento de referencia de la web del Proyecto Final Mármol (Javier Echaide, An
 12. Decisiones tomadas (y lo que se probó y se quitó)
 13. Problemas encontrados y cómo se resolvieron
 14. Ideas propuestas que no se han aplicado
+15. **V2 (noviembre 2026): qué cambió y dónde está** ← leer primero; corrige a los apartados 3 a 8 donde no coincidan
 
 ---
 
@@ -72,6 +73,8 @@ npm run build      # empaqueta el busto, genera dist/ y comprueba que todas las 
 npm run preview    # sirve dist/ para revisarlo
 npm run 3d         # solo reempaqueta el busto (src/3d/busto.js → public/js/busto.js)
 sh pruebas/todas.sh   # pasa las pruebas automáticas contra dist/ (ver apartado 8)
+npm run placeholders  # lista todos los huecos sin imagen o vídeo, con su semana prevista
+npm run exportar -- "<ruta del vault>" --simular   # exportación desde Obsidian (apartado 15.6)
 ```
 
 > En `npm run dev` los enlaces entre páginas apuntan a `teaser.html`, `historia.html`... Para revisar la navegación completa es más fiable `npm run build` + `npm run preview`.
@@ -126,7 +129,7 @@ ProyectoMarmolWeb/
 - **three.js se empaqueta con esbuild** en un script clásico (formato IIFE) en `public/js/busto.js`, que está subido al repositorio. Se regenera solo con `npm run build`, `npm run dev` o `npm run 3d`. Solo se descarga cuando el visitante se acerca a esa sección (unos 150 KB comprimido).
 - **Rutas relativas y JavaScript "clásico"** (sin `type="module"`): es lo que permite abrir la web desde un USB con doble clic. Los módulos de JavaScript y las rutas que empiezan por `/` no funcionan en `file://`. `scripts/relativizar.mjs` lo comprueba en cada build: si encuentra `href="/algo"` o `src="/algo"`, el build falla.
 - **Fuentes autoalojadas** en `public/fonts/` (licencia OFL): no dependen de Google Fonts ni de internet.
-- **Nada guarda datos:** no hay cookies ni almacenamiento, salvo una marca temporal en `sessionStorage` para saber si se llega desde otra página de la web (ver Intro).
+- **No hay cookies ni nada que salga del navegador.** Solo se usa `sessionStorage`, que se borra al cerrar la pestaña, para tres cosas: saber si se llega desde otra página de la web (`marmol-transicion`, ver Intro), recordar si los atajos de teclado están apagados (`marmol-atajos`) y que la música siga donde iba al cambiar de sala (`marmol-musica`: `{ activo, posicion }`). Los SPOILER no se guardan: al recargar vuelven a estar tapados.
 - **Todo funciona sin JavaScript:** el contenido se ve, los `<details>` se abren y los divisores son una grieta plana. El JavaScript añade movimiento. La clase `js` en `<html>` (la pone el script del `<head>`) permite preparar estados iniciales solo cuando hay JS.
 
 ---
@@ -627,6 +630,7 @@ La web está terminada: lo que queda es meter los assets reales y comprobar.
 ---
 
 ## 14. Ideas propuestas que no se han aplicado
+15. **V2 (noviembre 2026): qué cambió y dónde está** ← leer primero; corrige a los apartados 3 a 8 donde no coincidan
 
 Salieron de comparar la web con webs premiadas (Awwwards, museos). **Son propuestas: preguntar a Javi antes de hacer ninguna.**
 
@@ -636,3 +640,66 @@ Salieron de comparar la web con webs premiadas (Awwwards, museos). **Son propues
 - **Luz rasante en el hero:** un degradado cálido que se mueve despacio con el ratón sobre el render (como la luz sobre la piedra del Getty).
 - **SPOILER que dejan costuras de oro** al volver a taparlos, en vez de reponerse lisos.
 - **Página de Personajes** (fase 2) con visor `.glb` de las criaturas.
+
+---
+
+## 15. V2 (noviembre 2026): qué cambió y dónde está
+
+Sale del feedback de María José, Silvia, Unai y tres IAs ("la web es fría y plana", "parece una página de vinos"). Principios: **sala = página**, base común + identidad propia por sala, y **materia** (veta, relieve, bordes finos) sin tocar la paleta. Los datos y textos siguen siendo placeholder a propósito: cada hueco dice qué va ahí.
+
+### 15.1 Salas, indicador, atajos y placeholders
+
+- **`data-sala`** en el `<body>` (`portada`, `teaser`, `historia`, `proceso`; la 404 no lleva). En `site.css`, apartado 16 "Salas": cada sala redefine solo `--sala-fondo`, `--sala-acento`, `--sala-linea`, `--sala-textura`, `--sala-veta` y `--sala-nodo`. Valores actuales (elegidos por Claude sin pasar por la elección de dos opciones; se pueden cambiar ahí): Teaser `#ecebe5` con veta gris `#86827b`; Historia `#efe8d4` con veta roja; Proceso `#ecebdd` con veta de grafito `#4b4543`.
+- **Indicador de sala** (`IndicadorSala.astro`, en la cabecera): numeral + nombre + veta con 4 nodos (rombos). El actual es grande y relleno; nombre accesible "Sala II de IV: Teaser". **Al bajar ya no se esconde la cabecera entera**: se van la marca y el botón y el indicador se queda solo (`[data-sala] .cabecera--oculta`). Los nodos no son enlaces.
+- **Imagen OG por sala**: `img/og-teaser.jpg`, `og-historia.jpg`, `og-proceso.jpg` (campo `og` en `sitio.js`); se regeneran con `node scripts/generar-og.cjs`. La Portada sigue con `img/og.jpg`.
+- **Atajos** (`site.js`, bloque 1): **1–4** saltan de sala (pulsan el enlace del menú, así que la cortina es la misma), **M** abre y cierra el menú, Esc lo cierra. No se disparan con Ctrl/Alt/Meta, escribiendo en un campo, con un `<dialog>` abierto ni durante la intro. Interruptor "Atajos de teclado" en el menú (`role="switch"`, `sessionStorage`).
+- **Placeholders**: `Imagen.astro` acepta `{ src, alt, falta, semana }`. Sin imagen: insignia **Placeholder**, el texto de `falta` y la semana prevista ("S27 · 22–28/03"). Las fechas salen de `src/lib/semanas.js`, que lee `proceso.js` (única fuente; de ahí salen también la barra de Estado y el bloque abierto del calendario). Las semanas asignadas son una **propuesta**. `npm run placeholders` los lista todos.
+- **Divisores**: grietas doradas (`Grieta.astro`) solo en Portada e Historia. Teaser y Proceso usan `Veta.astro`: veta fina del color de la sala, sin oro y quieta.
+- **Títulos grabados**: variable `--grabado` (un `text-shadow` muy sutil con la luz arriba a la izquierda) en los títulos de sección; se anula en las salas oscuras.
+- **Texto largo**: clase `texto-largo` (presentación de Portada, sinopsis, premisa, intro de Proceso): justificado con guiones a partir de 761 px, a la izquierda en móvil, 66 caracteres de línea. Las tarjetas de las seis partes se dejaron a la izquierda (columna estrecha).
+
+### 15.2 Portada
+
+Botón "Ver el teaser" (`portada.boton`) y "un Creador" en lugar de "un dios escultor". Nada más.
+
+### 15.3 Teaser
+
+- **Nebulosa**: tres capas (`img/teaser/nebulosa-1..3.webp`, provisionales, `python3 scripts/generar-nebulosa.py`; los renders de Blender se sobrescriben con el mismo nombre). `.nebulosa` es absoluta dentro de `<main>` con `clip-path: inset(0)` y las capas son `position: fixed`: así no se salen de la página ni pasan por encima del menú (z-index −1 dentro del contexto de `main`). `teaser.js` las mueve con `transform` en `requestAnimationFrame` (la lejana recorre el 25 % de su sobrante, la media el 55 % y la cercana el 100 %). Con movimiento reducido, quietas; en móvil o táctil, dos capas y quietas.
+- **El texto va en paneles** (`.panel`), nunca sobre la nebulosa. Sin oro en esta sala (indicador, comparador y "Ver" en tinta).
+- Orden: título → vídeo → sinopsis + ficha en franja (`.ficha--franja`) → carrusel → la rima → siguiente.
+- **Carrusel** (`Carrusel.astro` + `teaser.js`): `teaser.planos`, diez huecos (1, 2a, 2b, 3, 4, 5, 6, 7, 8, 9) con `estado` (`placeholder`, `previz`, `render de prueba`, `render`). Miniatura → cambia el grande (450 ms); ← → con el foco dentro; deslizar con el dedo; clic en el grande abre el visor. Sin JS se ven todos en lista. Los pies de 2a, 3, 5 y 9 están pendientes.
+- **La rima**: `AntesDespues.astro` con etiquetas "En el bosque" / "En la jaula" (planos 4 y 6). El código del comparador pasó de `proceso.js` a `site.js` (bloque 6).
+- **Música de la ficha**: sale de `src/data/musica.js`.
+
+### 15.4 Historia
+
+- **Premisa** en tres bloques: premisa + frase de terminología, **Influencias** (hueco placeholder) y **La idea: kintsugi**. Fuera la frase de Attack on Titan (ahora es una referencia de Proceso, categoría Narrativa).
+- **Seis partes**: `resumen` (borrador, marcado en la web mientras `historia.resumenBorrador` sea `true`) y botón **Leer más** (`aria-expanded`, altura animada) que despliega `texto`.
+- **Spoilers**: "Mostrar todos" solo destapa y queda desactivado ("Todo destapado"). **No existe `tapar`**. Al recargar vuelven a taparse.
+- **Ventana de la cabecera**: un `<button>` cubre el mármol. Clic, toque o Enter/Espacio la abren; abierta, con ratón sigue al puntero; otro clic la cierra. Ya no depende del hover ni pasea sola.
+- **Terminología**: "Creador" en toda la web; "Dios" solo en la frase que lo explica.
+
+### 15.5 Proceso (cuaderno de taller)
+
+- Dos columnas en escritorio: **índice lateral fijo** (`.indice`, placas, plomada, scrollspy, S01–S35 por bloque) + contenido. Por debajo de 1000 px el índice es una fila de placas arriba.
+- Cinco secciones: **Estado** (`proceso.estado.ultimoResultado` es el único campo a mano) · **Desarrollo visual** (comparativos grandes; `proceso.desarrolloVisual` está vacío a propósito: ahí irán las tarjetas de sets y Creador) · **Método** (pipeline, referencias con la 8.ª categoría Narrativa, dato de render en `proceso.render`) · **Calendario** (solo el bloque actual abierto; cada semana tiene ancla `#s05`, hueco opcional `miniatura` y enlace "Ver registro") · **Archivo** (WIPs, versiones, fallos y Cuaderno).
+- **Registros**: `src/pages/registro-[semana].astro` genera `registro-s01.html`... planos en la raíz, para las semanas con nota exportada o, si no, con `registro` manual en `proceso.js` (`src/lib/registros.js`).
+
+### 15.6 Exportación desde Obsidian
+
+`npm run exportar -- "<ruta del vault>" [--simular] [--grafo "<captura.png>"]` (`scripts/exportar-vault.mjs`). **Lo ejecuta Javi en su ordenador.** Solo exporta `Registro SXX - Proyecto Final Mármol` y `Contenido/Referencias/<categoría>/<nota>`, y solo con `**Publicar:** sí` en las primeras 30 líneas. Cualquier otra nota no sale nunca, lleve la marca o no. Quita propiedades, comentarios `%% %%` y la línea de la marca; los `[[wikilinks]]` a notas exportadas pasan a enlaces y el resto a texto; `![[imagen]]` se copia a `public/img/vault/` con su texto alternativo (o uno generado, con aviso). Escribe `src/data/generado/*.json`. Imprime notas exportadas, avisos y resumen de cambios: **revisarlo, y el `git diff`, antes del commit.** Hay un vault de ejemplo en `pruebas/vault-ejemplo/`.
+
+### 15.7 Reproductor de música
+
+`Musica.astro` + `js/musica.js` + `src/data/musica.js` (único origen de pista y crédito). Disco de mármol fijo abajo a la izquierda (z-index 40) con una veta roja de progreso; un solo botón con `aria-pressed`; apagado por defecto; crédito CC BY siempre visible. Guarda `{ activo, posicion }` en `sessionStorage` y al cambiar de sala intenta reanudar; si el navegador bloquea `play()`, queda apagado. Se calla si empieza un vídeo con sonido y no vuelve sola. Al terminar la pista se para (`bucle: false`). **Falta el archivo** `public/audio/darkness-is-coming.mp3` (lo sube Javi): hasta entonces el botón vuelve a apagado.
+
+### 15.8 Pruebas nuevas
+
+`pruebas/v2.cjs` (indicador, atajos, carrusel, rima, nebulosa, Leer más, ventana, terminología, Proceso, música: todo debe salir `true`) y `pruebas/exportar.cjs` (exportación con el vault de ejemplo y `npm run placeholders`). `spoilers` comprueba ahora que no se pueden volver a tapar; `bloques` usa el bloque 2 porque el actual ya viene abierto. `todas.sh` las incluye.
+
+### 15.9 Pendiente de comprobar o decidir
+
+- Reanudación de la música en Safari y Firefox, y con el MP3 real.
+- Guiones de separación silábica y ríos del justificado en el navegador de Javi.
+- La web publicada en Vercel (no se ve desde el entorno de Claude).
+- Valores de color de las salas, relieve de los títulos e imágenes OG: aplicados sin elegir entre dos opciones.

@@ -1,0 +1,54 @@
+---
+// Una página por semana con registro publicado: registro-s05.html, plana en la
+// raíz (sin subcarpetas, para no romper las rutas relativas del plan B).
+// El contenido sale de la nota exportada de Obsidian o, si no hay, del
+// `registro` manual de proceso.js.
+import Base from '../layouts/Base.astro';
+import Veta from '../components/Veta.astro';
+import TituloSeccion from '../components/TituloSeccion.astro';
+import { registros, archivoRegistro } from '../lib/registros.js';
+
+export function getStaticPaths() {
+  const todos = registros();
+  return todos.map((r, i) => ({
+    params: { semana: r.semana.id.toLowerCase() },
+    props: { r, anterior: todos[i - 1] ?? null, siguiente: todos[i + 1] ?? null },
+  }));
+}
+const { r, anterior, siguiente } = Astro.props;
+const s = r.semana;
+const etiquetaEstado = { hecho: 'Hecho', 'en-curso': 'En curso', pendiente: 'Planificado' };
+---
+<Base id="proceso" subtitulo={`Registro ${s.id}`} archivo={archivoRegistro(s)} descripcion={`Registro de la semana ${s.id} (${s.fechas}) del Proyecto Mármol: ${s.plan}.`}>
+  <article class="contenedor registro">
+    <p class="registro__volver">
+      <a href={`proceso.html#${s.id.toLowerCase()}`}>
+        <svg class="flecha flecha--izq" viewBox="0 0 24 12" aria-hidden="true"><path d="M23 6H1M6 1 1 6l5 5" /></svg>
+        Volver al calendario
+      </a>
+    </p>
+    <TituloSeccion antetitulo={`Bloque ${s.bloque.numero} · ${s.bloque.titulo}`} titulo={`Registro ${s.id}`} nivel={1}>
+      <p class="registro__datos">
+        <span class="cota">{s.fechas}</span>
+        <span class={`estado estado--${s.estado}`}>{etiquetaEstado[s.estado]}</span>
+      </p>
+      <p class="registro__plan">{s.plan}</p>
+    </TituloSeccion>
+
+    {r.origen === 'obsidian' ? (
+      <div class="registro__cuerpo prosa" set:html={r.html} />
+    ) : (
+      <div class="registro__cuerpo prosa">
+        <ul>{r.lineas.map((l) => <li>{l}</li>)}</ul>
+        <p class="registro__origen">Resumen escrito a mano. La nota completa de esta semana todavía no está publicada.</p>
+      </div>
+    )}
+
+    <Veta semilla={parseInt(s.id.slice(1), 10) + 70} />
+
+    <nav class="registro__nav" aria-label="Otros registros">
+      {anterior ? <a href={archivoRegistro(anterior.semana)}><span class="antetitulo">Anterior</span>Registro {anterior.semana.id}</a> : <span></span>}
+      {siguiente ? <a class="registro__nav-sig" href={archivoRegistro(siguiente.semana)}><span class="antetitulo">Siguiente</span>Registro {siguiente.semana.id}</a> : <span></span>}
+    </nav>
+  </article>
+</Base>

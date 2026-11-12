@@ -14,11 +14,13 @@ export const sitio = {
     'Proyecto final de Javier Echaide: el teaser de Serie Mármol, su historia y cómo se ha hecho.',
 };
 
+// og: imagen que se ve al compartir el enlace de esa sala (1200×630;
+// se regeneran con `node scripts/generar-og.cjs`, salvo la de la Portada).
 export const paginas = [
-  { id: 'portada', numero: 'I', titulo: 'Portada', archivo: 'index.html', resumen: 'El principio', activa: true },
-  { id: 'teaser', numero: 'II', titulo: 'Teaser', archivo: 'teaser.html', resumen: '30 segundos', activa: true },
-  { id: 'historia', numero: 'III', titulo: 'Historia', archivo: 'historia.html', resumen: 'Resumen de la serie', activa: true },
-  { id: 'proceso', numero: 'IV', titulo: 'Proceso', archivo: 'proceso.html', resumen: 'Cómo se ha hecho', activa: true },
+  { id: 'portada', og: 'img/og.jpg', numero: 'I', titulo: 'Portada', archivo: 'index.html', resumen: 'El principio', activa: true },
+  { id: 'teaser', og: 'img/og-teaser.jpg', numero: 'II', titulo: 'Teaser', archivo: 'teaser.html', resumen: '30 segundos', activa: true },
+  { id: 'historia', og: 'img/og-historia.jpg', numero: 'III', titulo: 'Historia', archivo: 'historia.html', resumen: 'Resumen de la serie', activa: true },
+  { id: 'proceso', og: 'img/og-proceso.jpg', numero: 'IV', titulo: 'Proceso', archivo: 'proceso.html', resumen: 'Cómo se ha hecho', activa: true },
   { id: 'personajes', numero: 'V', titulo: 'Personajes', archivo: 'personajes.html', resumen: 'Fichas del reparto', activa: false },
 ];
 

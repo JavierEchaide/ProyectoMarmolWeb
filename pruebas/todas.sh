@@ -7,8 +7,8 @@ cd "$(dirname "$0")/.."
 python3 -m http.server 4400 --directory dist >/dev/null 2>&1 &
 SERVIDOR=$!
 sleep 1
-for p in interacciones spoilers usb ancho-320 cortina cortina-movil menus bloques cartas-hover accesibilidad; do
+for p in interacciones spoilers v2 exportar usb ancho-320 cortina cortina-movil menus bloques cartas-hover accesibilidad; do
   echo "=== $p"
-  node "pruebas/$p.cjs" 2>&1 | tail -12
+  node "pruebas/$p.cjs" 2>&1 | tail -90
 done
 kill $SERVIDOR

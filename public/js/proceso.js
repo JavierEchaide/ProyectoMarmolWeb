@@ -1,19 +1,3 @@
-/* Proceso: comparadores antes / después. El control es un <input type="range">
-   invisible encima de la imagen: funciona con ratón, dedo y teclado. */
-(function () {
-  'use strict';
-
-  document.querySelectorAll('[data-comparador]').forEach(function (c) {
-    var control = c.querySelector('[data-comparador-control]');
-    function actualizar() {
-      c.style.setProperty('--corte', control.value + '%');
-      c.style.setProperty('--corte-num', control.value / 100);
-    }
-    control.addEventListener('input', actualizar);
-    actualizar();
-  });
-})();
-
 /* Proceso: los bloques de la línea de tiempo y el archivo se despliegan
    animados. Al abrir, el bloque crece hasta su altura y su contenido entra
    escalonado (cada semana un poco después de la anterior); al cerrar se
@@ -111,4 +95,62 @@
       else cerrar();
     });
   });
+})();
+
+/* Proceso: índice lateral (scrollspy) y enlaces directos por semana (#s05).
+   - Marca en el índice la sección que se está leyendo (aria-current).
+   - Un enlace a una semana abre antes su bloque del calendario, que puede
+     estar plegado, y después baja hasta ella. Funciona al cargar la página
+     con el ancla en la dirección y al pulsar en el índice. */
+(function () {
+  'use strict';
+
+  var movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function irAlAncla(desplazar) {
+    var id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    var destino = document.getElementById(id);
+    if (!destino) return;
+    var plegado = destino.closest('details:not([open])');
+    while (plegado) {
+      plegado.open = true;
+      plegado = plegado.parentElement && plegado.parentElement.closest('details:not([open])');
+    }
+    document.querySelectorAll('[data-indice-semana]').forEach(function (a) {
+      if (a.getAttribute('href') === '#' + id) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+    if (desplazar) destino.scrollIntoView({ block: 'start', behavior: movimientoReducido ? 'auto' : 'smooth' });
+  }
+  window.addEventListener('hashchange', function () { irAlAncla(true); });
+  if (location.hash) {
+    irAlAncla(false);
+    // el navegador ya intentó bajar con el bloque plegado: se repite con el bloque abierto
+    requestAnimationFrame(function () { irAlAncla(true); });
+  }
+  // Mismo ancla dos veces seguidas no dispara hashchange
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#"]');
+    if (a && a.getAttribute('href') === location.hash) irAlAncla(true);
+  });
+
+  var enlaces = Array.prototype.slice.call(document.querySelectorAll('[data-indice-enlace]'));
+  var secciones = Array.prototype.slice.call(document.querySelectorAll('[data-indice-seccion]'));
+  if (!enlaces.length || !('IntersectionObserver' in window)) return;
+  var visibles = {};
+  function marcar() {
+    // la primera sección que cruza la franja de lectura
+    var actual = secciones.filter(function (s) { return visibles[s.id]; })[0];
+    if (!actual) return;
+    enlaces.forEach(function (a) {
+      if (a.getAttribute('href') === '#' + actual.id) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+  }
+  var espia = new IntersectionObserver(function (entradas) {
+    entradas.forEach(function (en) { visibles[en.target.id] = en.isIntersecting; });
+    marcar();
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  secciones.forEach(function (s) { espia.observe(s); });
 })();

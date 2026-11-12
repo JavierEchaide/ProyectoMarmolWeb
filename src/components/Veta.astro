@@ -1,0 +1,16 @@
+---
+// Divisor de sección SIN oro: una veta de mármol fina y quieta, del color de
+// la sala (--sala-veta). Es el divisor de Teaser y Proceso; las grietas
+// doradas de kintsugi (Grieta.astro) quedan solo para Portada e Historia.
+// No se dibuja con el scroll: la veta que cuenta algo al bajar es la de las
+// seis partes de Historia.
+import { grietaHorizontal } from '../lib/grietas.js';
+const { semilla = 1 } = Astro.props;
+const { principal, ramas } = grietaHorizontal(semilla, 1200, 28);
+---
+<div class="veta-divisor" aria-hidden="true">
+  <svg viewBox="0 0 1200 28" preserveAspectRatio="none" focusable="false">
+    {ramas.map((d) => <path d={d} class="veta-divisor__rama" />)}
+    <path d={principal} class="veta-divisor__trazo" />
+  </svg>
+</div>

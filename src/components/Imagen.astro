@@ -1,35 +1,41 @@
 ---
-// Imagen o, si todavía no existe, placeholder con el texto de lo que falta.
+// Imagen o, si todavía no existe, placeholder: dice qué va ahí (`falta`),
+// en qué semana está prevista (`semana`) y lleva la insignia "Placeholder".
 // Props:
-//   imagen: { src, alt, falta }
+//   imagen: { src, alt, falta, semana }  (semana: id del calendario, 'S27'; opcional)
 //   ratio:  proporción CSS ('16 / 9', '3 / 4'...)
 //   ver:    si es true, se puede ampliar en el visor (aparece "Ver" al pasar)
 //   grupo:  las imágenes con el mismo grupo se recorren con flechas en el visor
 //   pie:    texto que se muestra bajo la imagen ampliada
 //   oscuro: placeholder sobre fondo oscuro
-const { imagen, ratio = '16 / 9', ver = false, grupo = '', pie = '', oscuro = false, clase = '' } = Astro.props;
-const { src, alt = '', falta = '' } = imagen ?? {};
+//   carga:  'lazy' (por defecto) o 'eager'
+import { etiquetaSemana } from '../lib/semanas.js';
+const { imagen, ratio = '16 / 9', ver = false, grupo = '', pie = '', oscuro = false, clase = '', carga = 'lazy' } = Astro.props;
+const { src, alt = '', falta = '', semana } = imagen ?? {};
+const prevista = src ? null : etiquetaSemana(semana);
 const Etiqueta = ver ? 'button' : 'div';
 ---
 <Etiqueta
-  class:list={['imagen', clase, { 'imagen--ver': ver, 'imagen--oscura': oscuro }]}
+  class:list={['imagen', clase, { 'imagen--ver': ver, 'imagen--oscura': oscuro, 'imagen--placeholder': !src }]}
   style={`aspect-ratio: ${ratio}`}
   type={ver ? 'button' : undefined}
   data-visor={ver ? '' : undefined}
   data-grupo={ver && grupo ? grupo : undefined}
   data-src={ver && src ? src : undefined}
   data-alt={ver ? alt : undefined}
-  data-falta={ver && !src ? falta : undefined}
+  data-falta={ver && !src ? [falta, prevista].filter(Boolean).join(' · ') : undefined}
   data-pie={ver ? pie : undefined}
   data-ratio={ver ? ratio : undefined}
-  aria-label={ver ? `Ampliar: ${alt}` : undefined}
+  aria-label={ver && src ? `Ampliar: ${alt}` : undefined}
 >
   {src ? (
-    <img src={src} alt={ver ? '' : alt} loading="lazy" decoding="async" />
+    <img src={src} alt={ver ? '' : alt} loading={carga} decoding="async" />
   ) : (
-    <span class="imagen__falta" role={ver ? undefined : 'img'} aria-label={ver ? undefined : alt}>
-      <span class="imagen__etiqueta">Img</span>
+    <span class="imagen__falta" role={ver ? undefined : 'img'} aria-label={ver ? undefined : `Placeholder: ${alt || falta}`}>
+      {ver && <span class="oculto">Ampliar: </span>}
+      <span class="imagen__etiqueta">Placeholder</span>
       <span class="imagen__texto">{falta}</span>
+      {prevista && <span class="imagen__semana">{prevista}</span>}
     </span>
   )}
   {ver && <span class="imagen__ver" aria-hidden="true">Ver</span>}

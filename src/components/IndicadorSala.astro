@@ -1,0 +1,28 @@
+---
+// Indicador fijo de sala: numeral romano + nombre + una veta corta con un
+// nodo por sala. El nodo de la sala actual es grande y va relleno; los demás,
+// pequeños y huecos. No depende del color: lo dicen el tamaño, el relleno y
+// el texto. Para lectores de pantalla: "Sala II de IV: Teaser".
+import { paginasActivas } from '../data/sitio.js';
+const { actual } = Astro.props;
+const salas = paginasActivas();
+const i = salas.findIndex((p) => p.id === actual);
+const sala = salas[i];
+const paso = 18;
+const ancho = (salas.length - 1) * paso + 16;
+---
+{sala && (
+  <p class="indicador" data-indicador>
+    <span class="oculto">Sala {sala.numero} de {salas.at(-1).numero}: {sala.titulo}</span>
+    <span class="indicador__numero" aria-hidden="true">{sala.numero}</span>
+    <span class="indicador__nombre" aria-hidden="true">{sala.titulo}</span>
+    <svg class="indicador__veta" viewBox={`0 0 ${ancho} 16`} width={ancho} height="16" aria-hidden="true" focusable="false">
+      <path class="indicador__linea" d={`M8 8H${ancho - 8}`} />
+      {salas.map((p, j) => {
+        const r = j === i ? 5.5 : 2.6;
+        const x = 8 + j * paso;
+        return <path class:list={['indicador__nodo', { 'indicador__nodo--actual': j === i }]} d={`M${x} ${8 - r}L${x + r} 8L${x} ${8 + r}L${x - r} 8Z`} />;
+      })}
+    </svg>
+  </p>
+)}
