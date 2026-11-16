@@ -718,6 +718,6 @@ Decisiones de Javi: piezas `Retopologia` + `Pelo_Modelo.001` de su `busto.blend`
 
 El `.blend` de trabajo (`busto_web.blend`, piezas ya normalizadas con los materiales horneados y el procedural original con usuario falso para volver a hornear) se le entregó a Javi; no está en el repositorio.
 
-**Colocación de la calavera (16/11/2026):** en el `.glb` venía mirando algo hacia arriba y hundida en la parte baja del hueco. `src/3d/busto.js` la corrige al cargar: 18° hacia delante, +0,08 en Y, +0,03 en X, +0,01 en Z y escala ×1,08 (ajustado contra el hueco real del `.glb`: cabe con más de 1 cm de holgura). Si se vuelve a exportar el modelo con otra orientación, quitar ese bloque.
+**Colocación de la calavera (16/11/2026):** en el `.glb` venía con la cara mirando hacia abajo. `src/3d/busto.js` la corrige al cargar: 14° hacia atrás (`rotation.x = -14°`), +0,03 en X, −0,02 en Z y escala ×0,98 (ajustado contra el hueco real del `.glb`: cabe con más de 1 cm de holgura). Si se vuelve a exportar el modelo con otra orientación, quitar ese bloque.
 
 **Prueba:** `pruebas/busto.cjs` (en `todas.sh`): comprueba que el `.glb` responde 200, que no hay errores y hace capturas cerrado / a medias / abierto en 1440 y 390. En este entorno sin GPU tarda unos 3 minutos.
