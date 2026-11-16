@@ -3,9 +3,10 @@
    abajo, la base. Al bajar por la sección, la cabeza se abre y deja ver el
    hueso. El ratón la gira un poco.
 
-   Provisional: son tres esferas. Cuando exista el modelo real, se exporta un
-   .glb con tres objetos llamados "arriba", "hueso" y "abajo" y se pone su ruta
-   en portada.autor.modelo (ver NOTA-WEB.md); las piezas se sustituyen solas.
+   Las esferas son el respaldo: con portada.autor.modelo se carga el .glb
+   (public/modelos/busto.glb: la cabeza de Javi partida por los ojos, con la
+   calavera de mármol aguamarina dentro) y sustituye cada pieza por el objeto
+   del mismo nombre ("arriba", "hueso" y "abajo"). Ver NOTA-WEB.md.
 
    Este archivo NO se carga tal cual: scripts/construir-3d.mjs lo empaqueta con
    three.js en public/js/busto.js como script clásico, para que la web siga
@@ -37,6 +38,9 @@ import {
 } from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+// El .glb va comprimido con meshopt (gltf-transform). El decodificador va
+// dentro de este mismo script: no hace falta cargar archivos aparte.
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const R = 1; // radio exterior de la cabeza
 const RC = 0.7; // radio del hueco interior (grosor del mármol: R - RC)
@@ -345,19 +349,46 @@ function iniciar(seccion) {
   cabeza.add(arriba, hueso, abajo);
   escena.add(cabeza);
 
-  // Modelo real, si existe: sustituye a las esferas pieza a pieza
+  // Materiales que se encienden al abrir: el oro de la costura y las vetas del
+  // hueso. Con el modelo real se cambian por los suyos.
+  let brilloOro = [oro];
+  let brilloHueso = [bronce];
+  let huesoGira = true;
+
+  // Modelo real, si existe: sustituye a las esferas pieza a pieza.
+  // Materiales que reconoce por nombre: "oro" (costura) y "calavera" (vetas
+  // de oro en el mapa de emisión).
   const modelo = seccion.dataset.bustoModelo;
   if (modelo) {
-    new GLTFLoader().load(
+    new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(
       modelo,
       (gltf) => {
         const piezas = { arriba, hueso, abajo };
+        const cambiadas = [];
         Object.keys(piezas).forEach((nombre) => {
           const obj = gltf.scene.getObjectByName(nombre);
           if (!obj) return;
           piezas[nombre].clear();
           piezas[nombre].add(obj);
+          cambiadas.push(nombre);
         });
+        const oros = [];
+        const vetas = [];
+        [arriba, hueso, abajo].forEach((g) => g.traverse((o) => {
+          if (!o.isMesh) return;
+          const m = o.material;
+          if (/^oro/.test(m.name)) {
+            m.emissive = new Color('#5a3d08');
+            oros.push(m);
+          } else if (/^calavera/.test(m.name)) {
+            vetas.push(m);
+          }
+        }));
+        if (cambiadas.includes('abajo')) brilloOro = oros;
+        if (cambiadas.includes('hueso')) {
+          brilloHueso = vetas;
+          huesoGira = false; // la calavera mira al frente con la cabeza
+        }
         pedir();
       },
       undefined,
@@ -419,9 +450,9 @@ function iniciar(seccion) {
     abajo.position.y = -abierto * 0.6 + Math.sin(t * 0.9 + 1.7) * 0.01 * flota;
     abajo.rotation.set(0.16 * abierto, 0, -0.12 * abierto);
     hueso.position.y = Math.sin(t * 0.9 + 0.8) * 0.015 * flota;
-    hueso.rotation.y = t * 0.15 * flota + abierto * 0.6;
-    bronce.emissiveIntensity = 0.2 + abierto * 1.6;
-    oro.emissiveIntensity = 0.4 + abierto * 0.8;
+    hueso.rotation.y = huesoGira ? t * 0.15 * flota + abierto * 0.6 : 0;
+    brilloHueso.forEach((m) => { m.emissiveIntensity = 0.2 + abierto * 1.6; });
+    brilloOro.forEach((m) => { m.emissiveIntensity = 0.4 + abierto * 0.8; });
 
     // Abierta mide casi el doble: la cámara se aleja y la centra
     camara.position.z = distancia * (1 + 0.28 * abierto);
@@ -430,7 +461,11 @@ function iniciar(seccion) {
     giro.x += (raton.y * 0.25 - giro.x) * 0.06;
     giro.y += (raton.x * 0.6 - giro.y) * 0.06;
     cabeza.rotation.x = 0.08 + giro.x;
-    cabeza.rotation.y = -0.5 + t * 0.06 * flota + giro.y;
+    // Las esferas dan vueltas despacio; la cabeza real se balancea para que
+    // siempre se le vea la cara (de tres cuartos a casi de frente)
+    cabeza.rotation.y = huesoGira
+      ? -0.5 + t * 0.06 * flota + giro.y
+      : -0.35 + Math.sin(t * 0.3) * 0.4 * flota + giro.y;
 
     renderer.render(escena, camara);
     // Mientras se ve, se sigue animando (flota); quieta si hay que reducir movimiento

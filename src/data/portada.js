@@ -100,12 +100,12 @@ export const portada = {
       falta: 'Render: autorretrato 3D con estética de estatua y calavera (vertical 3:4)',
       semana: 'S34',
     },
-    // El busto 3D que se abre (src/3d/busto.js). Ahora son tres esferas
-    // provisionales. Para el modelo real: un .glb con tres objetos llamados
-    // "arriba", "hueso" y "abajo", centrados en el origen y de 1 unidad de
-    // radio aprox. Ejemplo: 'modelos/busto.glb' (en public/modelos/).
+    // El busto 3D que se abre (src/3d/busto.js): la cabeza de Javi partida por
+    // los ojos con la calavera aguamarina dentro. El .glb tiene tres objetos
+    // ("arriba", "hueso" y "abajo") y sale de busto_web.blend (NOTA-WEB.md,
+    // apartado 7.8). Sin el modelo (o desde un USB) se ven las tres esferas.
     // La imagen de arriba solo se ve si el navegador no puede mostrar 3D.
-    modelo: null,
+    modelo: 'modelos/busto.glb',
     estudios: 'Animación 3D, Juegos y Entornos Interactivos',
     curso: 'Proyecto final · 2026 – 2027',
   },

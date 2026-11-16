@@ -212,9 +212,10 @@ Solo en tres sitios: el hero de la Portada (el render), la mitad izquierda del m
    - Al pasar el ratón (o con el foco del teclado) la carta se adelanta, el filete brilla, la piedra se aclara y las otras dos se apagan.
    - Cada carta lleva "Sala II/III/IV", el dato (`subtitulo`) y una frase (`frase`).
 6. **Hecho por** (`autor`): sala oscura con un **busto 3D que se abre al bajar** (referencia: Billelis). La escena se queda fija mientras se recorre la sección (230vh); tu nombre va enorme detrás, y a la derecha va la cartela con estudios y curso.
-   - Ahora son tres esferas provisionales: el casquete y la base son de mármol blanco, partidos por una rotura irregular con una costura de oro; en medio está el hueso, de bronce con pátina verde y vetas de oro que se encienden al abrirse.
-   - Con el ratón la cabeza gira un poco. Con "reducir movimiento" se queda quieta y medio abierta.
-   - **Para poner el modelo real:** un `.glb` con tres objetos llamados exactamente `arriba`, `hueso` y `abajo`, centrados en el origen y de 1 unidad de radio más o menos (como una esfera de 1 m en Blender). Se copia a `public/modelos/busto.glb` y se pone `modelo: 'modelos/busto.glb'` en `portada.autor`. Cada pieza sustituye a su esfera y se mueve igual. Conviene que pese menos de 5 MB (Decimate y texturas de 2K).
+   - **Desde el 16/11/2026 es la cabeza de Javi** (`public/modelos/busto.glb`): mármol crema (su `Mat_Marmol`), partida en horizontal por los ojos con una grieta irregular, hueca, con las caras del corte cerradas en mármol y el cuello cortado en plano. Dentro, una calavera de mármol aguamarina (basado en el Verde Guatemala) con vetas de oro que se encienden al abrirse; en la grieta, la costura de oro. Cómo se hizo: apartado 15.10.
+   - Las tres esferas siguen en el código como respaldo: se ven si el `.glb` no carga (por ejemplo desde el USB).
+   - Con el ratón la cabeza gira un poco. Las esferas dan vueltas despacio; la cabeza real se balancea para que siempre se le vea la cara. Con "reducir movimiento" se queda quieta y medio abierta.
+   - **Para cambiar el modelo:** un `.glb` con tres objetos llamados exactamente `arriba`, `hueso` y `abajo`, centrados en el origen y de 1 unidad de radio más o menos (2 de alto). Se copia a `public/modelos/busto.glb` (ya está puesto `modelo: 'modelos/busto.glb'` en `portada.autor`). Cada pieza sustituye a su esfera y se mueve igual. Materiales que reconoce por nombre: `oro…` (costura, brilla al abrir) y `calavera…` (su mapa de emisión son las vetas de oro, que se encienden). Conviene que pese menos de 5 MB: comprimirlo con meshopt (apartado 15.10).
    - Ojo: desde el USB (`file://`) el navegador no deja cargar archivos `.glb`, así que ahí se verían las esferas. En la web publicada se ve el modelo.
    - Si el navegador no puede mostrar 3D, se ve la imagen del autor (`autor.imagen`).
 7. **Siguiente: II · Teaser.**
@@ -410,11 +411,11 @@ li.carta                 posición en el espacio (profundidad y ángulo propios,
 ### 7.8 Busto 3D (`src/3d/busto.js` → `public/js/busto.js`)
 
 - **Carga:** `portada.js` observa la sección y añade el `<script src="js/busto.js">` cuando está a 900 px de entrar en pantalla.
-- **Geometría procedural** (no hay modelo todavía): tres piezas de una esfera de radio 1 (hueco interior de 0,7) cortadas por una línea de rotura irregular (`bordeRotura`, con semilla), con su cara de fractura con relieve (`caraRotura`) y una costura de oro a lo largo del borde (`TubeGeometry` sobre una `CatmullRomCurve3`). El hueso es una esfera de 0,62.
+- **Geometría procedural** (respaldo si no carga el `.glb`): tres piezas de una esfera de radio 1 (hueco interior de 0,7) cortadas por una línea de rotura irregular (`bordeRotura`, con semilla), con su cara de fractura con relieve (`caraRotura`) y una costura de oro a lo largo del borde (`TubeGeometry` sobre una `CatmullRomCurve3`). El hueso es una esfera de 0,62.
 - **Texturas dibujadas en canvas** (mármol Rosso Levanto calculado píxel a píxel con ruido periódico, hueso con pátina, vetas de oro): así funcionan también desde `file://`, donde no se pueden cargar imágenes para WebGL.
 - **Escena:** cámara de 28°, foco cálido (`SpotLight` `#ffd6a0`), contraluz azul, relleno cálido, ambiente oscuro y `RoomEnvironment` para los reflejos del oro. Tone mapping ACES. Píxeles máximos ×2.
 - **Apertura:** la sección mide 230vh y la escena es `sticky`. El progreso del scroll por la sección se suaviza con inercia y mueve el casquete hacia arriba (0,95) girándolo, la base hacia abajo (0,6) y el hueso girando. Se escribe también en la variable CSS `--apertura` (0 a 1) para coreografiar los textos. Flota un poco siempre; el ratón gira la cabeza.
-- **Modelo real:** con `portada.autor.modelo` carga el `.glb` con `GLTFLoader` y sustituye cada pieza por el objeto con su nombre (`arriba`, `hueso`, `abajo`). Si falla, se quedan las esferas.
+- **Modelo real:** con `portada.autor.modelo` carga el `.glb` con `GLTFLoader` (+ `MeshoptDecoder`, empaquetado dentro de `busto.js`, sin archivos aparte) y sustituye cada pieza por el objeto con su nombre (`arriba`, `hueso`, `abajo`). Si falla, se quedan las esferas. Con el modelo, el brillo que sube al abrir pasa a los materiales `oro…` y `calavera…` del `.glb`, el hueso deja de girar sobre sí mismo y la cabeza se balancea (`-0,35 ± 0,4` rad) en vez de dar vueltas.
 - **Sin WebGL:** se ve `autor.imagen`.
 - **Empaquetado:** `scripts/construir-3d.mjs` usa esbuild (formato IIFE, minificado) para meter three.js y el código en un único script clásico.
 
@@ -517,7 +518,7 @@ Formato recomendado: **WebP** (o JPG) calidad ~85. Renders con el mismo nombre q
 | 4 | Textura plana del mármol del hero (render cenital del material, sin luz dramática) | 2000×1500 o mayor | `img/marmol/marmol.webp` | se sobrescribe |
 | 5–8 | 4 fotogramas del prólogo: Creador de espaldas ante la ventana · sus ojos · la criatura en el bosque · la jaula en la bodega | 16:9 | `img/portada/prologo-1..4.webp` | `portada.fotogramas[i].imagen.src` |
 | 9–11 | *(Opcional)* imágenes para las 3 cartas (Teaser, Historia, Proceso); sin ellas se ve la piedra en movimiento | 5:7 vertical | `img/portada/acceso-*.webp` | `portada.accesos[i].imagen.src` |
-| 12 | Busto del autor en 3D partido en tres piezas (`arriba`, `hueso`, `abajo`), estética estatua/calavera | `.glb`, menos de 5 MB | `modelos/busto.glb` | `portada.autor.modelo` |
+| 12 | ✅ Busto del autor en 3D partido en tres piezas (`arriba`, `hueso`, `abajo`), estética estatua/calavera (puesto el 16/11/2026, 3,65 MB) | `.glb`, menos de 5 MB | `modelos/busto.glb` | `portada.autor.modelo` |
 | 12b | *(Respaldo)* render del busto para navegadores sin 3D | 3:4 vertical | `img/portada/autor.webp` | `portada.autor.imagen.src` |
 | 13 | **Teaser** en MP4 (H.264, 2.35:1, créditos dentro) | 1920×817 | `video/teaser.mp4` | `teaser.video.src` |
 | 14 | Póster del teaser (fotograma antes de pulsar play) | 2.35:1 | `img/teaser/poster.webp` | `teaser.video.poster` |
@@ -539,7 +540,7 @@ La web está terminada: lo que queda es meter los assets reales y comprobar.
 
 1. **Imprescindible:** teaser en MP4 (13) y su póster (14), render del hero (1 y 2), las seis imágenes de Historia (22–27) y la premisa (21). Copiar cada archivo a `public/` con la ruta de la tabla y cambiar `src: null` por esa ruta en `src/data/`.
 2. **Muy recomendable:** fotogramas del teaser (15–20), el "otro mundo" de la cabecera de Historia (20b), capturas del proceso (28, 31, 32) y el crédito de la música (33).
-3. **Opcional:** busto `.glb` (12, si no, se ven las tres esferas provisionales), capas o vídeo del hero (3, 3b), imágenes de las cartas (9–11).
+3. **Opcional:** capas o vídeo del hero (3, 3b), imágenes de las cartas (9–11).
 4. `npm run build` sin errores (el último mensaje debe ser "Todas las rutas son relativas") y `sh pruebas/todas.sh`.
 5. `git push` a `main` y abrir https://proyectomarmol.vercel.app en ordenador y en el móvil: recorrer las cuatro páginas con el menú, reproducir el vídeo y destapar un SPOILER.
 6. **Plan B:** copiar `dist/` a un USB y abrir `index.html` con doble clic en el ordenador de clase (o en otro que no sea el tuyo) antes de ir.
@@ -703,3 +704,18 @@ Botón "Ver el teaser" (`portada.boton`) y "un Creador" en lugar de "un dios esc
 - Guiones de separación silábica y ríos del justificado en el navegador de Javi.
 - La web publicada en Vercel (no se ve desde el entorno de Claude).
 - Valores de color de las salas, relieve de los títulos e imágenes OG: aplicados sin elegir entre dos opciones.
+
+### 15.10 Busto real (16/11/2026)
+
+Decisiones de Javi: piezas `Retopologia` + `Pelo_Modelo.001` de su `busto.blend`; grieta horizontal por los ojos; exterior con su `Mat_Marmol` (crema); hueca con grosor, como la bola; cuello cerrado con un corte plano; calavera con un mármol aguamarina verdoso (se buscó una referencia real: Verde Guatemala / Verde Alpi, fondo verde azulado y vetas claras). El oro y el movimiento de la calavera los dejó a criterio de Claude: costura de oro + vetas de oro en la calavera (como la bola) y calavera mirando al frente.
+
+**Cómo se hizo** (scripts en `scripts/busto/`, se ejecutan con el módulo `bpy` 5.2 de Blender; las rutas van como constantes al principio de cada uno):
+
+1. `etapa1_geometria.py`: tapa agujeros y cuello de la cara, da 8 mm de grosor al pelo, une cara + pelo con un remallado por vóxeles de 1,4 mm, lo reduce a 250 000 triángulos con `fast-simplification` (el Decimate de Blender dejaba triángulos enormes saliendo de la superficie), le resta el hueco (la cabeza alisada y encogida hasta dejar 14 mm de mármol como mínimo) y la parte con booleanos EXACT contra una caja cuya tapa es la grieta (ondas + 56 dientes + relieve, misma idea que `bordeRotura`). La costura de oro sigue el borde exterior de la grieta con rayos.
+2. `etapa2_calavera.py`: endereza la calavera (venía tumbada desde ZBrush) y busca la escala y posición más grandes que caben en el hueco con 2 mm de holgura (queda de 24 cm de alto). 13 000 caras: no hizo falta Decimate.
+3. `etapa3_materiales.py`: sombreado suave, UVs, hornea el `Mat_Marmol` (Escala 3 en la cabeza para que se vean las vetas a ese tamaño; Escala 1,5 en la calavera, con Color 1 `#2f8a78` y Color 2 `#bfeadc`) y las vetas de oro, todo con fondo del color del mármol para que no salgan puntos negros en los bordes de las islas UV. Cabeza a 2K, calavera a 1K. Normaliza (centro en el origen, 2 de alto, cara hacia +Z de three.js) y exporta.
+4. Compresión: `npx @gltf-transform/cli meshopt busto.glb public/modelos/busto.glb --level medium` (12 MB → 3,65 MB). El `bpy` de pip no trae Draco, y meshopt además no necesita archivos de decodificador aparte.
+
+El `.blend` de trabajo (`busto_web.blend`, piezas ya normalizadas con los materiales horneados y el procedural original con usuario falso para volver a hornear) se le entregó a Javi; no está en el repositorio.
+
+**Prueba:** `pruebas/busto.cjs` (en `todas.sh`): comprueba que el `.glb` responde 200, que no hay errores y hace capturas cerrado / a medias / abierto en 1440 y 390. En este entorno sin GPU tarda unos 3 minutos.
