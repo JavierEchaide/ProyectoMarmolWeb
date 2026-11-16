@@ -131,7 +131,7 @@ const SALAS = [['index', 'portada', 'Sala I de IV: Portada'], ['teaser', 'teaser
     const m = await nueva({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, reducedMotion: 'no-preference' });
     await m.goto(`${BASE}/teaser.html`); await m.evaluate(() => window.scrollTo(0, 1500)); await m.waitForTimeout(400);
     ver('nebulosa en móvil: dos capas y quietas', await m.evaluate(() => { const c = [...document.querySelectorAll('[data-nebulosa-capa]')]; return getComputedStyle(c[2]).display === 'none' && c.slice(0, 2).every((x) => getComputedStyle(x).transform === 'none'); }));
-    ver('portada: botón "Ver el teaser"', await (async () => { await m.goto(`${BASE}/index.html`); await m.waitForTimeout(300); return m.evaluate(() => document.querySelector('.presentacion .boton').textContent.trim() === 'Ver el teaser'); })());
+    ver('portada: botón "Ver el teaser"', await (async () => { await m.goto(`${BASE}/index.html`); await m.waitForTimeout(300); return m.evaluate(() => document.querySelector('.gancho .boton').textContent.trim() === 'Ver el teaser'); })());
     await m.context().close();
   }
 

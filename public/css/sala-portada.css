@@ -1,0 +1,904 @@
+/* Sala I · Portada (V3). Todo el CSS propio de la Portada va aquí; el sistema
+   común (tokens, cartela, botones, puerta, aparición) está en site.css, 23.
+   Índice: 1. Hero · 2. Presentación · 3. Cuatro fotogramas · 4. Estelas ·
+   5. Hecho por. Los hovers van solo dentro de (hover: hover) and (pointer: fine). */
+
+/* 1. Hero monumental -------------------------------------------------------- */
+.frontis {
+  --lx: 66%;
+  --ly: 38%;
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 420px;
+  margin-top: calc(-1 * var(--cabecera));
+  overflow: hidden;
+  background: var(--sala-hueco);
+}
+.frontis__imagen,
+.frontis__imagen img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.frontis__imagen img {
+  object-fit: cover;
+  object-position: center;
+}
+/* Luz rasante: cálida, sigue al ratón despacio (js/portada.js mueve --lx/--ly) */
+.frontis__luz {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(32% 42% at var(--lx) var(--ly), rgb(255 236 204 / 0.6), rgb(255 236 204 / 0) 70%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+.frontis::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 200px;
+  background: linear-gradient(rgb(241 242 227 / 0), var(--sala-fondo));
+  pointer-events: none;
+}
+.frontis__baja {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transform: translateX(-50%);
+  color: var(--tinta);
+}
+.frontis__baja .etiqueta {
+  font-weight: 600;
+}
+.frontis__hilo {
+  width: 1px;
+  height: 46px;
+  background: var(--tinta);
+  transform-origin: top;
+  animation: frontis-hilo 2.6s var(--curva) infinite;
+}
+@keyframes frontis-hilo {
+  0% { transform: scaleY(0); }
+  55%, 100% { transform: scaleY(1); }
+}
+@media (max-width: 700px) {
+  .frontis {
+    height: 78svh;
+    max-height: 620px;
+  }
+}
+
+/* 2. Presentación ----------------------------------------------------------- */
+.gancho {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  max-width: calc(var(--ancho) + 2 * var(--margen));
+  margin-inline: auto;
+  padding: clamp(48px, 6vw, 80px) var(--margen) clamp(32px, 4vw, 60px);
+}
+.gancho__frase {
+  margin: 0;
+  font-family: var(--f-titulo);
+  font-size: min(var(--t-display), 10.4vw);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.04;
+  color: #3a2c29;
+  text-shadow: var(--grabado-monumental);
+}
+.gancho__linea {
+  display: block;
+}
+.gancho__linea--roja {
+  color: var(--rojo);
+  text-shadow: 0 2px 1px rgb(255 255 255 / 0.7);
+}
+.gancho__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+.gancho__texto p {
+  max-width: 34em;
+  margin: 0;
+}
+.gancho__entrada::first-letter {
+  float: left;
+  padding: 6px 10px 0 0;
+  font-family: var(--f-titulo);
+  font-size: var(--t-h2);
+  line-height: 0.8;
+  color: var(--rojo);
+}
+.gancho__nota {
+  font-size: var(--t-pequeno);
+  color: var(--tinta-2);
+}
+@media (min-width: 900px) {
+  .gancho {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    column-gap: clamp(32px, 8vw, 120px);
+    align-items: end;
+  }
+  .gancho__frase {
+    font-size: min(var(--t-display), 5.6vw);
+  }
+  .gancho__texto {
+    padding-bottom: 12px;
+  }
+}
+
+/* 3. La historia en cuatro fotogramas -------------------------------------- */
+.cuatro {
+  position: relative;
+}
+.cuatro__escena {
+  max-width: calc(var(--ancho) + 2 * var(--margen));
+  margin-inline: auto;
+  padding: clamp(40px, 5vw, 60px) var(--margen) clamp(56px, 8vw, 120px);
+}
+.cuatro__titulo {
+  margin: 0 0 clamp(28px, 4vw, 48px);
+  font-size: var(--t-h2);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  color: #3a2c29;
+  text-shadow: var(--grabado-monumental);
+}
+.cuatro__indice {
+  display: none;
+}
+.cuatro__lista {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 34px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cuatro__fotograma {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.cuatro__pie {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+.cuatro__contador {
+  display: none;
+  font-family: var(--f-titulo);
+  font-size: var(--t-h2);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgb(54 41 38 / 0.25);
+}
+@media (min-width: 700px) {
+  .cuatro:not(.cuatro--escena) .cuatro__lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px 32px;
+  }
+}
+/* Escena fijada: la pone js/portada.js en pantalla ancha y sin movimiento reducido */
+.cuatro--escena {
+  height: 340vh;
+}
+.cuatro--escena .cuatro__escena {
+  position: sticky;
+  top: var(--cabecera);
+  height: calc(100vh - var(--cabecera));
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  column-gap: 24px;
+  align-items: center;
+  padding-block: clamp(20px, 4vh, 48px);
+}
+.cuatro--escena .cuatro__titulo {
+  grid-column: 1 / -1;
+  margin-bottom: clamp(16px, 3vh, 40px);
+}
+.cuatro--escena .cuatro__indice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.cuatro__marca {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  font-family: var(--f-titulo);
+  font-size: var(--t-h3);
+  letter-spacing: 0.08em;
+  color: rgb(54 41 38 / 0.62);
+  cursor: pointer;
+  transition: color 0.5s var(--curva);
+}
+.cuatro__raya {
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.6s var(--curva);
+}
+.cuatro__marca.es-actual {
+  color: var(--rojo);
+}
+.cuatro__marca.es-actual .cuatro__raya {
+  width: 56px;
+}
+.cuatro--escena .cuatro__lista {
+  justify-self: center;
+  width: min(100%, calc((100vh - var(--cabecera) - 300px) * 16 / 9));
+  min-width: 280px;
+  gap: 0;
+}
+.cuatro--escena .cuatro__fotograma {
+  grid-area: 1 / 1;
+  gap: 22px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+  filter: blur(6px);
+  transition: opacity 0.7s var(--curva), transform 0.7s var(--curva), filter 0.7s var(--curva), visibility 0s 0.7s;
+}
+.cuatro--escena .cuatro__fotograma.es-actual {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  filter: none;
+  transition-delay: 0s;
+}
+.cuatro--escena .cuatro__contador {
+  display: block;
+}
+
+/* 4. Las salas: estelas A+ --------------------------------------------------- */
+.museo {
+  position: relative;
+  overflow: hidden;
+  padding-top: clamp(64px, 8vw, 110px);
+  background: linear-gradient(#e9e7d8, #eceadd);
+}
+.museo__cabecera {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: clamp(90px, 11vw, 150px);
+  padding-inline: var(--margen);
+  text-align: center;
+}
+.museo__cabecera .etiqueta {
+  color: var(--tinta-2);
+}
+.museo__titulo {
+  margin: 0;
+  font-size: var(--t-h2);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  color: #3a2c29;
+  text-shadow: var(--grabado-monumental);
+}
+.museo__texto {
+  margin: 0;
+  font-size: var(--t-pequeno);
+  font-style: italic;
+  color: var(--tinta-2);
+}
+.estelas {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 96px;
+  align-items: end;
+  max-width: 340px;
+  margin: 0 auto;
+  padding: 0 34px 80px;
+  list-style: none;
+  perspective: 1600px;
+}
+.estelas__hueco {
+  min-width: 0;
+}
+.estela {
+  --placa: #ece7db;
+  --canto: #c9c0ad;
+  --talla: rgb(54 41 38 / 0.82);
+  --talla-luz: 0 1px 0 rgb(255 255 255 / 0.65), 0 -1px 0 rgb(0 0 0 / 0.28);
+  --frase: #4f433d;
+  --filo: rgb(54 41 38 / 0.35);
+  --filo-luz: rgb(255 255 255 / 0.6);
+  --alto: 420px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  color: inherit;
+  text-decoration: none;
+}
+.estela--travertino .estela__losa {
+  background-color: #e8e2d4;
+  background-image: var(--mat-travertino);
+}
+.estela--rosso {
+  --placa: #efeadf;
+  --canto: #6d2a26;
+}
+.estela--rosso .estela__losa {
+  background-color: #7a2c28;
+  background-image: var(--mat-rosso);
+}
+.estela--grafito {
+  --placa: #474140;
+  --canto: #2a2624;
+  --talla: rgb(239 233 221 / 0.94);
+  --talla-luz: 0 -1px 0 rgb(0 0 0 / 0.85), 0 1px 0 rgb(255 255 255 / 0.12);
+  --frase: #d6cec4;
+  --filo: rgb(0 0 0 / 0.45);
+  --filo-luz: rgb(255 255 255 / 0.18);
+}
+.estela--grafito .estela__losa {
+  background-color: #3e3937;
+  background-image: var(--mat-grafito);
+}
+/* Foco cenital sobre cada estela */
+.estela__foco {
+  position: absolute;
+  left: -30%;
+  right: -30%;
+  top: -140px;
+  height: 520px;
+  background: radial-gradient(50% 60% at 50% 0%, rgb(255 253 244 / 0.95), rgb(255 253 244 / 0) 70%);
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.6s var(--curva);
+}
+.estela__cuerpo {
+  position: relative;
+  display: block;
+  filter: drop-shadow(0 26px 22px rgb(54 41 38 / 0.32));
+  transition: transform 0.6s var(--curva), filter 0.6s var(--curva);
+}
+/* Canto de la losa: la misma silueta, desplazada y más oscura */
+.estela__canto {
+  position: absolute;
+  inset: 0;
+  transform: translate(12px, -7px);
+  clip-path: polygon(0 9%, 50% 0, 100% 9%, 100% 100%, 0 100%);
+  background: var(--canto);
+}
+.estela__losa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--alto);
+  padding: 80px 26px 28px;
+  clip-path: polygon(0 9%, 50% 0, 100% 9%, 100% 100%, 0 100%);
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+}
+.estela__losa::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, rgb(255 255 255 / 0.22), rgb(255 255 255 / 0) 40%, rgb(0 0 0 / 0.12));
+  pointer-events: none;
+}
+.estela__losa > * {
+  position: relative;
+}
+.estela__losa > .estela__fronton {
+  position: absolute;
+  left: 10%;
+  top: 16px;
+  width: 80%;
+  height: 34px;
+  fill: none;
+}
+.estela__filo {
+  stroke: var(--filo);
+  stroke-width: 1.4;
+}
+.estela__filo-luz {
+  stroke: var(--filo-luz);
+  stroke-width: 1;
+}
+/* Numeral tallado en la piedra (decorativo) */
+.estela__numeral {
+  font-family: var(--f-titulo);
+  font-size: calc(var(--t-h2) * 1.4);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: var(--talla);
+  text-shadow: var(--talla-luz);
+}
+.estela--rosso .estela__numeral {
+  color: rgb(246 238 226 / 0.92);
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 0.6), 0 1px 0 rgb(255 255 255 / 0.2);
+}
+/* Tabula ansata: placa lisa con orejas; el texto nunca va sobre las vetas */
+.estela__tabula {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 84%;
+  padding: 22px 14px 20px;
+  background: var(--placa);
+  box-shadow: inset 2px 2px 3px rgb(0 0 0 / 0.22), inset -1px -1px 1px rgb(255 255 255 / 0.55);
+}
+.estela--grafito .estela__tabula,
+.estela--grafito .estela__entrar {
+  box-shadow: inset 2px 2px 3px rgb(0 0 0 / 0.5), inset -1px -1px 1px rgb(255 255 255 / 0.12);
+}
+.estela__tabula::before,
+.estela__tabula::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 34px;
+  margin-top: -17px;
+  background: inherit;
+}
+.estela__tabula::before {
+  left: -17px;
+  clip-path: polygon(0 0, 100% 30%, 100% 70%, 0 100%);
+}
+.estela__tabula::after {
+  right: -17px;
+  clip-path: polygon(0 30%, 100% 0, 100% 100%, 0 70%);
+}
+/* Veta fina de oro en la placa: aparece al pasar o enfocar */
+.estela__veta {
+  fill: none;
+  stroke: var(--oro);
+  stroke-width: 1.6;
+  stroke-dasharray: 96;
+  stroke-dashoffset: 96;
+  transition: stroke-dashoffset 0.8s var(--curva);
+}
+.estela__nombre {
+  font-family: var(--f-titulo);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  margin-right: -0.2em;
+  text-transform: uppercase;
+  color: var(--talla);
+  text-shadow: var(--talla-luz);
+}
+.estela__frase {
+  font-size: var(--t-pequeno);
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--frase);
+}
+.estela__entrar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: var(--placa);
+  box-shadow: inset 1px 1px 2px rgb(0 0 0 / 0.2), inset -1px -1px 1px rgb(255 255 255 / 0.5);
+  font-family: var(--f-titulo);
+  font-size: var(--t-etiqueta);
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--talla);
+  transition: gap 0.5s var(--curva), letter-spacing 0.5s var(--curva), color 0.3s;
+}
+.estela__entrar .flecha {
+  width: 26px;
+  height: 10px;
+  fill: none;
+  stroke: currentColor;
+}
+/* Pedestal de dos escalones y sombra en el suelo */
+.estela__pedestal {
+  position: relative;
+  display: block;
+  margin: 0 -16px;
+}
+.estela__pedestal span {
+  display: block;
+  height: 14px;
+  background: linear-gradient(#efeee3, #d9d7c6);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8);
+}
+.estela__pedestal span + span {
+  height: 26px;
+  margin: 0 -12px;
+  background: linear-gradient(#e2e0d0, #c9c6b2);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.estela__sombra {
+  display: block;
+  height: 30px;
+  margin: -6px -34px 0;
+  background: radial-gradient(50% 50% at 50% 30%, rgb(54 41 38 / 0.35), rgb(54 41 38 / 0) 70%);
+}
+/* Enfocada con teclado: lo mismo que al pasar */
+.estela:focus-visible {
+  outline: 2px solid var(--rojo);
+  outline-offset: 10px;
+}
+.estela:focus-visible .estela__foco {
+  opacity: 1;
+}
+.estela:focus-visible .estela__cuerpo {
+  transform: translateY(-10px);
+  filter: drop-shadow(0 40px 30px rgb(54 41 38 / 0.38));
+}
+.estela:focus-visible .estela__veta {
+  stroke-dashoffset: 0;
+}
+.estela:focus-visible .estela__entrar {
+  gap: 18px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .estela:hover .estela__foco {
+    opacity: 1;
+  }
+  .estela:hover .estela__cuerpo {
+    transform: translateY(-10px);
+    filter: drop-shadow(0 40px 30px rgb(54 41 38 / 0.38));
+  }
+  .estela:hover .estela__veta {
+    stroke-dashoffset: 0;
+  }
+  .estela:hover .estela__entrar {
+    gap: 18px;
+  }
+  .estela--travertino:hover .estela__entrar,
+  .estela--rosso:hover .estela__entrar {
+    color: var(--rojo);
+  }
+}
+/* Con el ratón encima, js/portada.js lleva la inclinación fotograma a fotograma */
+.estela .estela__cuerpo.es-guiada {
+  transition: filter 0.6s var(--curva);
+}
+@media (min-width: 900px) {
+  .museo {
+    background: linear-gradient(#e9e7d8 0, #e4e2d2 74%, #cfcbb8 74%, #e2dfcf 76%, #eceadd 100%);
+  }
+  .estelas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    max-width: 1120px;
+    padding: 0 var(--margen) 110px;
+  }
+  .estela {
+    --alto: clamp(440px, 36vw, 520px);
+  }
+  .estela--alta {
+    --alto: clamp(500px, 41vw, 590px);
+  }
+  .estela__losa {
+    padding-top: 96px;
+  }
+}
+/* Reposo: las de los lados miran un poco al centro (solo con ratón) */
+@media (min-width: 900px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .estelas__hueco--0 .estela:not(:hover) .estela__cuerpo {
+    transform: rotateY(9deg) rotateX(1deg);
+  }
+  .estelas__hueco--2 .estela:not(:hover) .estela__cuerpo {
+    transform: rotateY(-9deg) rotateX(1deg);
+  }
+}
+
+/* 5. Hecho por -------------------------------------------------------------- */
+.autor {
+  position: relative;
+  padding-bottom: clamp(72px, 9vw, 110px);
+}
+.js .autor__recorrido {
+  height: 230vh;
+}
+.autor__escena {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-content: center;
+  gap: 20px;
+  min-height: calc(100vh - var(--cabecera));
+  padding: 28px var(--margen) 32px;
+  overflow: hidden;
+}
+.js .autor__escena {
+  position: sticky;
+  top: var(--cabecera);
+}
+/* Cono de luz cenital sobre el busto */
+.autor__cono {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: min(980px, 160vw);
+  height: 100%;
+  transform: translateX(-50%);
+  clip-path: polygon(41% 0, 59% 0, 100% 100%, 0 100%);
+  background: linear-gradient(rgb(255 238 210 / 0.22), rgb(255 238 210 / 0.06) 70%, rgb(255 238 210 / 0));
+  pointer-events: none;
+}
+.autor__suelo {
+  position: absolute;
+  inset: auto 0 0;
+  height: 260px;
+  background: radial-gradient(40% 60% at 50% 30%, rgb(255 238 210 / 0.1), rgb(255 238 210 / 0) 70%), linear-gradient(rgb(0 0 0 / 0), rgb(0 0 0 / 0.35));
+  pointer-events: none;
+}
+.autor__hecho,
+.autor__lado,
+.autor__centro {
+  position: relative;
+}
+/* "Hecho por": el texto en claro; el oro solo en los rombos */
+.autor__hecho {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  color: var(--claro-oscura);
+}
+.autor__hecho .etiqueta {
+  letter-spacing: 0.4em;
+  margin-right: -0.4em;
+}
+.autor__rombo {
+  width: 7px;
+  height: 7px;
+  background: var(--oro);
+  transform: rotate(45deg);
+}
+.autor__centro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+.autor__busto {
+  position: relative;
+  width: min(100%, 460px);
+  height: clamp(220px, calc(100vh - var(--cabecera) - 400px), 480px);
+}
+.autor__lienzo {
+  position: absolute;
+  left: 0;
+  top: -24%;
+  width: 100%;
+  height: 128%;
+  opacity: 0;
+  pointer-events: none; /* el ratón se lee en toda la ventana */
+  transition: opacity 0.9s var(--curva);
+}
+.autor--3d .autor__lienzo {
+  opacity: 1;
+}
+.autor__respaldo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.9s var(--curva);
+}
+.autor--3d .autor__respaldo {
+  opacity: 0;
+}
+/* Pedestal de grafito con el nombre grabado en el frente */
+.autor__plinto {
+  position: relative;
+  width: min(100% - 28px, 520px);
+  margin-top: 26px;
+  padding: 26px 16px 22px;
+  background: linear-gradient(rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.35)), var(--mat-grafito) center / cover #3e3937;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 30px 40px -20px rgb(0 0 0 / 0.8);
+  text-align: center;
+}
+.autor__plinto::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  right: -14px;
+  top: -12px;
+  height: 12px;
+  background: linear-gradient(#5a5350, #3a3533);
+}
+.autor__nombre {
+  margin: 0;
+  font-size: var(--t-h3);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: rgb(239 233 221 / 0.94);
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 0.85), 0 1px 0 rgb(255 255 255 / 0.12);
+}
+.autor__anios {
+  display: block;
+  margin-top: 10px;
+  letter-spacing: 0.3em;
+  color: #b5aca2;
+}
+.autor__lado--cartelas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: min(100%, 520px);
+  order: 4;
+}
+.autor__lado .cartela__titulo {
+  color: var(--claro-oscura);
+}
+.autor__lado--pasos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  order: 3;
+}
+.autor__pista {
+  display: none;
+  margin: 0;
+  font-size: var(--t-pequeno);
+  font-style: italic;
+  color: var(--cartela-oscura);
+}
+.js .autor__pista {
+  display: block;
+}
+.autor__pasos {
+  display: none;
+  gap: 4px 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.js .autor__pasos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.autor__paso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  color: #857b72;
+  transition: color 0.5s var(--curva);
+}
+/* Rombos de estado: hueco (por venir), lleno (pasado) y de oro (ahora) */
+.autor__estado {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--cartela-oscura);
+  transform: rotate(45deg);
+  transition: background-color 0.5s var(--curva), border-color 0.5s var(--curva), transform 0.5s var(--curva);
+}
+.autor__paso.es-hecho {
+  color: var(--cartela-oscura);
+}
+.autor__paso.es-hecho .autor__estado {
+  background: var(--cartela-oscura);
+}
+.autor__paso.es-actual {
+  color: var(--claro-oscura);
+}
+.autor__paso.es-actual .autor__estado {
+  border-color: var(--oro);
+  background: var(--oro);
+  transform: rotate(45deg) scale(1.33);
+}
+.autor__frase {
+  position: relative;
+  max-width: 24em;
+  margin: clamp(40px, 6vw, 80px) auto 0;
+  padding-inline: var(--margen);
+  font-size: var(--t-h2);
+  font-style: italic;
+  line-height: 1.3;
+  text-align: center;
+  color: #d9cfc2;
+}
+@media (min-width: 1000px) {
+  .autor__escena {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 24px;
+    align-items: end;
+    align-content: stretch;
+    padding-inline: max(var(--margen), calc((100% - var(--ancho)) / 2));
+    padding-block: clamp(24px, 5vh, 56px) clamp(32px, 7vh, 72px);
+  }
+  .autor__hecho {
+    grid-column: 1 / -1;
+    align-self: start;
+  }
+  .autor__lado--cartelas {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    width: auto;
+    justify-self: start;
+    order: 0;
+    padding-bottom: 40px;
+  }
+  .autor__busto {
+    height: clamp(240px, calc(100vh - var(--cabecera) - 330px), 520px);
+  }
+  .autor__lado--pasos {
+    align-items: flex-start;
+    justify-self: end;
+    order: 0;
+    padding-bottom: 40px;
+  }
+  .autor__pista {
+    margin-bottom: 10px;
+  }
+  .js .autor__pasos {
+    flex-direction: column;
+    gap: 0;
+  }
+  .autor__paso {
+    padding: 12px 0;
+    gap: 14px;
+  }
+  .autor__nombre {
+    font-size: var(--t-h2);
+    letter-spacing: 0.14em;
+    white-space: nowrap;
+  }
+  .autor__plinto {
+    width: min(100% - 28px, 640px);
+  }
+}
+
+/* Movimiento reducido: todo quieto */
+@media (prefers-reduced-motion: reduce) {
+  .frontis__hilo {
+    animation: none;
+  }
+  .estela__cuerpo,
+  .estela__foco,
+  .estela__veta,
+  .estela__entrar,
+  .autor__lienzo,
+  .autor__respaldo,
+  .autor__estado,
+  .cuatro__marca,
+  .cuatro__raya {
+    transition: none;
+  }
+  .estela:hover .estela__cuerpo,
+  .estela:focus-visible .estela__cuerpo {
+    transform: none;
+  }
+}

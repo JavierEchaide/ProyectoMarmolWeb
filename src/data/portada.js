@@ -48,28 +48,40 @@ export const portada = {
 
   fotogramas: [
     {
+      titulo: 'El taller', // placeholder
       pie: 'Un taller fuera del mundo, lleno de ventanas.',
       imagen: { src: null, alt: 'El Creador de espaldas ante una ventana del taller.', falta: 'Render: el Creador de espaldas ante la ventana', semana: 'S28' },
     },
     {
+      titulo: 'Los ojos', // placeholder
       pie: 'De su cara solo se ven los ojos.',
       imagen: { src: null, alt: 'Los ojos del Creador en primer plano.', falta: 'Render: los ojos del Creador en primer plano', semana: 'S28' },
     },
     {
+      titulo: 'El bosque', // placeholder
       pie: 'En un bosque alto, algo nuevo abre los ojos.',
       imagen: { src: null, alt: 'La criatura pura en un claro del bosque.', falta: 'Render: la criatura en el bosque', semana: 'S28' },
     },
     {
+      titulo: 'La jaula', // placeholder
       pie: 'Lejos de allí, la misma criatura, encerrada.',
       imagen: { src: null, alt: 'La jaula con la criatura en la bodega del barco.', falta: 'Render: la jaula en la bodega del barco', semana: 'S28' },
     },
   ],
 
-  // Cartas de "Las páginas": flotan en 3D sobre la sala oscura. Si una
-  // imagen tiene `src`, se ve en la carta en lugar del mármol en movimiento.
+  // V3: cabecera de la pared de las estelas (textos placeholder)
+  salas: {
+    etiqueta: 'Las salas',
+    titulo: 'Tres salas más',
+    texto: 'Cada estela es del material de su sala.',
+  },
+
+  // Estelas de "Las salas" (V3): una losa de piedra por sala, con su material.
+  // `subtitulo`, `piedra` e `imagen` venían de las cartas de la V2 y ya no se pintan.
   accesos: [
     {
       pagina: 'teaser',
+      material: 'travertino', // piedra de la estela (V3): travertino, rosso o grafito
       subtitulo: '30 s',
       frase: 'Treinta segundos, tres lugares y una ventana.',
       piedra: 'negra', // mármol de la carta: 'negra', 'rosso' o 'dorada'
@@ -77,6 +89,7 @@ export const portada = {
     },
     {
       pagina: 'historia',
+      material: 'rosso', // piedra de la estela (V3): travertino, rosso o grafito
       subtitulo: 'Resumen',
       frase: 'Seis partes y un final, con los spoilers tapados.',
       piedra: 'rosso',
@@ -84,6 +97,7 @@ export const portada = {
     },
     {
       pagina: 'proceso',
+      material: 'grafito', // piedra de la estela (V3): travertino, rosso o grafito
       subtitulo: 'Cómo se hizo',
       frase: 'Treinta y cinco semanas, apuntadas una a una.',
       piedra: 'dorada',
@@ -107,6 +121,15 @@ export const portada = {
     // La imagen de arriba solo se ve si el navegador no puede mostrar 3D.
     modelo: 'modelos/busto.glb',
     estudios: 'Animación 3D, Juegos y Entornos Interactivos',
+    // V3: años grabados en el pedestal, cartelas y frase (textos placeholder)
+    anios: 'MMXXVI - MMXXVII',
+    cartelas: [
+      { titulo: 'Autor', texto: 'Animación 3D, Juegos y Entornos Interactivos. Segundo curso.' },
+      { titulo: 'La pieza', texto: 'Mi cabeza en mármol, escaneada y tallada en Blender. Dentro, una calavera de mármol verde.' },
+    ],
+    pasos: ['Cerrada', 'Se abre', 'Abierta'],
+    pista: 'Baja para abrirla',
+    frase: '[Placeholder] Una frase sobre quién soy y por qué cuento esta historia.',
     curso: 'Proyecto final · 2026 – 2027',
   },
 };

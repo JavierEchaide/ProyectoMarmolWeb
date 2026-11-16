@@ -300,7 +300,10 @@ function iniciar(seccion) {
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
-  seccion.classList.add('vitrina--3d');
+  // V3: la clase que enseña el lienzo se pone cuando hay algo que ver: al
+  // cargar el .glb, o enseguida si no hay modelo (esferas). Si el .glb falla,
+  // se queda la imagen de respaldo.
+  const mostrar = () => { seccion.classList.add('autor--3d'); ajustar(); };
 
   const escena = new Scene();
   const pmrem = new PMREMGenerator(renderer);
@@ -408,11 +411,13 @@ function iniciar(seccion) {
           brilloHueso = vetas;
           huesoGira = false; // la calavera mira al frente con la cabeza
         }
-        pedir();
+        mostrar();
       },
       undefined,
-      () => {} // si falla, se quedan las esferas
+      () => {} // si falla, se queda la imagen de respaldo (sin errores)
     );
+  } else {
+    requestAnimationFrame(mostrar);
   }
 
   /* Tamaño */
@@ -425,7 +430,7 @@ function iniciar(seccion) {
     // en pantallas estrechas se aleja para que quepa abierta
     distancia = w / h < 0.8 ? 11 : 8.4;
     // En pantallas anchas la pieza va un poco a la derecha para no tapar el nombre
-    cabeza.position.x = w / h > 1.25 ? 0.6 : 0;
+    cabeza.position.x = 0; // V3: el busto va centrado sobre su pedestal
     camara.updateProjectionMatrix();
     pedir();
   }
@@ -511,4 +516,9 @@ function iniciar(seccion) {
 }
 
 const seccion = document.querySelector('[data-busto]');
-if (seccion) iniciar(seccion);
+// Cualquier fallo (sin WebGL, contexto perdido...) deja la imagen de respaldo
+try {
+  if (seccion) iniciar(seccion);
+} catch (e) {
+  if (seccion) seccion.classList.remove('autor--3d');
+}

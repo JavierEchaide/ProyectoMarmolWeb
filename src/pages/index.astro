@@ -2,8 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Imagen from '../components/Imagen.astro';
 import Grieta from '../components/Grieta.astro';
-import Greca from '../components/Greca.astro';
-import TituloSeccion from '../components/TituloSeccion.astro';
+import Cartela from '../components/Cartela.astro';
 import Siguiente from '../components/Siguiente.astro';
 import { portada } from '../data/portada.js';
 import { pagina } from '../data/sitio.js';
@@ -12,9 +11,10 @@ const romanos = ['I', 'II', 'III', 'IV'];
 // Letras agrupadas por palabras: en móvil el título parte entre palabras
 let n = 0;
 const palabras = portada.intro.titulo.split(' ').map((p) => [...p].map((l) => ({ l, i: n++ })));
+const dos = (n) => String(n).padStart(2, '0');
 const frases = portada.gancho.match(/[^.!?]+[.!?]*/g).map((f) => f.trim());
 ---
-<Base id="portada" scripts={['js/portada.js']}>
+<Base id="portada" estilos={['css/sala-portada.css']} scripts={['js/portada.js']}>
   {/* Intro: solo se ve si el <head> ha puesto la clase .intro-activa (recarga o primera entrada) */}
   <div class="intro" aria-hidden="true" data-intro>
     <span class="intro__panel intro__panel--izq"></span>
@@ -34,48 +34,29 @@ const frases = portada.gancho.match(/[^.!?]+[.!?]*/g).map((f) => f.trim());
     </div>
   </div>
 
-  <section class="hero" aria-labelledby="titulo-portada" data-hero style={`--ratio-movil: ${portada.hero.ratioMovil}`}>
+  {/* Hero monumental: el render a sangre bajo la cabecera, con una luz rasante
+      que sigue al ratón despacio (js/portada.js). */}
+  <section class="frontis" aria-labelledby="titulo-portada" data-frontis>
     <h1 id="titulo-portada" class="oculto">{portada.hero.titulo}</h1>
-    <div class="hero__imagen" data-hero-imagen>
-      {portada.hero.video ? (
-        <video
-          class="hero__video"
-          src={portada.hero.video}
-          poster={portada.hero.escritorio}
-          autoplay
-          muted
-          loop
-          playsinline
-          aria-label={portada.hero.alt}
-          data-hero-video
-        ></video>
-      ) : portada.hero.capas.length ? (
-        portada.hero.capas.map((c, i) => (
-          <img
-            class="hero__capa"
-            src={c.src}
-            alt={i === 0 ? portada.hero.alt : ''}
-            data-profundidad={c.profundidad}
-            decoding="async"
-          />
-        ))
-      ) : (
-        <picture>
-          <source media="(max-width: 700px)" srcset={portada.hero.movil} />
-          <img src={portada.hero.escritorio} alt={portada.hero.alt} fetchpriority="high" decoding="async" />
-        </picture>
-      )}
-    </div>
-    <span class="hero__pista" aria-hidden="true"></span>
+    <picture class="frontis__imagen">
+      <source media="(max-width: 700px)" srcset={portada.hero.movil} />
+      <img src={portada.hero.escritorio} alt={portada.hero.alt} fetchpriority="high" decoding="async" />
+    </picture>
+    <span class="frontis__luz" aria-hidden="true" data-luz></span>
+    <span class="frontis__baja" aria-hidden="true">
+      <span class="etiqueta">Baja</span>
+      <span class="frontis__hilo"></span>
+    </span>
   </section>
 
-  <section class="contenedor presentacion" aria-label="Presentación">
-    <p class="presentacion__gancho" data-revelar>
-      {frases.map((f) => <span class="presentacion__frase">{f}</span>)}
+  {/* Presentación: frase gancho monumental, párrafo y botón al teaser */}
+  <section class="gancho" aria-label="Presentación">
+    <p class="gancho__frase" data-revelar>
+      {frases.map((f, i) => <span class:list={['gancho__linea', { 'gancho__linea--roja': i > 0 }]}>{f}</span>)}
     </p>
-    <div class="presentacion__texto texto-largo" data-revelar>
-      {portada.presentacion.map((p) => <p>{p}</p>)}
-      <a class="boton" href="teaser.html">
+    <div class="gancho__texto" data-revelar style="--i: 1">
+      {portada.presentacion.map((p, i) => <p class:list={['texto-largo', i === 0 ? 'gancho__entrada' : 'gancho__nota']}>{p}</p>)}
+      <a class="boton boton--principal" href="teaser.html">
         <span>{portada.boton}</span>
         <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
       </a>
@@ -84,86 +65,137 @@ const frases = portada.gancho.match(/[^.!?]+[.!?]*/g).map((f) => f.trim());
 
   <Grieta semilla={3} />
 
-  <section class="contenedor seccion" aria-labelledby="titulo-prologo">
-    <TituloSeccion titulo="La historia en cuatro fotogramas" id="titulo-prologo" />
-    <ol class="fotogramas">
-      {portada.fotogramas.map((f, i) => (
-        <li class="fotograma" data-revelar style={`--i: ${i}`}>
-          <Imagen imagen={f.imagen} ratio="16 / 9" ver grupo="prologo" pie={`${romanos[i]}. ${f.pie}`} />
-          <p class="fotograma__pie"><span class="fotograma__numero">{romanos[i]}</span>{f.pie}</p>
-        </li>
-      ))}
-    </ol>
+  {/* La historia en cuatro fotogramas. Sin JS, en móvil o con movimiento
+      reducido es una lista; con JS en pantalla ancha, js/portada.js pone
+      .cuatro--escena: la escena se fija y el fotograma cambia al bajar. */}
+  <section class="cuatro" aria-labelledby="titulo-prologo" data-cuatro>
+    <div class="cuatro__escena">
+      <h2 id="titulo-prologo" class="cuatro__titulo">La historia en cuatro fotogramas</h2>
+      <div class="cuatro__indice" aria-hidden="true">
+        {portada.fotogramas.map((f, i) => (
+          <button class="cuatro__marca" type="button" tabindex="-1" data-cuatro-marca={i}>
+            <span class="cuatro__raya"></span>{romanos[i]}
+          </button>
+        ))}
+      </div>
+      <ol class="cuatro__lista">
+        {portada.fotogramas.map((f, i) => (
+          <li class="cuatro__fotograma" data-cuatro-fotograma>
+            <div class="cuatro__marco pieza">
+              <Imagen imagen={f.imagen} ratio="16 / 9" ver grupo="prologo" pie={`${romanos[i]}. ${f.pie}`} />
+            </div>
+            <div class="cuatro__pie">
+              <Cartela titulo={`${romanos[i]} - ${f.titulo}`} texto={f.pie} ancha />
+              <span class="cuatro__contador" aria-hidden="true">{dos(i + 1)} / {dos(portada.fotogramas.length)}</span>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
   </section>
 
   <Grieta semilla={8} />
 
-  {/* Las páginas: cartas que flotan en 3D sobre la sala oscura (referencia:
-      karma-tracks). El enlace es un marco quieto que recibe el ratón; dentro, la
-      cara balancea y se adelanta (CSS). El ratón las mueve por capas (js/portada.js). */}
-  <section class="sala-cartas" aria-labelledby="titulo-paginas">
-    <div class="contenedor">
-      <TituloSeccion titulo="Las páginas" id="titulo-paginas" />
-      <ul class="cartas" data-cartas>
-        {portada.accesos.map((a, i) => {
-          const p = pagina(a.pagina);
-          return (
-            <li class="carta" style={`--i: ${i}`} data-carta>
-              <a class="carta__enlace" href={p.archivo}>
-                <div class="carta__capa" data-carta-capa>
-                <div class={`carta__cara carta__cara--${a.piedra}`}>
-                <span class="carta__textura" aria-hidden="true"></span>
-                {a.imagen.src && <img class="carta__imagen" src={a.imagen.src} alt="" loading="lazy" decoding="async" />}
-                <span class="carta__marco" aria-hidden="true">
-                  <span class="esquina esquina--a"></span>
-                  <span class="esquina esquina--b"></span>
-                  <span class="esquina esquina--c"></span>
-                  <span class="esquina esquina--d"></span>
-                </span>
-                <span class="carta__sala">Sala {p.numero}</span>
-                <span class="carta__dato">{a.subtitulo}</span>
-                <span class="carta__texto">
-                  <h3 class="carta__titulo">{p.titulo}</h3>
-                  <span class="carta__frase">{a.frase}</span>
-                </span>
-                <span class="carta__entrar">
-                  Entrar
-                  <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
-                </span>
-                </div>
-                </div>
-              </a>
-            </li>
-          );
-        })}
-      </ul>
+  {/* Las salas: pared de museo con tres estelas de piedra (A+). El enlace es
+      un marco quieto que recibe el ratón; lo que se inclina es la losa de
+      dentro (js/portada.js), así el hover no parpadea. */}
+  <section class="museo" aria-labelledby="titulo-salas">
+    <div class="museo__cabecera" data-revelar>
+      <span class="etiqueta">{portada.salas.etiqueta}</span>
+      <h2 id="titulo-salas" class="museo__titulo">{portada.salas.titulo}</h2>
+      <p class="museo__texto">{portada.salas.texto}</p>
     </div>
+    <ul class="estelas" data-estelas>
+      {portada.accesos.map((a, i) => {
+        const p = pagina(a.pagina);
+        return (
+          <li class:list={['estelas__hueco', `estelas__hueco--${i}`]} data-revelar style={`--i: ${i}`}>
+            <a class:list={['estela', `estela--${a.material}`, { 'estela--alta': i === 1 }]} href={p.archivo} data-estela>
+              <span class="estela__foco" aria-hidden="true"></span>
+              <span class="estela__cuerpo" data-estela-cuerpo>
+                <span class="estela__canto" aria-hidden="true"></span>
+                <span class="estela__losa">
+                  <svg class="estela__fronton" viewBox="0 0 200 56" preserveAspectRatio="none" aria-hidden="true">
+                    <path class="estela__filo" d="M8 52 L100 6 L192 52 Z" />
+                    <path class="estela__filo-luz" d="M9 53.5 L100 8 L191 53.5" />
+                  </svg>
+                  <span class="estela__numeral" aria-hidden="true">{p.numero}</span>
+                  <span class="estela__tabula">
+                    <svg class="estela__veta" width="90" height="10" viewBox="0 0 90 10" aria-hidden="true"><path d="M0 5 L20 4 L34 7 L50 3 L66 6 L90 5" /></svg>
+                    <span class="oculto">Sala {p.numero}: </span>
+                    <span class="estela__nombre">{p.titulo}</span>
+                    <span class="estela__frase">{a.frase}</span>
+                  </span>
+                  <span class="estela__entrar">
+                    Entrar
+                    <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
+                  </span>
+                </span>
+              </span>
+              <span class="estela__pedestal" aria-hidden="true"><span></span><span></span></span>
+              <span class="estela__sombra" aria-hidden="true"></span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
   </section>
 
-  {/* Hecho por: escena fijada mientras se baja; el busto 3D (js/busto.js) se
-      abre y deja ver el hueso. Sin WebGL se ve la imagen de respaldo. */}
-  <section
-    class="vitrina"
-    aria-labelledby="titulo-autor"
-    data-busto
-    data-busto-modelo={portada.autor.modelo ?? undefined}
-  >
-    <div class="vitrina__escena">
-      <h2 id="titulo-autor" class="vitrina__nombre">
-        {portada.autor.nombre.split(' ').map((p) => <span class="vitrina__palabra">{p}</span>)}
-      </h2>
-      <canvas class="vitrina__lienzo" data-busto-lienzo aria-hidden="true"></canvas>
-      <div class="vitrina__respaldo">
-        <Imagen imagen={portada.autor.imagen} ratio="3 / 4" oscuro ver pie={portada.autor.nombre} />
+  {/* Hecho por: sala oscura con un cono de luz sobre el busto. La escena se
+      fija mientras se baja y el busto 3D (js/busto.js) se abre. El modelo se
+      precarga al entrar en la web; mientras (y si falla) se ve la silueta. */}
+  <section class="autor sala-oscura" aria-labelledby="titulo-autor">
+    <div class="autor__recorrido" data-busto data-busto-modelo={portada.autor.modelo ?? undefined} data-paso="0">
+      <div class="autor__escena">
+        <span class="autor__cono" aria-hidden="true"></span>
+        <span class="autor__suelo" aria-hidden="true"></span>
+        <p class="autor__hecho">
+          <span class="autor__rombo" aria-hidden="true"></span>
+          <span class="etiqueta">{portada.autor.etiqueta}</span>
+          <span class="autor__rombo" aria-hidden="true"></span>
+        </p>
+        <div class="autor__lado autor__lado--cartelas">
+          {portada.autor.cartelas.map((c) => <Cartela titulo={c.titulo} texto={c.texto} />)}
+        </div>
+        <div class="autor__centro">
+          <div class="autor__busto">
+            <canvas class="autor__lienzo" data-busto-lienzo aria-hidden="true"></canvas>
+            <svg class="autor__respaldo" viewBox="0 -44 300 444" role="img" aria-label={portada.autor.imagen.alt}>
+              <defs>
+                <linearGradient id="busto-piedra" x1="0" x2="1" y1="0" y2="0.35">
+                  <stop offset="0" stop-color="#f6f3ea" /><stop offset="0.5" stop-color="#d8d3c5" /><stop offset="1" stop-color="#7d776c" />
+                </linearGradient>
+                <radialGradient id="busto-hueso">
+                  <stop offset="0" stop-color="#9fe3d1" /><stop offset="0.55" stop-color="#2f8a78" /><stop offset="1" stop-color="#2f8a78" stop-opacity="0" />
+                </radialGradient>
+                <clipPath id="busto-inf"><rect x="0" y="122" width="300" height="278" /></clipPath>
+                <clipPath id="busto-sup"><rect x="0" y="0" width="300" height="122" /></clipPath>
+                <path id="busto-silueta" d="M150 20 C200 20 230 65 230 120 C230 165 215 200 190 222 L188 262 C230 272 262 300 270 400 L30 400 C38 300 70 272 112 262 L110 222 C85 200 70 165 70 120 C70 65 100 20 150 20 Z" />
+              </defs>
+              <ellipse cx="150" cy="112" rx="70" ry="30" fill="url(#busto-hueso)" />
+              <g clip-path="url(#busto-inf)"><use href="#busto-silueta" fill="url(#busto-piedra)" /></g>
+              <g transform="translate(0 -34) rotate(-3 150 122)">
+                <g clip-path="url(#busto-sup)"><use href="#busto-silueta" fill="url(#busto-piedra)" /></g>
+                <path d="M71 121 L96 119 L118 123 L140 117 L162 122 L184 118 L206 121 L229 120" fill="none" stroke="#e3c25a" stroke-width="2.4" />
+              </g>
+            </svg>
+          </div>
+          <div class="autor__plinto">
+            <h2 id="titulo-autor" class="autor__nombre">{portada.autor.nombre}</h2>
+            <span class="autor__anios etiqueta">{portada.autor.anios}</span>
+          </div>
+        </div>
+        <div class="autor__lado autor__lado--pasos">
+          <p class="autor__pista">{portada.autor.pista}</p>
+          <ol class="autor__pasos" aria-hidden="true">
+            {portada.autor.pasos.map((t, i) => (
+              <li class="autor__paso" data-paso-n={i}><span class="autor__estado"></span><span class="etiqueta">{t}</span></li>
+            ))}
+          </ol>
+        </div>
       </div>
-      <div class="vitrina__cartela">
-        <p class="vitrina__etiqueta">{portada.autor.etiqueta}</p>
-        <Greca ancho={96} />
-        <p>{portada.autor.estudios}</p>
-        <p class="vitrina__curso">{portada.autor.curso}</p>
-      </div>
-      <p class="vitrina__pista" aria-hidden="true">Baja para abrirla</p>
     </div>
+    <p class="autor__frase" data-revelar>{portada.autor.frase}</p>
   </section>
 
   <Siguiente actual="portada" />
