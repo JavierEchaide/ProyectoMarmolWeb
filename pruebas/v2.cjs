@@ -185,7 +185,7 @@ const SALAS = [['index', 'portada', 'Sala I de IV: Portada'], ['teaser', 'teaser
     await p.goto(`${BASE}/teaser.html`); await p.waitForTimeout(400);
     const m = () => p.evaluate(() => { const b = document.querySelector('[data-musica-boton]'); return b.getAttribute('aria-pressed') + '|' + b.getAttribute('aria-label'); });
     ver('música: apagada al entrar', (await m()) === 'false|Música: activar');
-    ver('música: crédito CC BY visible', await p.evaluate(() => { const c = document.querySelector('.musica__credito'); const r = c.getBoundingClientRect(); return /Darkness is Coming.*Kevin MacLeod.*incompetech\.com/.test(c.textContent) && c.querySelector('a').href === 'https://creativecommons.org/licenses/by/4.0/' && r.width > 0 && r.bottom <= innerHeight; }));
+    ver('música: crédito CC BY visible en el pie', await p.evaluate(() => { const c = document.querySelector('.pie .musica__credito'); c.scrollIntoView({ block: 'end' }); const r = c.getBoundingClientRect(); return /Darkness is Coming.*Kevin MacLeod.*incompetech\.com/.test(c.textContent) && c.querySelector('a').href === 'https://creativecommons.org/licenses/by/4.0/' && r.width > 0 && r.bottom <= innerHeight; }));
     // pista de prueba (silencio) para no depender del MP3, que sube Javi
     const wav = 'data:audio/wav;base64,' + (() => { const n = 8000 * 30; const b = Buffer.alloc(44 + n); b.write('RIFF', 0); b.writeUInt32LE(36 + n, 4); b.write('WAVEfmt ', 8); b.writeUInt32LE(16, 16); b.writeUInt16LE(1, 20); b.writeUInt16LE(1, 22); b.writeUInt32LE(8000, 24); b.writeUInt32LE(8000, 28); b.writeUInt16LE(1, 32); b.writeUInt16LE(8, 34); b.write('data', 36); b.writeUInt32LE(n, 40); b.fill(128, 44); return b.toString('base64'); })();
     await p.evaluate((w) => { document.querySelector('[data-musica]').dataset.src = w; }, wav);
@@ -205,7 +205,7 @@ const SALAS = [['index', 'portada', 'Sala I de IV: Portada'], ['teaser', 'teaser
     await sinPista.context().close();
     const mov = await nueva({ viewport: { width: 390, height: 844 } });
     await mov.goto(`${BASE}/proceso.html`); await mov.waitForTimeout(300);
-    ver('música en 390: dentro de la pantalla y bajo el menú', await mov.evaluate(() => { const r = document.querySelector('.musica').getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.height <= 60 && +getComputedStyle(document.querySelector('.musica')).zIndex < 50; }));
+    ver('música en 390: en la cabecera, dentro de la pantalla y bajo el menú', await mov.evaluate(() => { const r = document.querySelector('.musica').getBoundingClientRect(); return !!document.querySelector('.cabecera .musica') && r.left >= 0 && r.right <= innerWidth && r.height <= 60 && +getComputedStyle(document.querySelector('.musica')).zIndex < 50; }));
     await mov.context().close();
   }
 
