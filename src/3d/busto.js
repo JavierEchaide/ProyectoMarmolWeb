@@ -369,14 +369,17 @@ function iniciar(seccion) {
           const obj = gltf.scene.getObjectByName(nombre);
           if (!obj) return;
           if (nombre === 'hueso') {
-            // La calavera venía del .glb con la cara mirando hacia abajo.
-            // Se echa hacia atrás 14° para que mire al frente y se recoloca
-            // dentro del hueco (ajustado contra el hueco real del mármol:
-            // cabe con más de 1 cm de holgura).
-            obj.position.x += 0.03;
-            obj.position.z -= 0.02;
-            obj.scale.multiplyScalar(0.98);
-            obj.rotation.x = MathUtils.degToRad(-14);
+            // La calavera del .glb venía boca abajo y tumbada (su arriba era
+            // -Z y su cara -Y). Se gira 180° sobre el eje (0, 1, -1) para que
+            // quede de pie y con la cara hacia +Z, como la cabeza, y se
+            // recoloca dentro del hueco (ajustado contra el hueco real del
+            // mármol: cabe con más de 4 cm de holgura; las cuencas quedan a la
+            // altura de la grieta, que pasa por los ojos).
+            obj.quaternion.setFromAxisAngle(new Vector3(0, 1, -1).normalize(), Math.PI);
+            obj.position.x += 0.02;
+            obj.position.y += 0.06;
+            obj.position.z -= 0.03;
+            obj.scale.multiplyScalar(1.08);
           }
           piezas[nombre].clear();
           piezas[nombre].add(obj);
