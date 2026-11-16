@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>III - Historia (V3)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap">
+<style>
+body{margin:0;background:#EFE8D4}
+*{box-sizing:border-box}
+a{color:#8B2626;text-decoration:none}a:hover{color:#5f1919}
+.v3{position:relative;container-type:inline-size;font-family:'EB Garamond',Georgia,serif;color:#362926;font-size:20px;line-height:1.62;-webkit-font-smoothing:antialiased;background-color:#EFE8D4;background-image:radial-gradient(80% 30% at 50% 0%, rgba(255,250,236,.8), rgba(255,250,236,0)),url(/_blob/b23139aa8eacbaa6bd0e57aa18df145b);overflow:hidden}
+.cz{font-family:'Cinzel',Georgia,serif}
+.etq{font-family:'Cinzel',Georgia,serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:500}
+.peq{font-size:17px;line-height:1.5;color:#6B5F58}
+.h3{font-family:'Cinzel',Georgia,serif;font-size:26px;letter-spacing:.1em;line-height:1.2;font-weight:500;margin:0}
+.h2{font-family:'Cinzel',Georgia,serif;font-size:48px;letter-spacing:.06em;line-height:1.1;font-weight:500;margin:0}
+.mono{font-family:'Cinzel',Georgia,serif;font-size:150px;letter-spacing:.3em;line-height:.9;font-weight:500;margin:0}
+.grab{color:#3a2c29;text-shadow:0 2px 1px rgba(255,255,255,.85),0 -1px 0 rgba(30,20,18,.3)}
+.grab-osc{color:#efe9dd;text-shadow:0 -1px 0 rgba(0,0,0,.75),0 1px 0 rgba(255,255,255,.16)}
+.tallado{color:rgba(54,41,38,.82);text-shadow:0 1px 0 rgba(255,255,255,.7),0 -1px 0 rgba(0,0,0,.3)}
+.pad{padding-left:96px;padding-right:96px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px}
+.largo{text-align:justify;hyphens:auto;margin:0}
+.cab{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:linear-gradient(rgba(239,232,212,.95),rgba(239,232,212,.84));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(54,41,38,.1);box-shadow:0 8px 24px -18px rgba(54,41,38,.5)}
+.cab .etq{font-weight:600;color:#362926}
+.cab .ind{display:flex;align-items:center;gap:14px}
+.disco{width:36px;height:36px;border-radius:50%;border:1px solid rgba(54,41,38,.25);background-image:url(/_blob/331d2a81ca36ce1395383797ee788438);background-size:300%;background-position:40% 30%;cursor:pointer}
+.btn{display:inline-flex;align-items:center;gap:14px;font-family:'Cinzel';font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#362926;background:none;border:0;padding:14px 0;cursor:pointer}
+.losa-cab{position:relative;height:620px;background-image:url(/_blob/331d2a81ca36ce1395383797ee788438);background-size:cover;background-position:center 30%;overflow:hidden}
+.losa-cab::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg, rgba(255,255,255,.18), rgba(255,255,255,0) 45%, rgba(0,0,0,.08));pointer-events:none}
+.marmolbtn{position:absolute;inset:0;background:none;border:0;cursor:pointer;z-index:1}
+.ventana{position:absolute;right:11%;top:24%;width:30%;height:56%;background:radial-gradient(60% 60% at 50% 45%, #3a3d52, #0d0d14 75%);clip-path:polygon(8% 18%,22% 4%,41% 12%,58% 0,77% 9%,96% 22%,88% 44%,100% 63%,84% 82%,63% 100%,40% 90%,18% 97%,6% 76%,0 52%,10% 36%);box-shadow:inset 0 0 40px rgba(0,0,0,.8);z-index:1}
+.canto{position:relative;margin-top:-150px;z-index:2;padding-top:44px;padding-bottom:40px;background:linear-gradient(#F5F1E6,#EDE6D3);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 -1px 0 rgba(54,41,38,.18),0 -24px 40px -20px rgba(54,41,38,.35)}
+.sumario{display:flex;align-items:stretch;border-top:1px solid rgba(54,41,38,.22);border-bottom:1px solid rgba(54,41,38,.22);background:rgba(239,232,212,.92)}
+.sumario .cap{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 6px;border-left:1px solid rgba(54,41,38,.12);text-align:center}
+.sumario .cap:first-child{border-left:0}
+.premisa-txt{columns:2;column-gap:48px}
+.cartela{display:flex;flex-direction:column;gap:6px}
+.cartela .filete{width:36px;height:1px;background:#362926;margin-bottom:8px}
+.cartela .t{font-family:'Cinzel';font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:600}
+.cartela .d{font-style:italic;font-size:17px;color:#6B5F58;line-height:1.45}
+.ph{position:relative;background:#E5DEC9;border:1px solid rgba(54,41,38,.14);display:flex;align-items:center;justify-content:center;box-shadow:0 34px 40px -30px rgba(54,41,38,.45)}
+.ph .rombo{width:46px;height:46px;transform:rotate(45deg);border:1px solid rgba(54,41,38,.2)}
+.ph .ins{position:absolute;top:12px;left:12px;font-family:'Cinzel';font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#6B5F58;background:rgba(239,232,212,.9);padding:3px 8px;border:1px solid rgba(54,41,38,.18)}
+.margen{display:flex;flex-direction:column;gap:10px;padding-left:22px;border-left:1px solid rgba(139,38,38,.5)}
+.libro{position:relative}
+.lomo{position:absolute;left:40px;top:0;bottom:0;width:60px;pointer-events:none}
+.capitulo{display:grid;grid-template-columns:230px minmax(0,1fr)}
+.margen-cap{position:relative;padding-top:6px;padding-left:96px}
+.nodo{position:absolute;left:61px;top:28px;width:18px;height:18px;transform:rotate(45deg);border:1px solid #6B5F58;background:#EFE8D4}
+.num-cap{display:block;font-family:'Cinzel';font-size:112px;line-height:.85;color:transparent;-webkit-text-stroke:1.3px rgba(54,41,38,.32)}
+.cuerpo-cap{padding-bottom:110px}
+.fila-cap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px;align-items:start}
+.losa-sp{width:100%;height:400px;background-color:#0D0D0D;background-image:url(/_blob/5e22e412657af14f45ba7904c2302080);background-size:cover;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:0;cursor:pointer;box-shadow:inset 0 0 90px rgba(0,0,0,.65),0 34px 40px -30px rgba(54,41,38,.55)}
+.folio{font-family:'Cinzel';font-size:13px;letter-spacing:.2em;color:#8d8378}
+.final{position:relative;background:radial-gradient(60% 60% at 50% 10%, #2c221e, #16110F 70%);color:#E9E4D8;padding-top:150px;padding-bottom:160px}
+.puerta-sig{display:flex;align-items:center;justify-content:space-between;height:280px;background-color:#3e3937;background-image:linear-gradient(90deg, rgba(40,36,34,.92), rgba(40,36,34,.25)),url(/_blob/1ba7d05adb029312ac929e0f273466de);background-size:cover;color:#efe9dd}
+.pie{padding-top:30px;padding-bottom:40px;display:flex;justify-content:space-between;gap:20px;background:#F1F2E3}
+@container (max-width: 760px){
+.pad{padding-left:22px;padding-right:22px}
+.g12{grid-template-columns:minmax(0,1fr);row-gap:30px}
+.g12 > *{grid-column:1 / -1 !important}
+.mono{font-size:46px;letter-spacing:.2em}
+.h2{font-size:34px}
+.largo{text-align:left;hyphens:manual}
+.cab{padding:12px 16px}
+.cab .marca,.cab .indnom{display:none}
+.losa-cab{height:420px}
+.ventana{right:6%;top:18%;width:52%;height:40%}
+.canto{margin-top:-90px;padding-top:28px}
+.sumario{overflow-x:auto}
+.sumario .cap{flex:0 0 74px}
+.premisa-txt{columns:1}
+.capitulo{grid-template-columns:44px minmax(0,1fr)}
+.lomo{left:0;width:40px}
+.margen-cap{padding-left:0;padding-top:0}
+.nodo{left:12px}
+.num-cap,.margen-cap .etq{display:none !important}
+.num-movil{display:block !important}
+.cuerpo-cap{padding-bottom:70px}
+.fila-cap{grid-template-columns:minmax(0,1fr);row-gap:18px}
+.fila-cap > *{grid-column:1 / -1 !important;order:0 !important}
+.losa-sp{height:240px}
+.final{padding-top:90px;padding-bottom:100px}
+.cita{font-size:30px !important}
+.puerta-sig{height:200px}
+.puerta-sig .h2{font-size:34px !important}
+.pie{flex-direction:column}
+}
+</style>
+</helmet>
+<div class="v3">
+
+<header class="cab">
+<span class="etq marca" style="letter-spacing: .32em">Mármol</span>
+<div class="ind">
+<span class="cz" style="font-size: 17px; color: #8B2626; font-weight: 600">III</span><span class="etq indnom">Historia</span>
+<svg width="132" height="20" viewBox="0 0 132 20" aria-hidden="true"><path d="M6 10 Q24 6 42 10 T78 10 T114 10 T128 10" fill="none" stroke="#8B2626" stroke-opacity=".6" stroke-width="1.2"></path><polygon points="6,6 10,10 6,14 2,10" fill="none" stroke="#6B5F58"></polygon><polygon points="46,6 50,10 46,14 42,10" fill="none" stroke="#6B5F58"></polygon><polygon points="86,2 94,10 86,18 78,10" fill="#CDA434" stroke="#9c7a1f"></polygon><polygon points="126,6 130,10 126,14 122,10" fill="none" stroke="#6B5F58"></polygon></svg>
+</div>
+<div style="display: flex; align-items: center; gap: 22px">
+<button class="disco" aria-label="Música: activar"></button>
+<button class="btn" style="padding: 0"><svg width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><path d="M0 1h22M0 9h14" stroke="#362926" stroke-width="1.2"></path></svg>Menú</button>
+</div>
+</header>
+
+<section class="losa-cab">
+<sc-if value="{{ ventanaAbierta }}" hint-placeholder-val="{{ true }}">
+<div class="ventana"><span class="etq" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: #8e8fa6; white-space: nowrap">Otro mundo - S28</span></div>
+</sc-if>
+<button class="marmolbtn" onClick="{{ toggleVentana }}" aria-label="Pulsa el mármol: detrás hay otros mundos"></button>
+</section>
+
+<section class="canto pad">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<span class="etq" style="color: #6B5F58">Sala III de IV</span>
+<h1 class="mono tallado">Historia</h1>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end; text-align: right; padding-bottom: 8px">
+<p style="margin: 0; font-style: italic; font-size: 26px">Las criaturas no nacen: se tallan.</p>
+<span class="peq" style="font-style: italic">Pulsa el mármol: detrás hay otros mundos.</span>
+</div>
+</div>
+</section>
+
+<nav class="pad" aria-label="Sumario">
+<div class="sumario">
+<sc-for list="{{ sumario }}" as="s" hint-placeholder-count="8">
+<a class="cap" href="#premisa" style="color: {{ s.color }}; box-shadow: {{ s.linea }}"><span class="cz" style="font-size: 17px; font-weight: 600">{{ s.n }}</span><span class="etq" style="letter-spacing: .16em">{{ s.t }}</span></a>
+</sc-for>
+</div>
+</nav>
+
+<section id="premisa" class="pad" style="padding-top: 100px; padding-bottom: 60px">
+<div class="g12" style="align-items: start">
+<div style="grid-column: span 7; display: flex; flex-direction: column; gap: 26px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span class="etq" style="color: #8B2626">Premisa</span><span class="folio">p. 1</span></div>
+<div class="premisa-txt largo">
+<p style="margin: 0 0 16px"><span class="cz" style="float: left; font-size: 96px; line-height: .78; padding: 8px 12px 0 0; color: #8B2626">E</span>n el mundo de Serie Mármol las criaturas no nacen: se tallan. Su Creador las esculpe en mármol, en un taller que no pertenece a ningún universo, y las deja caer por una ventana en los paisajes más bellos y más lejanos que encuentra. Llegan perfectas, simétricas, sin una sola marca.</p>
+<p style="margin: 0 0 16px">En cuanto alguien las usa para algo, para la guerra, para un templo, para demostrar que tiene razón, empiezan a agrietarse.</p>
+<p style="margin: 0; font-style: italic; color: #6B5F58">Los habitantes de ese mundo lo llaman Dios. Esta historia lo llama el Creador.</p>
+</div>
+</div>
+<div style="grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 18px">
+<div class="ph" style="aspect-ratio: 4 / 5"><span class="ins">Placeholder</span><div class="rombo"></div></div>
+<div class="cartela"><div class="filete"></div><span class="t">Fig. 1 - Imagen clave</span><span class="d">El Creador en el taller con una criatura de mármol a medio tallar. S16 provisional, S28 final.</span></div>
+</div>
+</div>
+<div class="g12" style="margin-top: 70px">
+<div class="margen" style="grid-column: span 5"><span class="etq">Influencias</span><span class="peq" style="font-style: italic">[Placeholder] Aquí van, en dos o tres líneas, las influencias de la serie y qué se coge de cada una.</span></div>
+<div class="margen" style="grid-column: 7 / span 6; border-left-color: #CDA434"><span class="etq">La idea: kintsugi</span><span style="font-style: italic; font-size: 26px; line-height: 1.4">La corrupción no se revierte. Se sana, y la grieta se sigue viendo.</span></div>
+</div>
+</section>
+
+<div class="pad" style="padding-top: 60px; padding-bottom: 60px">
+<svg viewBox="0 0 1000 40" width="100%" height="40" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="gh1" x1="0" x2="1"><stop offset="0" stop-color="#CDA434" stop-opacity="0"></stop><stop offset=".15" stop-color="#b8901f"></stop><stop offset=".5" stop-color="#e8c862"></stop><stop offset=".85" stop-color="#b08420"></stop><stop offset="1" stop-color="#CDA434" stop-opacity="0"></stop></linearGradient></defs><path d="M0.0 18.8 L50.0 18.9 L100.0 15.4 L150.0 14.7 L200.0 18.2 L250.0 17.2 L300.0 19.5 L350.0 19.4 L400.0 20.1 L450.0 19.5 L500.0 23.1 L550.0 25.8 L600.0 29.1 L650.0 24.5 L700.0 26.8 L750.0 25.5 L800.0 25.6 L850.0 30.0 L900.0 32.0 L950.0 32.0 L1000.0 32.0" fill="none" stroke="url(#gh1)" stroke-width="2.2"></path></svg>
+</div>
+
+<section class="pad" style="padding-top: 50px; padding-bottom: 60px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 80px">
+<div style="display: flex; flex-direction: column; gap: 12px"><span class="etq" style="color: #6B5F58">Seis capítulos</span><h2 class="h2 grab">Las seis partes</h2></div>
+<div style="display: flex; align-items: center; gap: 22px"><span class="peq" style="font-style: italic">Las partes III a VI y el final están tapados.</span><button class="btn" onClick="{{ mostrarTodos }}" style="color: #8B2626">{{ textoTodos }}<span style="display: inline-block; width: 40px; height: 1px; background: currentColor"></span></button></div>
+</div>
+<div class="libro">
+<div class="lomo">
+<svg viewBox="0 0 80 2400" width="60" height="100%" preserveAspectRatio="none" aria-hidden="true" style="height: 100%"><defs><linearGradient id="vh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A39A90"></stop><stop offset=".3" stop-color="#A39A90"></stop><stop offset=".38" stop-color="#8B2626"></stop><stop offset=".58" stop-color="#8B2626"></stop><stop offset=".66" stop-color="#d9b347"></stop><stop offset="1" stop-color="#CDA434"></stop></linearGradient></defs><path d="M39.0 0.0 L41.0 26.7 L38.5 53.3 L39.2 80.0 L39.8 106.7 L39.3 133.3 L39.4 160.0 L41.5 186.7 L41.3 213.3 L42.1 240.0 L40.8 266.7 L41.3 293.3 L38.5 320.0 L38.0 346.7 L36.1 373.3 L36.0 400.0 L38.0 426.7 L38.7 453.3 L38.8 480.0 L39.2 506.7 L42.1 533.3 L43.4 560.0 L40.6 586.7 L40.3 613.3 L41.8 640.0 L43.3 666.7 L46.1 693.3 L46.4 720.0 L48.7 746.7 L50.9 773.3 L53.0 800.0 L55.0 826.7 L52.7 853.3 L51.2 880.0 L48.4 906.7 L50.2 933.3 L50.3 960.0 L48.5 986.7 L50.8 1013.3 L50.4 1040.0 L47.7 1066.7 L47.5 1093.3 L45.3 1120.0 L45.3 1146.7 L43.7 1173.3 L40.8 1200.0 L41.1 1226.7 L38.4 1253.3 L40.9 1280.0 L38.5 1306.7 L36.3 1333.3 L39.1 1360.0 L39.4 1386.7 L41.2 1413.3 L38.6 1440.0 L36.9 1466.7 L34.7 1493.3 L37.0 1520.0 L34.7 1546.7 L33.1 1573.3 L31.8 1600.0 L34.1 1626.7 L31.9 1653.3 L34.4 1680.0 L34.3 1706.7 L34.8 1733.3 L34.2 1760.0 L35.7 1786.7 L34.2 1813.3 L34.9 1840.0 L35.0 1866.7 L32.3 1893.3 L31.3 1920.0 L33.2 1946.7 L35.3 1973.3 L37.0 2000.0 L34.3 2026.7 L31.6 2053.3 L31.5 2080.0 L28.7 2106.7 L29.9 2133.3 L30.0 2160.0 L30.0 2186.7 L27.9 2213.3 L25.3 2240.0 L25.0 2266.7 L25.0 2293.3 L25.0 2320.0 L25.0 2346.7 L27.9 2373.3 L27.5 2400.0" fill="none" stroke="url(#vh)" stroke-width="2.4"></path><path d="M41 930 L56 960 L62 1010 M48 1040 L30 1090 L22 1140 M46 1200 L64 1250 M40 1330 L20 1380" fill="none" stroke="#8B2626" stroke-opacity=".7" stroke-width="1"></path><path d="M36 1600 L56 1640 L66 1700 M33 1800 L12 1850 M35 1990 L58 2040" fill="none" stroke="#CDA434" stroke-width="1.8"></path></svg>
+</div>
+<sc-for list="{{ partes }}" as="p" hint-placeholder-count="6">
+<div class="capitulo">
+<div class="margen-cap"><span class="nodo" style="background: {{ p.nodoFondo }}; border-color: {{ p.nodoBorde }}"></span><span class="num-cap" aria-hidden="true">{{ p.numero }}</span><span class="etq" style="display: block; margin-top: 14px; color: #6B5F58">Parte {{ p.numero }}</span></div>
+<div class="cuerpo-cap">
+<span class="etq num-movil" style="display: none; color: #6B5F58">Parte {{ p.numero }}</span>
+<sc-if value="{{ p.tapado }}" hint-placeholder-val="{{ false }}">
+<button class="losa-sp" onClick="{{ p.destapar }}"><span class="cz grab-osc" style="font-size: 26px; letter-spacing: .55em">Spoiler</span><span style="font-style: italic; font-size: 17px; color: #a39a90">Pulsa para descubrir la parte {{ p.numero }}</span></button>
+</sc-if>
+<sc-if value="{{ p.visible }}" hint-placeholder-val="{{ true }}">
+<div class="fila-cap">
+<div class="ph" style="grid-column: {{ p.colImg }}; order: {{ p.ordImg }}; aspect-ratio: 3 / 2"><span class="ins">Placeholder</span><div class="rombo"></div></div>
+<div style="grid-column: {{ p.colTxt }}; order: {{ p.ordTxt }}; display: flex; flex-direction: column; gap: 16px; padding-top: 10px">
+<h3 class="h3">{{ p.titulo }}</h3>
+<span style="width: 40px; height: 1px; background: #8B2626"></span>
+<p style="margin: 0">{{ p.resumen }}</p>
+<sc-if value="{{ p.abierto }}" hint-placeholder-val="{{ false }}">
+<p class="peq" style="margin: 0; font-style: italic">[Texto completo de la parte, desplegado en la misma página con altura animada.]</p>
+</sc-if>
+<div style="display: flex; justify-content: space-between; align-items: center"><button class="btn" onClick="{{ p.leer }}" aria-expanded="{{ p.abierto }}" style="color: #8B2626; padding: 6px 0">{{ p.textoLeer }}<span style="display: inline-block; width: 40px; height: 1px; background: currentColor"></span></button><span class="folio">p. {{ p.folio }}</span></div>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section class="final pad">
+<div style="max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 34px; text-align: center">
+<span class="etq" style="color: #CDA434; letter-spacing: .4em">Final</span>
+<h2 class="h2 grab-osc" style="font-size: 72px; letter-spacing: .14em">El final</h2>
+<sc-if value="{{ finalTapado }}" hint-placeholder-val="{{ true }}">
+<button class="losa-sp" onClick="{{ destaparFinal }}" style="width: 100%; height: 360px; box-shadow: inset 0 0 90px rgba(0,0,0,.65), 0 0 0 1px rgba(205,164,52,.25)"><span class="cz grab-osc" style="font-size: 26px; letter-spacing: .55em">Spoiler</span><span style="font-style: italic; font-size: 17px; color: #a39a90">Pulsa para descubrir el final</span></button>
+</sc-if>
+<sc-if value="{{ finalVisible }}" hint-placeholder-val="{{ false }}">
+<svg viewBox="0 0 1000 40" width="70%" height="30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 L100 18 L200 22 L300 17 L400 21 L500 19 L600 23 L700 18 L800 22 L900 19 L1000 20" fill="none" stroke="#CDA434" stroke-width="2"></path></svg>
+<blockquote class="cita" style="margin: 0; font-style: italic; font-size: 48px; line-height: 1.28; color: #efe9dd; max-width: 18em">"Se puede destrozar algo queriéndolo mucho, si lo que se quiere de ello es que sirva para algo."</blockquote>
+<svg viewBox="0 0 1000 40" width="70%" height="30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 L100 22 L200 18 L300 23 L400 19 L500 21 L600 17 L700 22 L800 18 L900 21 L1000 20" fill="none" stroke="#CDA434" stroke-width="2"></path></svg>
+<p class="peq" style="margin: 0; color: #b8ad9f; max-width: 34em">[Placeholder] Los dos párrafos del final, en columna estrecha.</p>
+</sc-if>
+</div>
+</section>
+
+<a class="puerta-sig pad" href="Proceso.dc.html">
+<div style="display: flex; flex-direction: column; gap: 6px"><span class="etq" style="color: #b8ad9f">Siguiente sala</span><span class="h2 grab-osc" style="font-size: 64px">IV - Proceso</span></div>
+<svg width="64" height="20" viewBox="0 0 64 20" aria-hidden="true"><path d="M0 10h60M52 3l8 7-8 7" fill="none" stroke="#efe9dd" stroke-width="1.4"></path></svg>
+</a>
+
+<footer>
+<svg width="100%" height="22" aria-hidden="true" style="display: block; background: #F1F2E3"><defs><pattern id="grecaH" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M1 21 V1 H21 V17 H5 V5 H17 V13 H9 V9" fill="none" stroke="#CDA434" stroke-width="1.4"></path></pattern></defs><rect width="100%" height="22" fill="url(#grecaH)"></rect></svg>
+<div class="pie pad">
+<span class="etq">Serie Mármol</span>
+<span class="peq">Música: "Darkness is Coming", Kevin MacLeod (incompetech.com), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></span>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6900}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { destapadas: {}, abiertas: {}, ventana: false, final: false }; }
+renderVals() {
+const datos = [
+{ numero: 'I', titulo: 'La infancia', spoiler: false, resumen: 'Cassian crece odiando a las criaturas: una de ellas arrasó su pueblo. A los quince años intenta doblegar a una criatura pura, y bajo sus manos aparecen dos grietas.' },
+{ numero: 'II', titulo: 'La conversión', spoiler: false, resumen: 'Tras años de dudas y recaídas, Cassian deja de odiarlas y empieza a protegerlas. Descubre que una criatura rota se puede sanar: donde estaba la grieta queda una veta de oro.' },
+{ numero: 'III', titulo: 'El profeta y su precio', spoiler: true, resumen: '[Resumen de la parte III]' },
+{ numero: 'IV', titulo: 'La revelación', spoiler: true, resumen: '[Resumen de la parte IV]' },
+{ numero: 'V', titulo: 'El taller', spoiler: true, resumen: '[Resumen de la parte V]' },
+{ numero: 'VI', titulo: 'El barquero', spoiler: true, resumen: '[Resumen de la parte VI]' }
+];
+const st = this.state;
+const nodoColor = ['#A39A90', '#A39A90', '#8B2626', '#8B2626', '#CDA434', '#CDA434'];
+const partes = datos.map((d, i) => {
+const tapado = d.spoiler && !st.destapadas[i];
+const abierto = !!st.abiertas[i];
+const par = i % 2 === 1;
+return {
+...d, tapado, visible: !tapado, abierto,
+colImg: par ? '6 / span 7' : '1 / span 7',
+colTxt: par ? '1 / span 4' : '9 / span 4',
+ordImg: par ? '2' : '1',
+ordTxt: par ? '1' : '2',
+folio: String(4 + i * 3),
+nodoFondo: tapado ? '#0D0D0D' : nodoColor[i],
+nodoBorde: tapado ? '#0D0D0D' : nodoColor[i],
+textoLeer: abierto ? 'Leer menos' : 'Leer más',
+destapar: () => this.setState({ destapadas: { ...st.destapadas, [i]: true } }),
+leer: () => this.setState({ abiertas: { ...st.abiertas, [i]: !abierto } })
+};
+});
+const todo = datos.every((d, i) => !d.spoiler || st.destapadas[i]) && st.final;
+const sumDatos = [['P', 'Premisa', false]].concat(datos.map((d, i) => [d.numero, 'Parte', d.spoiler && !st.destapadas[i]])).concat([['F', 'Final', !st.final]]);
+const sumario = sumDatos.map((s, i) => ({ n: s[2] ? '◆' : s[0], t: s[1], color: i === 0 ? '#8B2626' : (s[2] ? '#0D0D0D' : '#362926'), linea: i === 0 ? 'inset 0 -2px 0 #8B2626' : 'none' }));
+return {
+partes, sumario,
+ventanaAbierta: st.ventana,
+toggleVentana: () => this.setState({ ventana: !st.ventana }),
+finalTapado: !st.final,
+finalVisible: st.final,
+destaparFinal: () => this.setState({ final: true }),
+textoTodos: todo ? 'Todo destapado' : 'Mostrar todos',
+mostrarTodos: () => this.setState({ destapadas: { 2: true, 3: true, 4: true, 5: true }, final: true })
+};
+}
+}
+</script>
+</body>
+</html>

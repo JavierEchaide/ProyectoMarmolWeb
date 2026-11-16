@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>II - Teaser (V3)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap">
+<style>
+body{margin:0;background:#E8E2D4}
+*{box-sizing:border-box}
+a{color:#362926;text-decoration:none}a:hover{color:#8B2626}
+.v3{position:relative;container-type:inline-size;font-family:'EB Garamond',Georgia,serif;color:#362926;font-size:20px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow:hidden}
+.cz{font-family:'Cinzel',Georgia,serif}
+.etq{font-family:'Cinzel',Georgia,serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:500}
+.peq{font-size:17px;line-height:1.5;color:#6B5F58}
+.h3{font-family:'Cinzel',Georgia,serif;font-size:26px;letter-spacing:.08em;line-height:1.2;font-weight:500;margin:0}
+.h2{font-family:'Cinzel',Georgia,serif;font-size:48px;letter-spacing:.06em;line-height:1.1;font-weight:500;margin:0}
+.mono{font-family:'Cinzel',Georgia,serif;font-size:176px;letter-spacing:.1em;line-height:.9;font-weight:500;margin:0}
+.grab{color:#3a2c29;text-shadow:0 2px 1px rgba(255,255,255,.8),0 -1px 0 rgba(30,20,18,.28)}
+.pad{padding-left:96px;padding-right:96px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px}
+.largo{text-align:justify;hyphens:auto;margin:0}
+.neb{position:absolute;left:0;right:0;top:0;height:1700px;pointer-events:none;background-image:url(/_blob/a14667f4ec043208b91867e25add20e1),url(/_blob/6c9f6dd7b9742f58abe860922c8d452d),url(/_blob/77e5de353d928f171e30abbc4816c38d);background-size:120% auto,100% auto,140% auto;background-position:30% 0,70% 20%,0 60%;background-repeat:no-repeat;opacity:.55;mix-blend-mode:multiply}
+.trav{position:absolute;inset:0;background-image:url(/_blob/95617ffb1a0fa6be566b883e884bee33);background-size:900px auto;opacity:.35;pointer-events:none}
+.cab{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:linear-gradient(rgba(232,226,212,.95),rgba(232,226,212,.84));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(54,41,38,.1);box-shadow:0 8px 24px -18px rgba(54,41,38,.5)}
+.cab .etq{font-weight:600;color:#362926}
+.cab .ind{display:flex;align-items:center;gap:14px}
+.disco{width:36px;height:36px;border-radius:50%;border:1px solid rgba(54,41,38,.25);background-image:url(/_blob/331d2a81ca36ce1395383797ee788438);background-size:300%;background-position:40% 30%;cursor:pointer}
+.btn{display:inline-flex;align-items:center;gap:14px;font-family:'Cinzel';font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#362926;background:none;border:0;padding:14px 0;cursor:pointer}
+.cartela{display:flex;flex-direction:column;gap:6px}
+.cartela .filete{width:36px;height:1px;background:#362926;margin-bottom:8px}
+.cartela .t{font-family:'Cinzel';font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:600}
+.cartela .d{font-style:italic;font-size:17px;color:#6B5F58;line-height:1.45}
+.pantalla{position:relative;background:#16110F;color:#E9E4D8;padding-top:80px;padding-bottom:60px}
+.video{position:relative;aspect-ratio:2.35 / 1;background:radial-gradient(60% 80% at 50% 40%, #2b231f, #0D0D0D 75%);display:flex;align-items:center;justify-content:center;outline:1px solid rgba(163,152,134,.55);outline-offset:10px}
+.play{width:104px;height:104px;border-radius:50%;border:1px solid rgba(233,228,216,.7);background:rgba(13,13,13,.35);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ficha{display:flex;flex-direction:column}
+.ficha .f{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:14px 0;border-top:1px solid rgba(54,41,38,.18)}
+.ph{position:relative;background:rgba(241,242,227,.75);border:1px solid rgba(54,41,38,.14);display:flex;align-items:center;justify-content:center;box-shadow:0 34px 40px -30px rgba(54,41,38,.45)}
+.ph .rombo{width:46px;height:46px;transform:rotate(45deg);border:1px solid rgba(54,41,38,.2)}
+.ph .ins{position:absolute;top:12px;left:12px;font-family:'Cinzel';font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#6B5F58;background:rgba(241,242,227,.9);padding:3px 8px;border:1px solid rgba(54,41,38,.18)}
+.tira{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px}
+.mini{display:flex;flex-direction:column;gap:6px;background:none;border:0;padding:0;cursor:pointer;text-align:left;font-family:inherit;color:inherit}
+.mini .m{aspect-ratio:2.35 / 1;background:rgba(241,242,227,.7);border:1px solid rgba(54,41,38,.16)}
+.rima{position:relative;aspect-ratio:2.35 / 1;display:grid;grid-template-columns:1fr 1fr;box-shadow:0 34px 40px -30px rgba(54,41,38,.45)}
+.puerta-sig{position:relative;display:flex;align-items:center;justify-content:space-between;height:280px;background-color:#EFE8D4;background-image:linear-gradient(90deg, rgba(239,232,212,.95), rgba(239,232,212,.2)),url(/_blob/1fd0488e6ba433c59ac8531d675be84f);background-size:cover}
+.halo{position:absolute;left:50%;top:52%;width:1100px;height:420px;margin:-210px 0 0 -550px;background:radial-gradient(50% 50% at 50% 50%, rgba(255,253,246,.95), rgba(255,250,236,.55) 45%, rgba(255,250,236,0) 72%);pointer-events:none}
+.contraluz{font-family:'Cinzel',Georgia,serif;font-weight:500;font-size:150px;line-height:1;letter-spacing:.42em;margin:0 -.42em 0 0;color:#2e2320;text-shadow:0 0 1px rgba(255,255,255,.9),0 0 30px rgba(255,251,240,.95),0 0 80px rgba(255,248,230,.8)}
+.cruce{position:relative;padding-top:120px;padding-bottom:110px}
+.escena{position:relative;aspect-ratio:2.35 / 1;overflow:hidden;background:#dcd6c8;box-shadow:0 40px 50px -36px rgba(54,41,38,.55)}
+.capa{position:absolute;inset:-10%;background-size:cover;background-position:center;transition:transform .9s cubic-bezier(.16,1,.3,1),opacity .9s}
+.pared{position:absolute;inset:0;background:radial-gradient(60% 80% at 50% 45%, rgba(245,242,234,0) 30%, rgba(214,208,196,.85) 70%),linear-gradient(#ebe7dd,#d9d3c5)}
+.ventana-v{position:absolute;left:50%;top:50%;width:260px;height:330px;margin:-165px 0 0 -130px;border-radius:130px 130px 6px 6px;transition:transform .9s cubic-bezier(.16,1,.3,1);box-shadow:0 0 0 14px #f4f2ea,0 0 0 15px rgba(54,41,38,.25),0 30px 60px rgba(54,41,38,.35)}
+.vista{position:absolute;inset:0;border-radius:inherit;overflow:hidden;background:linear-gradient(#cfe0d2 0%, #6f9a7c 45%, #2f5b45 100%)}
+.vista::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 40% at 50% 30%, rgba(255,255,255,.7), rgba(255,255,255,0) 70%)}
+.arboles{position:absolute;left:0;right:0;bottom:0;height:55%;background:repeating-linear-gradient(90deg, rgba(25,52,38,.0) 0 18px, rgba(25,52,38,.55) 18px 24px, rgba(25,52,38,0) 24px 46px)}
+.parteluz{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg, transparent calc(50% - 4px), #f4f2ea calc(50% - 4px), #f4f2ea calc(50% + 4px), transparent calc(50% + 4px)),linear-gradient(transparent calc(42% - 4px), #f4f2ea calc(42% - 4px), #f4f2ea calc(42% + 4px), transparent calc(42% + 4px));transition:opacity .6s}
+.bosque{position:absolute;inset:0;background:linear-gradient(#d4e4d6 0%, #7aa486 40%, #2c5642 100%);transition:opacity .9s}
+.bosque .arboles{height:70%}
+.paso-c{display:flex;flex-direction:column;gap:8px;background:none;border:0;padding:14px 0 0;text-align:left;cursor:pointer;font-family:inherit;color:inherit;border-top:2px solid rgba(54,41,38,.18)}
+.pie{padding-top:30px;padding-bottom:40px;display:flex;justify-content:space-between;gap:20px;background:#F1F2E3}
+@container (max-width: 760px){
+.pad{padding-left:22px;padding-right:22px}
+.g12{grid-template-columns:minmax(0,1fr);row-gap:30px}
+.g12 > *{grid-column:1 / -1 !important}
+.mono{font-size:60px;letter-spacing:.08em}
+.hueco-g{font-size:200px !important;top:70px !important}
+.h2{font-size:34px}
+.largo{text-align:left;hyphens:manual}
+.cab{padding:12px 16px}
+.cab .marca,.cab .indnom{display:none}
+.cabecera{height:440px !important}
+.pantalla{padding-top:40px;padding-bottom:36px}
+.play{width:64px;height:64px}
+.tira{grid-template-columns:repeat(6,minmax(0,1fr))}
+.puerta-sig{height:200px}
+.puerta-sig .h2{font-size:34px !important}
+.pie{flex-direction:column}
+.sin{font-size:20px !important}
+.contraluz{font-size:46px;letter-spacing:.3em;margin-right:-.3em}
+.halo{width:520px;margin-left:-260px;height:260px;margin-top:-130px}
+.ventana-v{width:120px;height:150px;margin:-75px 0 0 -60px;border-radius:60px 60px 4px 4px}
+.pasos-c{grid-template-columns:minmax(0,1fr) !important}
+}
+</style>
+</helmet>
+<div class="v3" style="background-color: {{ fondo }}">
+<div class="trav"></div>
+<div class="neb"></div>
+
+<header class="cab">
+<span class="etq marca" style="font-weight: 600; letter-spacing: .32em">Mármol</span>
+<div class="ind">
+<span class="cz" style="font-size: 17px; color: #8B2626">II</span><span class="etq indnom">Teaser</span>
+<svg width="132" height="20" viewBox="0 0 132 20" aria-hidden="true"><path d="M6 10 Q24 6 42 10 T78 10 T114 10 T128 10" fill="none" stroke="{{ veta }}" stroke-width="1.2"></path><polygon points="6,6 10,10 6,14 2,10" fill="none" stroke="#6B5F58"></polygon><polygon points="46,2 54,10 46,18 38,10" fill="#362926" stroke="#362926"></polygon><polygon points="86,6 90,10 86,14 82,10" fill="none" stroke="#6B5F58"></polygon><polygon points="126,6 130,10 126,14 122,10" fill="none" stroke="#6B5F58"></polygon></svg>
+</div>
+<div style="display: flex; align-items: center; gap: 22px">
+<button class="disco" aria-label="Música: activar"></button>
+<button class="btn" style="padding: 0"><svg width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><path d="M0 1h22M0 9h14" stroke="#362926" stroke-width="1.2"></path></svg>Menú</button>
+</div>
+</header>
+
+<section class="cabecera pad" style="position: relative; height: 680px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center">
+<span class="mono hueco-g" style="position: absolute; top: 70px; left: 50%; transform: translateX(-50%); font-size: 460px; color: transparent; -webkit-text-stroke: 1.5px rgba(54,41,38,.16)" aria-hidden="true">II</span>
+<div class="halo"></div>
+<div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 26px; margin-top: 60px">
+<span class="etq" style="color: #6B5F58; letter-spacing: .4em">Sala II de IV</span>
+<h1 class="contraluz">Teaser</h1>
+<span style="width: 60px; height: 1px; background: rgba(54,41,38,.4)"></span>
+<p class="cz" style="margin: 0; font-size: 13px; letter-spacing: .4em; text-transform: uppercase; color: #4f433d; font-weight: 600">Tres lugares - una ventana</p>
+</div>
+</section>
+
+<section class="pantalla pad" aria-label="Vídeo del teaser">
+<div class="video">
+<button class="play" aria-label="Reproducir el teaser"><svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M4 2 L26 16 L4 30 Z" fill="none" stroke="#E9E4D8" stroke-width="1.6"></path></svg></button>
+<span class="etq" style="position: absolute; top: 16px; left: 16px; color: #a39a90; border: 1px solid rgba(163,154,144,.5); padding: 3px 8px">Placeholder</span>
+</div>
+<div style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: 34px">
+<span class="etq" style="color: #b8ad9f">30 s - 2.35:1 - Blender, Cycles</span>
+<span class="peq" style="color: #8d8378; font-style: italic">Teaser en producción. Llega en S33 (03/05 a 09/05)</span>
+</div>
+</section>
+
+<section class="pad" style="position: relative; padding-top: 120px; padding-bottom: 80px">
+<div class="g12">
+<div style="grid-column: span 7; display: flex; flex-direction: column; gap: 22px">
+<span class="etq" style="color: #6B5F58">Sinopsis</span>
+<p class="largo sin" style="font-size: 26px; line-height: 1.5">Treinta segundos, tres lugares. Un taller fuera del mundo, donde alguien talla en mármol sin que se le vea la cara. Un bosque alto, donde algo recién hecho abre los ojos por primera vez. La bodega de un barco, donde ese algo ya no es lo que era.</p>
+<p class="sin" style="margin: 0; font-size: 26px; font-style: italic; color: #4f433d">Y una ventana que, después de siglos, alguien vuelve a mirar.</p>
+</div>
+<div class="ficha" style="grid-column: 9 / span 4; align-self: end">
+<span class="etq" style="color: #6B5F58; margin-bottom: 14px">Ficha técnica</span>
+<div class="f"><span class="etq">Duración</span><span class="peq" style="color: #362926">32 segundos, 768 fotogramas</span></div>
+<div class="f"><span class="etq">Hecho con</span><span class="peq" style="color: #362926">Blender, Cycles</span></div>
+<div class="f"><span class="etq">Formato</span><span class="peq" style="color: #362926">Panorámico 2.35:1</span></div>
+<div class="f" style="border-bottom: 1px solid rgba(54,41,38,.18)"><span class="etq">Música</span><span class="peq" style="color: #362926">"Darkness is Coming", Kevin MacLeod. CC BY 4.0. Pista provisional</span></div>
+</div>
+</div>
+</section>
+
+<section class="cruce pad" aria-label="Cruzar la ventana">
+<div class="g12" style="align-items: end; margin-bottom: 40px">
+<div style="grid-column: span 6; display: flex; flex-direction: column; gap: 10px"><span class="etq" style="color: #6B5F58">Del taller al bosque</span><h2 class="h2 grab">Cruzar la ventana</h2></div>
+<p style="grid-column: 8 / span 5; margin: 0">Al bajar, la cámara avanza hacia la ventana del taller hasta atravesarla. Es el paso de los planos 2 y 3, contado con la página.</p>
+</div>
+<div class="escena">
+<div class="pared"></div>
+<div class="capa" style="background-image: url(/_blob/a14667f4ec043208b91867e25add20e1); opacity: .45; mix-blend-mode: multiply; transform: {{ c.lejana }}"></div>
+<div class="capa" style="background-image: url(/_blob/6c9f6dd7b9742f58abe860922c8d452d); opacity: .35; mix-blend-mode: multiply; transform: {{ c.media }}"></div>
+<div class="ventana-v" style="transform: {{ c.ventana }}"><div class="vista"><div class="arboles"></div></div><div class="parteluz" style="opacity: {{ c.parteluz }}"></div></div>
+<div class="bosque" style="opacity: {{ c.bosque }}"><div class="arboles"></div></div>
+<div class="capa" style="background-image: url(/_blob/77e5de353d928f171e30abbc4816c38d); opacity: {{ c.cercana }}; mix-blend-mode: screen; transform: {{ c.cerca }}"></div>
+<span class="etq" style="position: absolute; top: 16px; left: 16px; background: rgba(241,242,227,.9); padding: 3px 8px; border: 1px solid rgba(54,41,38,.18)">Placeholder - capas de los renders, S28</span>
+<span class="cz" style="position: absolute; right: 22px; bottom: 16px; font-size: 13px; letter-spacing: .3em; color: {{ c.textoColor }}">{{ c.contador }}</span>
+</div>
+<div class="pasos-c" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 26px">
+<sc-for list="{{ pasosC }}" as="p" hint-placeholder-count="3">
+<button class="paso-c" onClick="{{ p.ir }}" style="border-top-color: {{ p.borde }}"><span class="etq" style="color: {{ p.color }}">{{ p.n }} - {{ p.t }}</span><span class="peq" style="font-style: italic">{{ p.d }}</span></button>
+</sc-for>
+</div>
+<p class="peq" style="margin: 18px 0 0">Fijada al scroll unas 3 pantallas. Cada capa va a su velocidad. Con movimiento reducido: los tres fotogramas en lista. Pulsa los pasos para verlo.</p>
+</section>
+
+<div class="pad" style="position: relative; padding-top: 20px; padding-bottom: 20px">
+<svg viewBox="0 0 1000 40" width="100%" height="40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q35 11 71 22 Q126 13 181 22 Q214 29 248 24 Q298 10 349 20 Q398 14 448 19 Q498 24 548 17 Q597 33 645 21 Q681 29 718 24 Q750 27 783 18 Q830 14 877 22 Q908 33 939 19 Q994 22 1000 23" fill="none" stroke="{{ veta }}" stroke-width="1.2"></path></svg>
+</div>
+
+<section class="pad" style="position: relative; padding-top: 80px; padding-bottom: 100px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 36px; gap: 20px">
+<h2 class="h2 grab">Fotogramas clave</h2>
+<span class="cz" style="font-size: 48px; color: rgba(54,41,38,.3); letter-spacing: .06em">{{ cont }}</span>
+</div>
+<div class="ph" style="aspect-ratio: 2.35 / 1"><span class="ins">{{ plano.estado }}</span><div class="rombo"></div></div>
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin: 22px 0 30px; gap: 20px">
+<div class="cartela"><div class="filete"></div><span class="t">Plano {{ plano.n }}</span><span class="d">{{ plano.d }}</span></div>
+<div style="display: flex; gap: 18px"><button class="btn" aria-label="Plano anterior" onClick="{{ ant }}" style="padding: 8px"><svg width="40" height="12" viewBox="0 0 40 12" aria-hidden="true"><path d="M40 6H2M8 1L2 6l6 5" fill="none" stroke="#362926"></path></svg></button><button class="btn" aria-label="Plano siguiente" onClick="{{ sig }}" style="padding: 8px"><svg width="40" height="12" viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h38M32 1l6 5-6 5" fill="none" stroke="#362926"></path></svg></button></div>
+</div>
+<div class="tira">
+<sc-for list="{{ planos }}" as="p" hint-placeholder-count="12">
+<button class="mini" onClick="{{ p.pick }}" aria-label="Plano {{ p.n }}"><span class="m" style="outline: {{ p.borde }}; outline-offset: 3px"></span><span class="etq" style="color: {{ p.color }}">{{ p.n }}</span></button>
+</sc-for>
+</div>
+</section>
+
+<section class="pad" style="position: relative; padding-top: 60px; padding-bottom: 140px">
+<div class="g12" style="margin-bottom: 40px; align-items: end">
+<div style="grid-column: span 5; display: flex; flex-direction: column; gap: 10px"><span class="etq" style="color: #6B5F58">Los ojos, pura y corrupta</span><h2 class="h2 grab">La rima</h2></div>
+<p style="grid-column: 7 / span 6; margin: 0">Los dos planos de los ojos de la criatura usan exactamente el mismo encuadre. Es lo que cuenta, sin una palabra, que la del bosque y la de la jaula son la misma.</p>
+</div>
+<div class="rima">
+<div style="position: relative; background: radial-gradient(70% 70% at 60% 40%, #f4f3e8, #dedcca)"><span class="etq" style="position: absolute; top: 14px; left: 14px; background: rgba(241,242,227,.9); padding: 3px 8px">En el bosque</span></div>
+<div style="position: relative; background: radial-gradient(70% 70% at 40% 40%, #4a3f3a, #1e1816)"><span class="etq" style="position: absolute; top: 14px; right: 14px; background: rgba(13,13,13,.6); color: #E9E4D8; padding: 3px 8px">En la jaula</span></div>
+<div style="position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: #F1F2E3"></div>
+<button aria-label="Arrastra para comparar" style="position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; transform: translate(-50%, -50%) rotate(45deg); background: #F1F2E3; border: 1px solid #362926; cursor: ew-resize"></button>
+</div>
+<p class="peq" style="margin: 18px 0 0; font-style: italic">Arrastra la línea, o usa las flechas del teclado.</p>
+</section>
+
+<a class="puerta-sig pad" href="Historia.dc.html">
+<div style="display: flex; flex-direction: column; gap: 6px"><span class="etq" style="color: #6B5F58">Siguiente sala</span><span class="h2 grab" style="font-size: 64px">III - Historia</span></div>
+<svg width="64" height="20" viewBox="0 0 64 20" aria-hidden="true"><path d="M0 10h60M52 3l8 7-8 7" fill="none" stroke="#362926" stroke-width="1.4"></path></svg>
+</a>
+
+<footer style="position: relative">
+<svg width="100%" height="22" aria-hidden="true" style="display: block; background: #F1F2E3"><defs><pattern id="grecaT" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M1 21 V1 H21 V17 H5 V5 H17 V13 H9 V9" fill="none" stroke="#CDA434" stroke-width="1.4"></path></pattern></defs><rect width="100%" height="22" fill="url(#grecaT)"></rect></svg>
+<div class="pie pad">
+<span class="etq">Serie Mármol</span>
+<span class="peq">Música: "Darkness is Coming", Kevin MacLeod (incompetech.com), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></span>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"travertino":{"editor":"enum","options":["A","B"],"default":"A","section":"Opciones"},"$preview":{"width":1440,"height":5100}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { sel: 2, cruce: 1 }; }
+renderVals() {
+const datos = Array.from({ length: 12 }, (_, i) => ({ n: String(i + 1), d: 'Aquí va una línea sobre el plano ' + (i + 1) + ' del storyboard v2.', e: i < 4 ? 'Previz' : (i === 4 ? 'Render de prueba' : 'Placeholder') }));
+const sel = this.state.sel;
+const total = datos.length;
+const planos = datos.map((p, i) => ({ ...p, borde: i === sel ? '1px solid #8B2626' : '1px solid transparent', color: i === sel ? '#8B2626' : '#6B5F58', pick: () => this.setState({ sel: i }) }));
+const t = this.props.travertino ?? 'A';
+const ci = this.state.cruce ?? 0;
+const est = [
+{ lejana: 'scale(1)', media: 'scale(1)', ventana: 'scale(1)', parteluz: 1, bosque: 0, cercana: 0, cerca: 'scale(1)', contador: '01 / 03', textoColor: '#6B5F58' },
+{ lejana: 'scale(1.08)', media: 'scale(1.18)', ventana: 'scale(2.6)', parteluz: .6, bosque: 0, cercana: .25, cerca: 'scale(1.3)', contador: '02 / 03', textoColor: '#6B5F58' },
+{ lejana: 'scale(1.2)', media: 'scale(1.5)', ventana: 'scale(9)', parteluz: 0, bosque: 1, cercana: .5, cerca: 'scale(1.8)', contador: '03 / 03', textoColor: '#F1F2E3' }
+];
+const pasosTxt = [['I', 'El taller', 'La ventana al fondo, la nebulosa alrededor.'], ['II', 'La ventana', 'La cámara se acerca; el marco llena la pantalla.'], ['III', 'El bosque', 'Al otro lado, el claro donde abre los ojos.']];
+const pasosC = pasosTxt.map((p, i) => ({ n: p[0], t: p[1], d: p[2], color: i === ci ? '#8B2626' : '#6B5F58', borde: i === ci ? '#8B2626' : 'rgba(54,41,38,.18)', ir: () => this.setState({ cruce: i }) }));
+return {
+planos,
+plano: { n: datos[sel].n, d: datos[sel].d, estado: datos[sel].e },
+cont: String(sel + 1).padStart(2, '0') + ' / ' + total,
+ant: () => this.setState({ sel: (sel - 1 + total) % total }),
+sig: () => this.setState({ sel: (sel + 1) % total }),
+fondo: t === 'B' ? '#ECE7DC' : '#E8E2D4',
+veta: t === 'B' ? '#8F877B' : '#A39886',
+c: est[ci],
+pasosC
+};
+}
+}
+</script>
+</body>
+</html>
