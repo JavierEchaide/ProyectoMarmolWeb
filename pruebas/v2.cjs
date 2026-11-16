@@ -163,18 +163,18 @@ const SALAS = [['index', 'portada', 'Sala I de IV: Portada'], ['teaser', 'teaser
     const p = await nueva();
     await p.goto(`${BASE}/proceso.html`); await p.waitForTimeout(500);
     ver('proceso: cinco secciones en orden', await p.evaluate(() => [...document.querySelectorAll('[data-indice-seccion]')].map((s) => s.id).join() === 'estado,desarrollo-visual,metodo,calendario,archivo'));
-    ver('proceso: solo el bloque actual abierto', await p.evaluate(() => { const d = [...document.querySelectorAll('.linea-tiempo details')]; return d.filter((x) => x.open).length === 1 && d.findIndex((x) => x.open) === 1; }));
-    ver('proceso: 35 semanas con ancla', await p.evaluate(() => document.querySelectorAll('.semana[id^="s"]').length === 35 && !!document.getElementById('s35')));
+    ver('proceso: solo el bloque actual abierto', await p.evaluate(() => { const d = [...document.querySelectorAll('.calveta details')]; return d.filter((x) => x.open).length === 1 && d.findIndex((x) => x.open) === 1; }));
+    ver('proceso: 35 semanas con ancla', await p.evaluate(() => document.querySelectorAll('.calveta__semana[id^="s"]').length === 35 && !!document.getElementById('s35')));
     await p.locator('[data-indice-semana]').nth(26).click(); await p.waitForTimeout(500);
     ver('índice: S27 abre su bloque y baja', await p.evaluate(() => { const s = document.getElementById('s27'); const r = s.getBoundingClientRect(); return location.hash === '#s27' && s.closest('details').open && r.top >= 0 && r.top < innerHeight; }));
     ver('índice: scrollspy marca Calendario', await p.evaluate(() => document.querySelector('[data-indice-enlace][aria-current="true"]')?.getAttribute('href') === '#calendario'));
     await p.goto(`${BASE}/proceso.html#s12`); await p.waitForTimeout(600);
     ver('enlace directo #s12', await p.evaluate(() => { const s = document.getElementById('s12'); const r = s.getBoundingClientRect(); return s.closest('details').open && r.top >= 0 && r.top < innerHeight; }));
-    ver('índice lateral fijo en escritorio', await p.evaluate(() => getComputedStyle(document.querySelector('.indice')).position === 'sticky'));
-    ver('referencias: 8 categorías con Narrativa', await p.evaluate(() => { const t = [...document.querySelectorAll('.referencia__titulo')].map((x) => x.textContent); return t.length === 8 && t.includes('Narrativa'); }));
+    ver('índice lateral fijo en escritorio', await p.evaluate(() => getComputedStyle(document.querySelector('.placas')).position === 'sticky'));
+    ver('referencias: 8 categorías con Narrativa', await p.evaluate(() => { const t = [...document.querySelectorAll('.cajon__titulo')].map((x) => x.textContent); return t.length === 8 && t.includes('Narrativa'); }));
     await p.goto(`${BASE}/proceso.html`); await p.waitForTimeout(300);
-    await p.evaluate(() => { document.querySelector('.linea-tiempo details').open = true; });
-    await p.locator('.semana__ver').first().click(); await p.waitForURL('**/registro-s01.html', { timeout: 4000 }).catch(() => {});
+    await p.evaluate(() => { document.querySelector('.calveta details').open = true; });
+    await p.locator('.calveta__ver').first().click(); await p.waitForURL('**/registro-s01.html', { timeout: 4000 }).catch(() => {});
     ver('ver registro lleva a registro-s01.html', p.url().endsWith('registro-s01.html') && await p.evaluate(() => document.body.dataset.sala === 'proceso' && /Registro S01/.test(document.querySelector('h1').textContent)));
     await p.context().close();
   }

@@ -19,7 +19,7 @@ const { r, anterior, siguiente } = Astro.props;
 const s = r.semana;
 const etiquetaEstado = { hecho: 'Hecho', 'en-curso': 'En curso', pendiente: 'Planificado' };
 ---
-<Base id="proceso" subtitulo={`Registro ${s.id}`} archivo={archivoRegistro(s)} descripcion={`Registro de la semana ${s.id} (${s.fechas}) del Proyecto Mármol: ${s.plan}.`}>
+<Base id="proceso" estilos={['css/sala-proceso.css']} subtitulo={`Registro ${s.id}`} archivo={archivoRegistro(s)} descripcion={`Registro de la semana ${s.id} (${s.fechas}) del Proyecto Mármol: ${s.plan}.`}>
   <article class="contenedor registro">
     <p class="registro__volver">
       <a href={`proceso.html#${s.id.toLowerCase()}`}>

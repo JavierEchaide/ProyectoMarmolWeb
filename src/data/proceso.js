@@ -30,7 +30,7 @@ export const proceso = {
   render: {
     propio: '57 s',
     fabrica: '4 min 12 s',
-    calculo: '720 fotogramas × 57 s ≈ 11,4 h de render',
+    calculo: '768 fotogramas × 57 s ≈ 12,2 h de render',
     nota: 'Por fotograma, con ajustes propios frente a los de fábrica. La medida se repite con la escena real en S16.',
   },
 
