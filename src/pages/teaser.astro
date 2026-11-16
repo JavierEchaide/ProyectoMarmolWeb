@@ -1,67 +1,75 @@
 ---
+// II · Teaser (V3). Estilos propios en css/sala-teaser.css; lógica en
+// js/teaser.js (reproductor, nebulosa, cruzar la ventana y carrusel).
 import Base from '../layouts/Base.astro';
 import Veta from '../components/Veta.astro';
 import Carrusel from '../components/Carrusel.astro';
 import AntesDespues from '../components/AntesDespues.astro';
-import TituloSeccion from '../components/TituloSeccion.astro';
+import EscenaVentana from '../components/teaser/EscenaVentana.astro';
 import { pagina } from '../data/sitio.js';
 import { etiquetaSemana } from '../lib/semanas.js';
 import Siguiente from '../components/Siguiente.astro';
 import { teaser } from '../data/teaser.js';
 
-const { video, rima } = teaser;
+const { video, rima, cruce } = teaser;
 const prevista = video.src ? null : etiquetaSemana(video.semana);
+const numero = pagina('teaser').numero;
 ---
-<Base id="teaser" descripcion="El teaser de 30 segundos de Serie Mármol, hecho en Blender con Cycles." scripts={['js/teaser.js']}>
+<Base id="teaser" descripcion="El teaser de 30 segundos de Serie Mármol, hecho en Blender con Cycles." estilos={['css/sala-teaser.css']} scripts={['js/teaser.js']}>
   {/* Nebulosa: tres capas (lejana, media, cercana) que se mueven con el scroll
-      a distinta velocidad. El texto nunca va encima: va en paneles. js/teaser.js */}
+      a distinta velocidad, en grises cálidos y atenuada. El texto nunca va en
+      cajas encima: va sobre franjas del travertino de la sala. js/teaser.js */}
   <div class="nebulosa" data-nebulosa aria-hidden="true">
     <div class="nebulosa__capa nebulosa__capa--1" data-nebulosa-capa="0.25"></div>
     <div class="nebulosa__capa nebulosa__capa--2" data-nebulosa-capa="0.55"></div>
     <div class="nebulosa__capa nebulosa__capa--3" data-nebulosa-capa="1"></div>
   </div>
 
-  <div class="contenedor cabecera-pagina cabecera-pagina--teaser">
-    <div class="panel panel--titulo">
-      <TituloSeccion titulo="Teaser" nivel={1} numero={pagina('teaser').numero} />
+  {/* 1. Título a contraluz: tinta oscura con un halo de luz cálida detrás */}
+  <header class="contraluz sala-pad">
+    <span class="numeral-hueco contraluz__numeral" aria-hidden="true">{numero}</span>
+    <span class="contraluz__halo" aria-hidden="true"></span>
+    <div class="contraluz__texto">
+      <span class="etiqueta contraluz__sala">Sala {numero} de IV</span>
+      <h1 class="contraluz__titulo">Teaser</h1>
+      <span class="contraluz__filete" aria-hidden="true"></span>
+      <p class="etiqueta contraluz__lema">{teaser.lema}</p>
     </div>
-  </div>
+  </header>
 
-  {/* 2. El vídeo, protagonista: 2.35:1 a ancho casi completo sobre un panel oscuro */}
-  <section class="cine" aria-label="Reproductor del teaser">
-    <div class="cine__contenedor">
-      <button class="reproductor" type="button" data-reproductor data-video={video.src ?? undefined} data-falta={video.src ? undefined : [video.falta, prevista].filter(Boolean).join(' · ')} aria-label={video.poster ? 'Reproducir el teaser' : undefined}>
-        {!video.poster && <span class="oculto">Reproducir el teaser: </span>}
-        {video.poster ? (
-          <img class="reproductor__poster" src={video.poster} alt="" />
-        ) : (
-          <span class="reproductor__falta">
-            {!video.src && <span class="reproductor__insignia">Placeholder</span>}
-            {video.falta}{prevista && ` · ${prevista}`}
-          </span>
-        )}
-        <span class="reproductor__play" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-        </span>
-      </button>
+  {/* 2. El vídeo: franja de sala oscura a sangre, 2.35:1, veta fina en el marco.
+      Nunca arranca solo: al pulsar crece a ventana grande (visor común). */}
+  <section class="pantalla sala-oscura sala-pad" aria-label="Vídeo del teaser">
+    <button class="pantalla__video" type="button" data-reproductor data-video={video.src ?? undefined} data-falta={video.src ? undefined : [video.falta, prevista].filter(Boolean).join(' · ')} aria-label="Reproducir el teaser">
+      {video.poster && <img class="pantalla__poster" src={video.poster} alt="" />}
+      {!video.src && <span class="pantalla__insignia etiqueta">Placeholder</span>}
+      <span class="pantalla__play" aria-hidden="true">
+        <svg width="28" height="32" viewBox="0 0 28 32"><path d="M4 2 L26 16 L4 30 Z" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>
+      </span>
+    </button>
+    <div class="pantalla__cartela">
+      <span class="etiqueta pantalla__dato">{video.falta}</span>
+      {prevista && <span class="pantalla__nota">{prevista}</span>}
     </div>
   </section>
 
-  {/* 3. Sinopsis y ficha, compactas */}
-  <section class="contenedor teaser-datos" aria-labelledby="titulo-sinopsis">
-    <div class="panel teaser-datos__panel">
-      <div class="teaser-datos__sinopsis texto-largo" data-revelar>
-        <h2 id="titulo-sinopsis" class="antetitulo">Sinopsis</h2>
-        {teaser.sinopsis.map((p) => <p>{p}</p>)}
+  {/* 3. Sinopsis (texto de pared) y ficha (cartela vertical) */}
+  <section class="sinopsis sala-pad sala-franja" aria-labelledby="titulo-sinopsis">
+    <div class="sala-rejilla">
+      <div class="sinopsis__texto" data-revelar>
+        <h2 id="titulo-sinopsis" class="etiqueta sala-antetitulo">Sinopsis</h2>
+        <div class="texto-largo sinopsis__pared">
+          {teaser.sinopsis.map((p) => <p>{p}</p>)}
+        </div>
       </div>
-      <div class="teaser-datos__ficha" data-revelar>
-        <h2 class="antetitulo">Ficha técnica</h2>
-        <dl class="ficha ficha--franja">
+      <div class="sinopsis__ficha" data-revelar style="--i:1">
+        <h2 class="etiqueta sala-antetitulo">Ficha técnica</h2>
+        <dl class="ficha-v3">
           {teaser.ficha.map((f) => (
-            <div class="ficha__fila">
-              <dt class="ficha__titulo">{f.titulo}</dt>
-              <dd class="ficha__valor">
-                {f.lineas.map((l, j) => <p class:list={{ ficha__secundaria: j > 0 }}>{l}</p>)}
+            <div class="ficha-v3__fila">
+              <dt class="etiqueta ficha-v3__titulo">{f.titulo}</dt>
+              <dd class="ficha-v3__valor">
+                {f.lineas.map((l, j) => <p class:list={{ 'ficha-v3__secundaria': j > 0 }}>{l}</p>)}
               </dd>
             </div>
           ))}
@@ -70,28 +78,72 @@ const prevista = video.src ? null : etiquetaSemana(video.semana);
     </div>
   </section>
 
-  <Veta semilla={12} />
-
-  {/* 4. Fotogramas clave */}
-  <section class="contenedor seccion seccion--panel" aria-labelledby="titulo-fotogramas">
-    <div class="panel">
-      <TituloSeccion titulo="Fotogramas clave" id="titulo-fotogramas" />
-      <Carrusel planos={teaser.planos} titulo="Fotogramas clave del teaser" />
+  {/* 4. Cruzar la ventana: escena fijada al scroll (unas 3 pantallas), 2.5D con
+      capas. Sin JavaScript o con movimiento reducido: tres fotogramas en lista. */}
+  <section class="cruce" data-cruce aria-labelledby="titulo-cruce">
+    <div class="sala-pad cruce__intro">
+      <div class="sala-rejilla">
+        <div class="sala-titulo cruce__titulo">
+          <span class="etiqueta sala-antetitulo">{cruce.antetitulo}</span>
+          <h2 id="titulo-cruce" class="sala-h2">{cruce.titulo}</h2>
+        </div>
+        <p class="cruce__texto">{cruce.texto}</p>
+      </div>
     </div>
+
+    <div class="cruce__recorrido" data-cruce-recorrido>
+      <div class="cruce__fija sala-pad" data-cruce-fija>
+        <EscenaVentana clase="cruce__escena pieza" contador="01 / 03" />
+        <ol class="cruce__pasos">
+          {cruce.pasos.map((p, i) => (
+            <li>
+              <button class="cruce__paso" type="button" data-cruce-paso={p.p} aria-current={i === 0 ? 'step' : undefined}>
+                <span class="etiqueta cruce__paso-titulo">{p.numero} · {p.titulo}</span>
+                <span class="cruce__paso-texto">{p.texto}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <div class="cruce__regla" aria-hidden="true"><span class="cruce__avance"></span></div>
+      </div>
+    </div>
+
+    <ol class="cruce__lista sala-pad">
+      {cruce.pasos.map((p) => (
+        <li>
+          <figure class="cruce__fotograma">
+            <EscenaVentana clase="pieza" p={p.p} />
+            <figcaption class="cartela cartela--ancha">
+              <span class="cartela__filete" aria-hidden="true"></span>
+              <span class="cartela__titulo">{p.numero} · {p.titulo}</span>
+              <span class="cartela__texto">{p.texto}</span>
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ol>
   </section>
 
-  <Veta semilla={19} />
+  <div class="sala-pad sala-franja sala-veta"><Veta semilla={12} /></div>
 
-  {/* 5. La rima */}
-  <section class="contenedor seccion seccion--panel" aria-labelledby="titulo-rima">
-    <div class="panel rima-v2" data-revelar>
-      <div class="rima-v2__texto">
-        <TituloSeccion antetitulo={`Planos ${rima.antes.plano} y ${rima.despues.plano}`} titulo={rima.titulo} id="titulo-rima" />
-        <p>{rima.texto}</p>
-        <p class="rima-v2__ayuda">Arrastra la línea, o usa las flechas del teclado, para pasar de un plano al otro.</p>
+  {/* 5. Fotogramas clave: fotograma grande, contador y tira de 12 */}
+  <section class="fotogramas sala-pad sala-franja" aria-labelledby="titulo-fotogramas">
+    <Carrusel planos={teaser.planos} titulo="Fotogramas clave del teaser" encabezado="Fotogramas clave" idTitulo="titulo-fotogramas" />
+  </section>
+
+  {/* 6. La rima: los dos planos de los ojos, en un comparador a casi todo el ancho */}
+  <section class="rima sala-pad sala-franja" aria-labelledby="titulo-rima">
+    <div class="sala-rejilla rima__intro" data-revelar>
+      <div class="sala-titulo rima__titulo">
+        <span class="etiqueta sala-antetitulo">Planos {rima.antes.plano} y {rima.despues.plano}</span>
+        <h2 id="titulo-rima" class="sala-h2">{rima.titulo}</h2>
       </div>
+      <p class="rima__texto">{rima.texto}</p>
+    </div>
+    <div class="pieza rima__pieza">
       <AntesDespues antes={rima.antes.imagen} despues={rima.despues.imagen} titulo={rima.titulo} ratio="2.35 / 1" etiquetaAntes={rima.antes.etiqueta} etiquetaDespues={rima.despues.etiqueta} />
     </div>
+    <p class="rima__ayuda">Arrastra la línea, o usa las flechas del teclado, para pasar de un plano al otro.</p>
   </section>
 
   <Siguiente actual="teaser" />

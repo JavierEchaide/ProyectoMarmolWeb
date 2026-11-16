@@ -1,23 +1,41 @@
 ---
-// Carrusel de planos del Teaser: un fotograma grande y, debajo, una tira de
-// miniaturas. Al pulsar una miniatura cambia el grande con un fundido suave.
-// Nada rota solo. Flechas ← → con el foco dentro del carrusel, deslizar con
-// el dedo y clic en el grande para ampliarlo en el visor. js/teaser.js.
+// Carrusel de planos del Teaser (V3): título y contador grande ("03 / 12"),
+// un fotograma grande 2.35:1 con su cartela y, debajo, una tira de
+// miniaturas. Nada rota solo. Flechas ← → con el foco dentro del carrusel,
+// botones anterior / siguiente, deslizar con el dedo y clic en el grande para
+// ampliarlo en el visor. js/teaser.js. Estilos: css/sala-teaser.css.
 // Sin JavaScript se ven todos los planos, uno debajo de otro.
-// Props: planos [{ plano, estado, pie, imagen }], titulo (nombre accesible)
+// Props: planos [{ plano, estado, pie, imagen }], titulo (nombre accesible),
+// encabezado (texto del <h2>), idTitulo.
 import Imagen from './Imagen.astro';
-const { planos, titulo = 'Fotogramas' } = Astro.props;
+const { planos, titulo = 'Fotogramas', encabezado = '', idTitulo = 'titulo-fotogramas' } = Astro.props;
+const dos = (n) => String(n).padStart(2, '0');
 ---
 <div class="carrusel" data-carrusel role="group" aria-roledescription="carrusel" aria-label={titulo}>
+  <div class="carrusel__cabecera">
+    {encabezado && <h2 id={idTitulo} class="sala-h2">{encabezado}</h2>}
+    <div class="carrusel__mando">
+      <button class="carrusel__flecha" type="button" aria-label="Plano anterior" data-carrusel-anterior>
+        <svg width="40" height="12" viewBox="0 0 40 12" aria-hidden="true"><path d="M40 6H2M8 1L2 6l6 5" fill="none" stroke="currentColor" /></svg>
+      </button>
+      <span class="carrusel__contador" aria-hidden="true" data-carrusel-contador>{dos(1)} / {dos(planos.length)}</span>
+      <button class="carrusel__flecha" type="button" aria-label="Plano siguiente" data-carrusel-siguiente>
+        <svg width="40" height="12" viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h38M32 1l6 5-6 5" fill="none" stroke="currentColor" /></svg>
+      </button>
+    </div>
+  </div>
   <ol class="carrusel__escena" data-carrusel-escena>
     {planos.map((f, i) => (
       <li class:list={['carrusel__plano', { 'carrusel__plano--actual': i === 0 }]} data-carrusel-plano>
         <figure>
-          <Imagen imagen={f.imagen} ratio="2.35 / 1" ver grupo="teaser" pie={`Plano ${f.plano}. ${f.pie}`} carga={i < 2 ? 'eager' : 'lazy'} />
-          <figcaption class="fotograma__pie carrusel__pie">
-            <span class="fotograma__numero">Plano {f.plano} <span class="carrusel__cuenta">· {i + 1} de {planos.length}</span></span>
-            <span class="carrusel__texto">{f.pie}</span>
-            <span class:list={['estado', 'carrusel__estado', `carrusel__estado--${f.estado.replace(/\s+/g, '-')}`]}>{f.estado}</span>
+          <div class="pieza">
+            <Imagen imagen={f.imagen} ratio="2.35 / 1" ver grupo="teaser" pie={`Plano ${f.plano}. ${f.pie}`} carga={i < 2 ? 'eager' : 'lazy'} />
+          </div>
+          <figcaption class="cartela cartela--ancha carrusel__cartela">
+            <span class="cartela__filete" aria-hidden="true"></span>
+            <span class="cartela__titulo">Plano {f.plano} <span class="carrusel__cuenta">· {i + 1} de {planos.length}</span></span>
+            <span class="cartela__texto">{f.pie}</span>
+            <span class="etiqueta carrusel__estado-v3">Estado: {f.estado}</span>
           </figcaption>
         </figure>
       </li>
