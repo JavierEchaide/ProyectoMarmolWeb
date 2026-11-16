@@ -1,21 +1,35 @@
 ---
+// III · Historia (V3): se lee como un libro bien maquetado.
+// Cabecera de Rosso Levanto a sangre con la ventana, título en una franja
+// lisa de piedra, sumario fijo, premisa a doble página, seis capítulos con la
+// veta como lomo en el margen izquierdo y el final en sala oscura.
+// Estilos: css/sala-historia.css · Comportamiento: js/historia.js
 import Base from '../layouts/Base.astro';
 import Imagen from '../components/Imagen.astro';
-import Tarjeta from '../components/Tarjeta.astro';
+import Cartela from '../components/Cartela.astro';
 import Grieta from '../components/Grieta.astro';
 import Spoiler from '../components/Spoiler.astro';
-import TituloSeccion from '../components/TituloSeccion.astro';
-import { pagina } from '../data/sitio.js';
 import Siguiente from '../components/Siguiente.astro';
 import { historia } from '../data/historia.js';
 
 const { premisa, partes, final } = historia;
 const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
+const ancla = (p) => `parte-${p.numero.toLowerCase()}`;
+// Folios (números de página) de cada capítulo, como en un libro
+const folio = (i) => 4 + i * 3;
+const folioFinal = folio(partes.length) + 1;
+const fase = (i) => (i < 2 ? 'pura' : i < 4 ? 'rota' : 'oro');
+
+const sumario = [
+  { n: 'P', t: 'Premisa', href: '#premisa', tapado: false, nombre: '' },
+  ...partes.map((p) => ({ n: p.numero, t: 'Parte', href: `#${ancla(p)}`, tapado: p.spoiler, nombre: ` ${p.numero}` })),
+  { n: 'F', t: 'Final', href: '#final', tapado: true, nombre: '' },
+];
 ---
-<Base id="historia" descripcion="Resumen de la historia de Serie Mármol, con los spoilers tapados." scripts={['js/historia.js']}>
-  {/* Cabecera de mármol: al pulsarla (clic, toque o teclado) se abre una
-      grieta-ventana a otro mundo; al pulsar otra vez, se cierra (js/historia.js) */}
-  <header class="ventana" data-ventana>
+<Base id="historia" descripcion="Resumen de la historia de Serie Mármol, con los spoilers tapados." estilos={['css/sala-historia.css']} scripts={['js/historia.js']}>
+  {/* Cabecera: Rosso Levanto real a sangre. Al pulsar el mármol (clic, toque
+      o teclado) se abre una ventana a otro mundo; otra vez, se cierra. */}
+  <header class="ventana hist-marmol" data-ventana>
     <button class="ventana__boton" type="button" aria-pressed="false" aria-label="Abrir en el mármol una ventana a otro mundo" data-ventana-boton></button>
     <div class="ventana__mundo" data-ventana-mundo aria-hidden="true">
       {historia.ventana.src ? (
@@ -25,95 +39,151 @@ const tapadas = partes.filter((p) => p.spoiler).map((p) => p.numero);
       )}
     </div>
     <svg class="ventana__borde" data-ventana-borde aria-hidden="true" focusable="false"><path /></svg>
-    <div class="contenedor ventana__pie">
-      <div class="ventana__cartela">
-        <TituloSeccion titulo="Historia" nivel={1} numero={pagina('historia').numero} />
-        <p class="ventana__lema">Las criaturas no nacen: se tallan.</p>
-        <p class="ventana__pista">
-          <span class="ventana__pista--raton">Pulsa el mármol: detrás hay otros mundos.</span>
-          <span class="ventana__pista--tactil">Toca el mármol: detrás hay otros mundos.</span>
-        </p>
-      </div>
-    </div>
   </header>
 
-  {/* Nivel 1 · Premisa: bloque corto con la imagen clave. Premisa, influencias
-      e idea del kintsugi van separadas. */}
-  <section class="contenedor premisa" aria-labelledby="titulo-premisa">
-    <div class="premisa__texto texto-largo" data-revelar>
-      <h2 id="titulo-premisa" class="antetitulo">{premisa.titulo}</h2>
-      {premisa.parrafos.map((p, i) => <p class:list={{ premisa__entrada: i === 0 }}>{p}</p>)}
-      <p class="premisa__terminologia">{premisa.terminologia}</p>
+  {/* Franja lisa de piedra en la base del mármol: el título nunca va sobre las vetas */}
+  <div class="hist-canto">
+    <div class="hist-canto__titulo">
+      <p class="etiqueta hist-canto__sala">Sala III de IV</p>
+      <h1 class="monumental hist-canto__nombre">Historia</h1>
     </div>
-    <div class="premisa__imagen" data-revelar>
-      <Imagen imagen={premisa.imagen} ratio="4 / 5" ver pie={premisa.imagen.alt} />
+    <div class="hist-canto__lema">
+      <p class="hist-canto__frase">Las criaturas no nacen: se tallan.</p>
+      <p class="hist-canto__pista">
+        <span class="ventana__pista--raton">Pulsa el mármol: detrás hay otros mundos.</span>
+        <span class="ventana__pista--tactil">Toca el mármol: detrás hay otros mundos.</span>
+      </p>
     </div>
-    <div class="premisa__apartes" data-revelar>
-      <div class="premisa__aparte">
-        <h3 class="antetitulo">{premisa.influencias.titulo}</h3>
-        {premisa.influencias.texto ? (
-          <p>{premisa.influencias.texto}</p>
-        ) : (
-          <p class="hueco-texto"><span class="hueco-texto__insignia">Placeholder</span>{premisa.influencias.placeholder}</p>
-        )}
-      </div>
-      <div class="premisa__aparte premisa__aparte--kintsugi">
-        <h3 class="antetitulo">{premisa.kintsugi.titulo}</h3>
-        <p>{premisa.kintsugi.texto}</p>
-      </div>
-    </div>
-  </section>
+  </div>
 
-  <Grieta semilla={21} />
+  <div class="hist-tomo">
+    {/* Sumario: índice de libro. Fijo bajo la cabecera en escritorio; el
+        capítulo actual va en rojo y los tapados con un rombo negro. */}
+    <nav class="hist-sumario" aria-label="Sumario" data-sumario>
+      <ol class="hist-sumario__lista">
+        {sumario.map((s) => (
+          <li>
+            <a class="hist-sumario__cap" href={s.href} data-tapado={s.tapado ? '' : undefined}>
+              <span class="hist-sumario__n" aria-hidden="true">
+                <span class="hist-sumario__num">{s.n}</span>
+                <span class="hist-sumario__rombo"></span>
+              </span>
+              <span class="hist-sumario__t">{s.t}<span class="oculto">{s.nombre}</span>{s.tapado && <span class="oculto" data-tapado-texto> (spoiler tapado)</span>}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
 
-  <section class="contenedor seccion" aria-labelledby="titulo-partes">
-    <TituloSeccion titulo="Las seis partes" id="titulo-partes">
-      <div class="aviso-spoiler">
-        <p>Las partes {tapadas.join(', ').replace(/, ([^,]*)$/, ' y $1')} y el final están tapados. Pulsa un cartel para descubrirlo.</p>
-        <button class="boton boton--pequeno" type="button" data-spoiler-todos>Mostrar todos</button>
+    {/* Premisa: doble página. Texto a dos columnas con capitular roja, imagen
+        clave en vitrina y dos notas al margen. */}
+    <section id="premisa" class="hist-premisa hist-pad" aria-labelledby="titulo-premisa" data-capitulo>
+      <div class="hist-premisa__pagina">
+        <div class="hist-premisa__lectura" data-revelar>
+          <div class="hist-premisa__cabeza">
+            <h2 id="titulo-premisa" class="etiqueta hist-premisa__titulo">{premisa.titulo}</h2>
+            <span class="hist-folio">p. 1</span>
+          </div>
+          <div class="hist-premisa__texto texto-largo">
+            {premisa.parrafos.map((p, i) => <p class:list={{ 'hist-capitular': i === 0 }}>{p}</p>)}
+            <p class="hist-premisa__terminologia">{premisa.terminologia}</p>
+          </div>
+        </div>
+        <figure class="hist-premisa__figura" data-revelar style="--i:1">
+          <Imagen imagen={premisa.imagen} ratio="4 / 5" ver pie={premisa.imagen.alt} clase="pieza" />
+          <Cartela etiqueta="figcaption" numero="Fig. 1" titulo="Imagen clave" texto={premisa.imagen.alt} />
+        </figure>
       </div>
-    </TituloSeccion>
+      <div class="hist-premisa__notas">
+        <aside class="hist-nota" data-revelar aria-labelledby="nota-influencias">
+          <h3 id="nota-influencias" class="etiqueta">{premisa.influencias.titulo}</h3>
+          {premisa.influencias.texto ? (
+            <p class="hist-nota__texto">{premisa.influencias.texto}</p>
+          ) : (
+            <p class="hist-nota__texto"><span class="hist-nota__insignia">Placeholder</span> {premisa.influencias.placeholder}</p>
+          )}
+        </aside>
+        <aside class="hist-nota hist-nota--oro" data-revelar style="--i:1" aria-labelledby="nota-kintsugi">
+          <h3 id="nota-kintsugi" class="etiqueta">{premisa.kintsugi.titulo}</h3>
+          <p class="hist-nota__cita">{premisa.kintsugi.texto}</p>
+        </aside>
+      </div>
+    </section>
 
-    {/* El arco de la serie, sin texto: las partes cuelgan a ambos lados de una
-        veta que con el scroll pasa de intacta (I-II) a grieta oscura (III-IV)
-        y a grieta rellena de oro (V-VI). js/historia.js */}
-    <div class="arco" data-arco>
-      <svg class="arco__veta" data-arco-veta aria-hidden="true" focusable="false"></svg>
-    <ol class="partes partes--arco">
-      {partes.map((p, i) => (
-        <Tarjeta etiqueta="li" clase={`parte parte--${i < 2 ? 'pura' : i < 4 ? 'rota' : 'oro'}`}>
-          <span class="parte__nodo" aria-hidden="true"><span>{p.numero}</span></span>
-          <p class="parte__numero"><span class="parte__numero-etiqueta">Parte</span> <span class="parte__numero-cifra">{p.numero}</span></p>
-          <Spoiler activo={p.spoiler} semilla={40 + i} descripcion={`la parte ${p.numero}`}>
-            <Imagen imagen={p.imagen} ratio="4 / 3" ver={!p.spoiler} grupo="partes" pie={`Parte ${p.numero}. ${p.titulo}`} />
-            <h3 class="parte__titulo">{p.titulo}</h3>
-            <p class="parte__resumen">{p.resumen}{historia.resumenBorrador && <span class="borrador">Borrador</span>}</p>
-            <button class="parte__mas" type="button" aria-expanded="false" aria-controls={`parte-${p.numero}-completa`} data-leer-mas>
-              <span data-leer-mas-texto>Leer más</span><span class="oculto">: parte {p.numero}, {p.titulo}</span>
-              <span class="bloque__chevron" aria-hidden="true"></span>
-            </button>
-            <div class="parte__completa" id={`parte-${p.numero}-completa`} data-leer-mas-cuerpo>
-              <p class="parte__texto">{p.texto}</p>
+    <div class="hist-pad hist-grieta"><Grieta semilla={21} /></div>
+
+    {/* Las seis partes como capítulos. La veta va en el margen izquierdo como
+        lomo continuo: gris (I-II), roja y agrietada (III-IV) y de oro (V-VI),
+        con un nodo por capítulo (js/historia.js la dibuja con el scroll). */}
+    <section class="hist-partes" aria-labelledby="titulo-partes">
+      <div class="hist-partes__cabeza hist-pad">
+        <div>
+          <p class="etiqueta hist-partes__ante">Seis capítulos</p>
+          <h2 id="titulo-partes" class="hist-partes__titulo">Las seis partes</h2>
+        </div>
+        <div class="hist-partes__aviso">
+          <p>Las partes {tapadas.join(', ').replace(/, ([^,]*)$/, ' y $1')} y el final están tapados.</p>
+          <button class="hist-linea" type="button" data-spoiler-todos>Mostrar todos</button>
+        </div>
+      </div>
+
+      <div class="hist-libro" data-lomo>
+        <svg class="hist-lomo" data-lomo-veta aria-hidden="true" focusable="false"></svg>
+        <ol class="hist-libro__lista">
+          {partes.map((p, i) => (
+            <li class:list={['hist-capitulo', `hist-capitulo--${fase(i)}`, { 'hist-capitulo--par': i % 2 === 1 }]} id={ancla(p)} data-capitulo>
+              <div class="hist-capitulo__margen">
+                <span class="hist-capitulo__nodo" data-lomo-nodo aria-hidden="true"></span>
+                <span class="numeral-hueco hist-capitulo__numeral" aria-hidden="true">{p.numero}</span>
+                <p class="etiqueta hist-capitulo__parte">Parte {p.numero}</p>
+              </div>
+              <div class="hist-capitulo__cuerpo">
+                <Spoiler activo={p.spoiler} semilla={40 + i} descripcion={`la parte ${p.numero}`} ayuda={`Pulsa para descubrir la parte ${p.numero}`}>
+                  <div class="hist-fila">
+                    <div class="hist-fila__imagen">
+                      <Imagen imagen={p.imagen} ratio="3 / 2" ver={!p.spoiler} grupo="partes" pie={`Parte ${p.numero}. ${p.titulo}`} clase="pieza" />
+                    </div>
+                    <div class="hist-fila__texto">
+                      <h3 class="hist-fila__titulo">{p.titulo}</h3>
+                      <span class="hist-fila__filete" aria-hidden="true"></span>
+                      <p class="hist-fila__resumen">{p.resumen}{historia.resumenBorrador && <span class="borrador">Borrador</span>}</p>
+                      <div class="hist-fila__completa" id={`parte-${p.numero}-completa`} data-leer-mas-cuerpo>
+                        <p>{p.texto}</p>
+                      </div>
+                      <div class="hist-fila__pie">
+                        <button class="hist-linea" type="button" aria-expanded="false" aria-controls={`parte-${p.numero}-completa`} data-leer-mas>
+                          <span data-leer-mas-texto>Leer más</span><span class="oculto">: parte {p.numero}, {p.titulo}</span>
+                        </button>
+                        <span class="hist-folio">p. {folio(i)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Spoiler>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    {/* El final: sala oscura. Destapado, la cita en grande entre dos costuras de oro. */}
+    <section id="final" class="hist-final sala-oscura hist-pad" aria-labelledby="titulo-final" data-capitulo>
+      <div class="hist-final__columna">
+        <p class="etiqueta hist-final__ante">Final · p. {folioFinal}</p>
+        <h2 id="titulo-final" class="hist-final__titulo">{final.titulo}</h2>
+        <Spoiler semilla={77} descripcion="el final" ayuda="Pulsa para descubrir el final">
+          <div class="hist-final__cuerpo">
+            <svg class="hist-costura" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 20 L100 18 L200 22 L300 17 L400 21 L500 19 L600 23 L700 18 L800 22 L900 19 L1000 20" /></svg>
+            <blockquote class="hist-final__cita"><p>{final.cita}</p></blockquote>
+            <svg class="hist-costura" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 20 L100 22 L200 18 L300 23 L400 19 L500 21 L600 17 L700 22 L800 18 L900 21 L1000 20" /></svg>
+            <div class="hist-final__texto">
+              {final.parrafos.map((p) => <p>{p}</p>)}
             </div>
-          </Spoiler>
-        </Tarjeta>
-      ))}
-    </ol>
-    </div>
-  </section>
-
-  <Grieta semilla={63} />
-
-  {/* Nivel 3 · El final: sección aparte, tapada, con la cita como remate */}
-  <section class="contenedor seccion final" aria-labelledby="titulo-final">
-    <TituloSeccion antetitulo="Spoiler" titulo={final.titulo} id="titulo-final" />
-    <Spoiler semilla={77} texto="Spoiler · El final" descripcion="el final">
-      <div class="final__cuerpo">
-        {final.parrafos.map((p) => <p>{p}</p>)}
-        <blockquote class="final__cita"><p>{final.cita}</p></blockquote>
+          </div>
+        </Spoiler>
       </div>
-    </Spoiler>
-  </section>
+    </section>
+  </div>
 
   <Siguiente actual="historia" />
 </Base>
