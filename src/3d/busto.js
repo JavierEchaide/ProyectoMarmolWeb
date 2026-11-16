@@ -354,6 +354,8 @@ function iniciar(seccion) {
   let brilloOro = [oro];
   let brilloHueso = [bronce];
   let huesoGira = true;
+  // La calavera real (si hay .glb) crece al abrirse: { obj, escala, y }
+  let calavera = null;
 
   // Modelo real, si existe: sustituye a las esferas pieza a pieza.
   // Materiales que reconoce por nombre: "oro" (costura) y "calavera" (vetas
@@ -368,6 +370,23 @@ function iniciar(seccion) {
         Object.keys(piezas).forEach((nombre) => {
           const obj = gltf.scene.getObjectByName(nombre);
           if (!obj) return;
+          if (nombre === 'hueso') {
+            // La calavera del .glb venía boca abajo y tumbada (su arriba era
+            // -Z y su cara -Y). Se gira 180° sobre el eje (0, 1, -1) para que
+            // quede de pie y con la cara hacia +Z, como la cabeza, y se
+            // recoloca dentro del hueco (ajustado contra el hueco real del
+            // mármol: cerrada cabe con más de 1 cm de holgura; las cuencas quedan a la
+            // altura de la grieta, que pasa por los ojos). Al abrirse crece
+            // (ver pintar) porque ya no está dentro del mármol.
+            obj.quaternion.setFromAxisAngle(new Vector3(0, 1, -1).normalize(), Math.PI);
+            obj.position.x += 0.01;
+            obj.position.y += 0.06;
+            obj.position.z -= 0.02;
+            // Cerrada ocupa casi todo el hueco (×1,14); al abrirse crece un
+            // 30 % para que se luzca (ver pintar()).
+            obj.scale.multiplyScalar(1.14);
+            calavera = { obj, escala: obj.scale.x, y: obj.position.y };
+          }
           piezas[nombre].clear();
           piezas[nombre].add(obj);
           cambiadas.push(nombre);
@@ -451,6 +470,11 @@ function iniciar(seccion) {
     abajo.rotation.set(0.16 * abierto, 0, -0.12 * abierto);
     hueso.position.y = Math.sin(t * 0.9 + 0.8) * 0.015 * flota;
     hueso.rotation.y = huesoGira ? t * 0.15 * flota + abierto * 0.6 : 0;
+    if (calavera) {
+      // Al salir se agranda un 30 % y sube un poco para no hundirse en el borde
+      calavera.obj.scale.setScalar(calavera.escala * (1 + 0.3 * abierto));
+      calavera.obj.position.y = calavera.y + 0.12 * abierto;
+    }
     brilloHueso.forEach((m) => { m.emissiveIntensity = 0.2 + abierto * 1.6; });
     brilloOro.forEach((m) => { m.emissiveIntensity = 0.4 + abierto * 0.8; });
 
