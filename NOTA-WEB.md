@@ -744,6 +744,7 @@ Está en la rama `claude/v3-web` (PR en borrador a `main`, sin fusionar). Se hiz
 - **Aparición "sale de la piedra"**: `[data-revelar]` sube 14 px y pasa de desenfocado a nítido. `site.js` (bloque 3) reparte un retraso escalonado (`--i`) entre las piezas que entran a la vez. **No poner `data-revelar` en un contenedor con hijos `position: sticky`**: el filtro rompe el sticky mientras dura.
 - **Cortina con el material de destino**: `site.js` (bloque 2) pone `data-destino` en la cortina al salir (lo lee de `data-sala-destino` de los enlaces del menú); al llegar, la placa lleva el material de la propia sala (`--cortina-material`). El nombre va en una placa lisa, nunca sobre las vetas.
 - **Hojas por sala**: `Base.astro` acepta `estilos={[...]}`. Cada sala tiene la suya (`public/css/sala-portada.css`, `sala-teaser.css`, `sala-historia.css`, `sala-proceso.css`), enlazada solo en su página. El CSS de la V2 de cada sala sigue en `site.css` (apartados 10 a 13 y 19 a 21): lo que ya no se usa es código muerto pendiente de limpiar.
+- Teaser: `--sala-hueco` es `#E3DDCF` (con `#DDD6C6` el texto de los placeholders daba 4,26:1, por debajo de AA).
 - **Placeholders sin rayas también en comparadores y miniaturas**: la capa "antes" del comparador va un punto más oscura (`color-mix`) para que se distingan las mitades.
 
 ### 16.2 I · Portada — `index.astro`, `data/portada.js`, `js/portada.js`, `css/sala-portada.css`
@@ -788,7 +789,9 @@ Está en la rama `claude/v3-web` (PR en borrador a `main`, sin fusionar). Se hiz
 
 - Nuevas: `pruebas/v3-portada.cjs`, `v3-teaser.cjs`, `v3-historia.cjs` y `v3-proceso.cjs` (escenas fijadas, estelas, busto con respaldo, contraluz, 12 planos, sumario, lomo, SPOILER, regla, método, calendario, filtros, sin JS, movimiento reducido y desbordes a 320-1440). `todas.sh` las incluye.
 - Actualizadas: `v2.cjs` (crédito de la música en el pie y disco en la cabecera, 12 planos, Proceso nuevo), `interacciones.cjs`, `bloques.cjs` (el calendario ahora son nodos con panel), `cartas-hover.cjs` (hover estable de las estelas) y `usb.cjs` (hero nuevo y navegación también por la puerta).
-- La prueba de la estela que se inclina espera a que llegue a inclinarse: sin GPU el `requestAnimationFrame` va lento.
+- La prueba de la estela que se inclina espera a que llegue a inclinarse: sin GPU el `requestAnimationFrame` va lento. `cartas-hover` espera a que acabe la intro (la tapaba y daba 12/16).
+- Resultado final (17/11/2026): todas en verde, axe sin errores en las cuatro salas (1440 y 390), `file://` sin peticiones fallidas ni errores, busto 3 min. `cortina-movil` falló una vez por tiempo de captura con la máquina cargada y pasó al repetirla sola.
+- Capturas de referencia de la V3 en `docs/v3/capturas/` (no van a `dist/`).
 
 ### 16.7 Cómo se hizo (para la próxima vez)
 

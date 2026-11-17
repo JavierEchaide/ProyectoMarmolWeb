@@ -5002,7 +5002,7 @@ a.semana__numero {
   --sala-linea: #a39886;
   --sala-veta: #a39886;
   --sala-luz: #f1ecdf;
-  --sala-hueco: #ddd6c6;
+  --sala-hueco: #e3ddcf; /* 4,6:1 con --tinta-2 (AA) */
   --sala-material: var(--mat-travertino);
 }
 [data-sala='historia'] {

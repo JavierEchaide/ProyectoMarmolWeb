@@ -10,7 +10,9 @@ const { chromium } = require('playwright');
   const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
   const err = []; p.on('pageerror', e => err.push(e.message));
   await p.goto(BASE + '/index.html');
-  await p.waitForTimeout(500);
+  // espera a que termine la intro (2,9 s): mientras está puesta tapa las estelas
+  await p.waitForFunction(() => !document.documentElement.classList.contains('intro-activa'), null, { timeout: 6000 }).catch(() => {});
+  await p.waitForTimeout(300);
   await p.evaluate(() => document.querySelector('[data-estelas]').scrollIntoView({ block: 'center', behavior: 'instant' }));
   await p.waitForTimeout(1500);
   const sel = process.argv[3] || '[data-estela]';

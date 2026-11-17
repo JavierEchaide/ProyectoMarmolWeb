@@ -40,7 +40,7 @@ const numero = pagina('teaser').numero;
   {/* 2. El vídeo: franja de sala oscura a sangre, 2.35:1, veta fina en el marco.
       Nunca arranca solo: al pulsar crece a ventana grande (visor común). */}
   <section class="pantalla sala-oscura sala-pad" aria-label="Vídeo del teaser">
-    <button class="pantalla__video" type="button" data-reproductor data-video={video.src ?? undefined} data-falta={video.src ? undefined : [video.falta, prevista].filter(Boolean).join(' · ')} aria-label="Reproducir el teaser">
+    <button class="pantalla__video" type="button" data-reproductor data-video={video.src ?? undefined} data-falta={video.src ? undefined : [video.falta, prevista].filter(Boolean).join(' · ')} aria-label={video.src ? 'Reproducir el teaser' : 'Placeholder: reproducir el teaser'}>
       {video.poster && <img class="pantalla__poster" src={video.poster} alt="" />}
       {!video.src && <span class="pantalla__insignia etiqueta">Placeholder</span>}
       <span class="pantalla__play" aria-hidden="true">
