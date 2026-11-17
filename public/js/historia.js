@@ -6,7 +6,8 @@
      2. se abre: las esquirlas se separan y la luz dorada asoma por las juntas,
      3. las esquirlas caen y giran en 3D mientras el bloque crece hasta la
         altura real del contenido.
-   "Mostrar todos" destapa todas. No hay forma de volver a taparlas: al
+   La losa tapa imagen y texto juntos (V3); el numeral del capítulo queda a la
+   vista. "Mostrar todos" destapa todas. No hay forma de volver a taparlas: al
    recargar la página vuelven a estar tapadas (no se guarda nada).
    Necesita js/grietas.js. */
 (function () {
@@ -118,6 +119,14 @@
     var antes = contenido.offsetHeight;
     s.dataset.spoiler = 'destapado';
     contenido.inert = false;
+    // En el sumario, el rombo negro del capítulo pasa a ser su numeral
+    var capitulo = s.closest('[data-capitulo]');
+    var enlace = capitulo && document.querySelector('[data-sumario] a[href="#' + capitulo.id + '"]');
+    if (enlace) {
+      enlace.removeAttribute('data-tapado');
+      var aviso = enlace.querySelector('[data-tapado-texto]');
+      if (aviso) aviso.remove();
+    }
     var despues = contenido.offsetHeight;
     if (!movimientoReducido && contenido.animate && despues !== antes) {
       contenido.style.overflow = 'hidden';
@@ -281,24 +290,26 @@
   pedir();
 })();
 
-/* El arco de las seis partes: una veta vertical que une las partes y cuenta
-   la historia sin texto. Entre I y II es una veta fina (el mármol intacto);
-   entre III y IV, una grieta oscura con ramas (la corrupción); entre V y VI,
-   la misma grieta rellena de oro (la sanación, kintsugi). Se dibuja según se
-   baja y vuelve atrás si se sube. Se rehace si cambia el alto (spoilers). */
+/* El lomo de las seis partes: la veta baja por el margen izquierdo, como el
+   lomo de un libro, y cuenta la historia sin texto. Entre I y II es una veta
+   gris fina (el mármol intacto); entre III y IV, roja y con ramas (la
+   corrupción); entre V y VI, de oro (la sanación, kintsugi). Pasa por el nodo
+   de cada capítulo. Se dibuja según se baja y vuelve atrás si se sube. Se
+   rehace si cambia el alto (spoilers, "Leer más"). */
 (function () {
   'use strict';
 
   var G = window.marmolGrietas;
-  var arco = document.querySelector('[data-arco]');
-  if (!G || !arco) return;
-  var svg = arco.querySelector('[data-arco-veta]');
-  var partes = Array.prototype.slice.call(arco.querySelectorAll('.parte'));
-  if (partes.length < 6) return;
+  var libro = document.querySelector('[data-lomo]');
+  if (!G || !libro) return;
+  var svg = libro.querySelector('[data-lomo-veta]');
+  var nodos = Array.prototype.slice.call(libro.querySelectorAll('[data-lomo-nodo]'));
+  if (!svg || nodos.length < 6) return;
   var NS = 'http://www.w3.org/2000/svg';
   var movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var tramos = [];
   var medida = '';
+  var pendiente = false;
 
   function camino(azar, x, y0, y1, amplitud) {
     var puntos = [[x, y0]];
@@ -322,39 +333,52 @@
     return puntos;
   }
 
-  function nodo(svgPadre, clase, d, rama) {
+  function trazo(clase, d, esRama) {
     var el = document.createElementNS(NS, 'path');
     el.setAttribute('d', d);
     el.setAttribute('pathLength', '1');
-    el.setAttribute('class', clase + (rama ? ' arco__rama' : ''));
-    svgPadre.appendChild(el);
+    el.setAttribute('class', clase + (esRama ? ' hist-lomo__rama' : ''));
+    svg.appendChild(el);
     return el;
   }
 
+  // Centro de cada nodo dentro del libro (sin contar transformaciones)
+  function centro(n) {
+    var x = n.offsetWidth / 2;
+    var y = n.offsetHeight / 2;
+    var el = n;
+    while (el && el !== libro) {
+      x += el.offsetLeft;
+      y += el.offsetTop;
+      el = el.offsetParent;
+    }
+    return [x, y];
+  }
+
   function construir() {
-    var w = arco.clientWidth;
-    var h = arco.clientHeight;
-    var clave = w + 'x' + h + ':' + partes.map(function (p) { return p.offsetTop; }).join(',');
+    var w = libro.clientWidth;
+    var h = libro.clientHeight;
+    var centros = nodos.map(centro);
+    var clave = w + 'x' + h + ':' + centros.map(function (c) { return Math.round(c[1]); }).join(',');
     if (clave === medida || !w || !h) return;
     medida = clave;
     svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
     svg.innerHTML = '';
     tramos = [];
-    // --veta-x en CSS: 50% en escritorio (centro), 15px en móvil (izquierda)
-    var vx = getComputedStyle(arco).getPropertyValue('--veta-x').trim();
-    var x = /%$/.test(vx) ? (w * parseFloat(vx)) / 100 : parseFloat(vx) || w / 2;
-    var nodoY = function (i) { return partes[i].offsetTop + 44; };
-    var cortes = [0, nodoY(2), nodoY(4), h];
+    var x = centros[0][0];
+    var estrecho = x < 60; // móvil: el lomo va pegado al borde, ramas cortas
+    var cortes = [0, centros[2][1], centros[4][1], h];
     var azar = G.aleatorio(17);
-    var clases = ['arco__pura', 'arco__rota', 'arco__oro'];
+    var clases = ['hist-lomo__pura', 'hist-lomo__rota', 'hist-lomo__oro'];
     for (var t = 0; t < 3; t++) {
-      var puntos = camino(azar, x, cortes[t], cortes[t + 1], t === 0 ? 3 : 9);
-      var piezas = [nodo(svg, clases[t], G.trazado(puntos), false)];
+      var puntos = camino(azar, x, cortes[t], cortes[t + 1], t === 0 ? 3 : estrecho ? 5 : 9);
+      var piezas = [trazo(clases[t], G.trazado(puntos), false)];
       if (t > 0) {
         // la corrupción echa ramas; el oro las rellena
         for (var r = 0; r < 4; r++) {
           var origen = puntos[1 + Math.floor(azar() * (puntos.length - 2))];
-          piezas.push(nodo(svg, clases[t], G.trazado(rama(azar, origen, azar() < 0.5 ? -1 : 1, 50 + azar() * 60)), true));
+          var largo = estrecho ? 14 + azar() * 10 : 36 + azar() * 40;
+          piezas.push(trazo(clases[t], G.trazado(rama(azar, origen, azar() < 0.5 ? -1 : 1, largo)), true));
         }
       }
       tramos.push({ desde: cortes[t], hasta: cortes[t + 1], piezas: piezas });
@@ -364,20 +388,18 @@
 
   function pintar() {
     pendiente = false;
-    var r = arco.getBoundingClientRect();
-    var linea = window.innerHeight * 0.7 - r.top; // dónde va la lectura dentro del arco
-    tramos.forEach(function (t, i) {
+    var r = libro.getBoundingClientRect();
+    var linea = window.innerHeight * 0.7 - r.top; // por dónde va la lectura dentro del libro
+    tramos.forEach(function (t) {
       var p = movimientoReducido ? 1 : Math.max(0, Math.min(1, (linea - t.desde) / (t.hasta - t.desde)));
       t.piezas.forEach(function (el, k) {
         // las ramas salen cuando la veta principal ya ha pasado la mitad
         var local = k === 0 ? p : Math.max(0, Math.min(1, (p - 0.3) / 0.5));
         el.style.strokeDashoffset = (1 - local).toFixed(3);
       });
-      arco.classList.toggle('arco--fase-' + (i + 1), p > 0.02);
     });
   }
 
-  var pendiente = false;
   function pedir() {
     if (!pendiente) {
       pendiente = true;
@@ -387,12 +409,46 @@
 
   construir();
   window.addEventListener('scroll', pedir, { passive: true });
-  if ('ResizeObserver' in window) new ResizeObserver(construir).observe(arco);
+  if ('ResizeObserver' in window) new ResizeObserver(construir).observe(libro);
   window.addEventListener('resize', construir);
 })();
 
+/* Sumario: marca en rojo el capítulo por el que va la lectura (scrollspy). */
+(function () {
+  'use strict';
+
+  var sumario = document.querySelector('[data-sumario]');
+  if (!sumario) return;
+  var enlaces = Array.prototype.slice.call(sumario.querySelectorAll('a[href^="#"]'));
+  var secciones = enlaces.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  var pendiente = false;
+
+  function marcar() {
+    pendiente = false;
+    var linea = window.innerHeight * 0.45;
+    var actual = 0;
+    secciones.forEach(function (s, i) {
+      if (s && s.getBoundingClientRect().top <= linea) actual = i;
+    });
+    enlaces.forEach(function (a, i) {
+      if (i === actual) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+  }
+  function pedir() {
+    if (!pendiente) {
+      pendiente = true;
+      requestAnimationFrame(marcar);
+    }
+  }
+
+  marcar();
+  window.addEventListener('scroll', pedir, { passive: true });
+  window.addEventListener('resize', pedir);
+})();
+
 /* "Leer más" de las seis partes: despliega el texto completo dentro de la
-   misma tarjeta, con la altura animada y aria-expanded (como los bloques de
+   misma página, con la altura animada y aria-expanded (como los bloques de
    Proceso). La veta se rehace sola: observa los cambios de alto. Sin
    JavaScript el texto completo se ve siempre. */
 (function () {

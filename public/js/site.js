@@ -159,10 +159,16 @@
       return;
     }
     // Texto de la cortina: el número y título de la página de destino
-    var item = menu && menu.querySelector('a[href="' + destino + '"]');
+    var item = menu && menu.querySelector('a[href="' + destino.split('#')[0] + '"]');
     if (item && cortinaTexto) {
       cortinaTexto.textContent =
         item.querySelector('.menu__numero').textContent + ' · ' + item.querySelector('.menu__titulo').textContent;
+    }
+    // La cortina toma el material de la sala de destino (site.css, apartado 23)
+    var cortinaSalida = document.querySelector('[data-cortina]');
+    if (cortinaSalida) {
+      if (item && item.dataset.salaDestino) cortinaSalida.dataset.destino = item.dataset.salaDestino;
+      else delete cortinaSalida.dataset.destino;
     }
     html.classList.add('saliendo');
     setTimeout(function () { window.location.href = destino; }, 560);
@@ -210,6 +216,8 @@
   window.addEventListener('pageshow', function (e) {
     if (e.persisted) {
       html.classList.remove('saliendo', 'entrando');
+      var c = document.querySelector('[data-cortina]');
+      if (c) delete c.dataset.destino;
       cerrarMenu(false);
     }
   });
@@ -220,8 +228,11 @@
   if ('IntersectionObserver' in window) {
     var observador = new IntersectionObserver(
       function (entradas) {
+        // Retraso escalonado: las piezas que entran a la vez salen una tras otra
+        var tanda = 0;
         entradas.forEach(function (en) {
           if (en.isIntersecting) {
+            if (!en.target.style.getPropertyValue('--i')) en.target.style.setProperty('--i', Math.min(tanda++, 5));
             en.target.classList.add('visible');
             observador.unobserve(en.target);
           }

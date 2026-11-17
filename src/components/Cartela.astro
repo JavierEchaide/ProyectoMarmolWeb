@@ -1,0 +1,16 @@
+---
+// Cartela de museo: filete corto, número en Cinzel (opcional), título y
+// descripción en cursiva. Sustituye a las tarjetas de la V2.
+// Props: numero ('Fig. 3'), titulo, texto, ancha (sin ancho máximo), etiqueta
+// (elemento: 'div' por defecto, 'figcaption' dentro de un <figure>), clase.
+// El texto también puede ir como contenido (slot).
+const { numero, titulo, texto, ancha = false, etiqueta = 'div', clase = '' } = Astro.props;
+const E = etiqueta;
+---
+<E class:list={['cartela', clase, { 'cartela--ancha': ancha }]}>
+  <span class="cartela__filete" aria-hidden="true"></span>
+  {numero && <span class="cartela__numero">{numero}</span>}
+  {titulo && <span class="cartela__titulo">{titulo}</span>}
+  {texto && <span class="cartela__texto">{texto}</span>}
+  {Astro.slots.has('default') && <span class="cartela__texto"><slot /></span>}
+</E>

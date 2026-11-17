@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Web V3 - Guía del sistema</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap">
+<style>
+body{margin:0;background:#F1F2E3}
+*{box-sizing:border-box}
+a{color:#8B2626}a:hover{color:#5f1919}
+.v3{font-family:'EB Garamond',Georgia,serif;color:#362926;font-size:20px;line-height:1.55;-webkit-font-smoothing:antialiased;background-color:#F1F2E3;background-image:url(/_blob/b23139aa8eacbaa6bd0e57aa18df145b)}
+.cz{font-family:'Cinzel',Georgia,serif}
+.etq{font-family:'Cinzel',Georgia,serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:500}
+.peq{font-size:17px;line-height:1.5;color:#6B5F58}
+.h3{font-family:'Cinzel',Georgia,serif;font-size:26px;letter-spacing:.06em;line-height:1.2;font-weight:500;margin:0}
+.h2{font-family:'Cinzel',Georgia,serif;font-size:48px;letter-spacing:.06em;line-height:1.1;font-weight:500;margin:0}
+.display{font-family:'Cinzel',Georgia,serif;font-size:152px;letter-spacing:.07em;line-height:.92;font-weight:500;margin:0}
+.grab{color:#3a2c29;text-shadow:0 2px 1px rgba(255,255,255,.85),0 -1px 0 rgba(30,20,18,.28)}
+.hueco{color:transparent;-webkit-text-stroke:1.5px rgba(54,41,38,.34)}
+.sec{padding:120px 96px 0}
+.sec-cab{display:flex;align-items:baseline;gap:28px;border-top:1px solid #A39A90;padding-top:22px;margin-bottom:56px}
+.sec-cab .num{font-family:'Cinzel';font-size:13px;letter-spacing:.24em;color:#8B2626}
+.cartela{display:flex;flex-direction:column;gap:6px;max-width:320px}
+.cartela .filete{width:36px;height:1px;background:#362926;margin-bottom:8px}
+.cartela .t{font-family:'Cinzel';font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:600}
+.cartela .d{font-style:italic;font-size:17px;color:#6B5F58;line-height:1.45}
+.vitrina{position:relative;box-shadow:0 30px 40px -28px rgba(54,41,38,.45),0 2px 0 rgba(54,41,38,.06)}
+.ph{position:relative;background:#E6E5D5;border:1px solid rgba(54,41,38,.14);display:flex;align-items:center;justify-content:center}
+.ph .rombo{width:46px;height:46px;transform:rotate(45deg);border:1px solid rgba(54,41,38,.18)}
+.ph .ins{position:absolute;top:12px;left:12px;font-family:'Cinzel';font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#6B5F58;background:rgba(241,242,227,.8);padding:3px 8px;border:1px solid rgba(54,41,38,.18)}
+.btn{display:inline-flex;align-items:center;gap:14px;font-family:'Cinzel';font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;text-decoration:none;color:#362926;background:none;border:0;padding:14px 0;cursor:pointer}
+.btn .ln{display:inline-block;width:40px;height:1px;background:currentColor}
+.btn-p{background:#362926;color:#F1F2E3;padding:16px 28px}
+.sw{display:flex;flex-direction:column;gap:10px}
+.sw .c{height:120px;border:1px solid rgba(54,41,38,.12)}
+.sala{height:360px;position:relative;overflow:hidden;border:1px solid rgba(54,41,38,.12);padding:22px;display:flex;flex-direction:column;justify-content:space-between}
+.oscuro{background:#16110F;color:#E9E4D8}
+.losa{background-color:#0D0D0D;background-image:url(/_blob/5e22e412657af14f45ba7904c2302080);background-size:cover;color:#F1F2E3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-shadow:inset 0 0 80px rgba(0,0,0,.6)}
+.marmol{background-image:url(/_blob/883ee0d4290f45c057beb9962e7537db);background-size:cover;background-position:center}
+</style>
+</helmet>
+<div class="v3" style="width: 1440px; min-height: 3750px; padding-bottom: 140px">
+
+<header style="padding: 72px 96px 0; display: flex; justify-content: space-between; align-items: center">
+<span class="etq">Proyecto Mármol - Web V3</span>
+<span class="etq" style="color: #6B5F58">Guía del sistema - 16/11/2026</span>
+</header>
+
+<section style="padding: 96px 96px 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; align-items: end">
+<div style="grid-column: span 8; position: relative">
+<div class="display hueco" style="position: absolute; top: -70px; left: -10px; font-size: 300px; opacity: .55" aria-hidden="true">V3</div>
+<h1 class="display grab" style="position: relative">Museo<br>monumental</h1>
+</div>
+<div style="grid-column: span 4; display: flex; flex-direction: column; gap: 18px; padding-bottom: 14px">
+<p style="margin: 0">Cada sala es una sala de exposición: abre con una pieza que impone y después baja a lectura tranquila. Luz cenital, piezas con sombra de suelo y cartelas. Lo importante va en sala oscura.</p>
+<p class="peq" style="margin: 0">La paleta Rosso Levanto, Cinzel y EB Garamond no cambian. Cambia cómo se reparten.</p>
+</div>
+</section>
+
+<section class="sec">
+<div class="sec-cab"><span class="num">I</span><h2 class="h3">Tres pesos, no tarjetas</h2><span class="peq" style="margin-left: auto">Todo lo que sale en la web es una de estas tres cosas</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; align-items: end">
+<div style="display: flex; flex-direction: column; gap: 22px">
+<div style="height: 340px; display: flex; align-items: flex-end; position: relative">
+<span class="display hueco" style="position: absolute; left: -6px; bottom: 60px; font-size: 220px" aria-hidden="true">II</span>
+<span class="display grab" style="position: relative; font-size: 110px">Teaser</span>
+</div>
+<div class="cartela"><div class="filete"></div><span class="t">Monumental</span><span class="d">Título de sala o imagen a sangre. Uno por sala, al abrir.</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 22px">
+<div class="vitrina marmol" style="height: 340px"></div>
+<div class="cartela"><div class="filete"></div><span class="t">Pieza</span><span class="d">Imagen o bloque con su sombra de suelo y su cartela. Sin marco grueso.</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 22px">
+<div style="height: 340px; display: flex; align-items: flex-end">
+<div class="cartela"><div class="filete"></div><span class="cz" style="font-size: 13px; letter-spacing: .24em; color: #8B2626">Fig. 3</span><span class="t">La criatura pura</span><span class="d">Primer render de la criatura en el claro del bosque. Plano 4 del teaser.</span></div>
+</div>
+<div class="cartela"><div class="filete"></div><span class="t">Cartela</span><span class="d">Texto pequeño de museo: número, título y descripción en cursiva. Sustituye a las tarjetas.</span></div>
+</div>
+</div>
+</section>
+
+<section class="sec">
+<div class="sec-cab"><span class="num">II</span><h2 class="h3">Color</h2><span class="peq" style="margin-left: auto">La paleta no se toca. El oro solo donde significa sanar, nunca texto</span></div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 20px">
+<div class="sw"><div class="c" style="background: #F1F2E3"></div><span class="etq">Crema</span><span class="peq">#F1F2E3</span></div>
+<div class="sw"><div class="c" style="background: #362926"></div><span class="etq">Tinta</span><span class="peq">#362926</span></div>
+<div class="sw"><div class="c" style="background: #6B5F58"></div><span class="etq">Tinta 2</span><span class="peq">#6B5F58</span></div>
+<div class="sw"><div class="c" style="background: #8B2626"></div><span class="etq">Rojo</span><span class="peq">#8B2626</span></div>
+<div class="sw"><div class="c" style="background: linear-gradient(135deg, #b8901f, #e3c25a 45%, #b08420)"></div><span class="etq">Oro</span><span class="peq">#CDA434 - solo decorativo</span></div>
+<div class="sw"><div class="c" style="background: #0D0D0D"></div><span class="etq">Negro</span><span class="peq">#0D0D0D</span></div>
+<div class="sw"><div class="c" style="background: #16110F"></div><span class="etq">Negro cálido</span><span class="peq">#16110F - nuevo</span></div>
+</div>
+
+<h3 class="etq" style="margin: 64px 0 22px; color: #6B5F58">Fondo de cada sala</h3>
+<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px">
+<div class="sala" style="background: radial-gradient(120% 70% at 50% 0%, #fbfbf2, #F1F2E3 60%)">
+<div><span class="cz" style="font-size: 44px; color: rgba(54,41,38,.35)">I</span><div class="etq">Portada</div></div>
+<svg viewBox="0 0 1000 40" width="100%" height="40" aria-hidden="true"><path d="M0 20 Q56 25 112 17 Q171 29 230 18 Q279 26 328 23 Q372 13 415 18 Q455 28 495 24 Q534 17 574 21 Q608 24 642 19 Q682 32 723 21 Q761 20 800 21 Q858 7 917 19 Q966 14 1000 21" fill="none" stroke="#8B2626" stroke-width="3"></path></svg>
+<span class="peq">#F1F2E3 - veta roja y grietas de oro</span>
+</div>
+<div class="sala" style="background-color: #E8E2D4; background-image: url(/_blob/95617ffb1a0fa6be566b883e884bee33); background-size: 300%">
+<div><span class="cz" style="font-size: 44px; color: rgba(54,41,38,.35)">II</span><div class="etq">Teaser - A (elegido)</div></div>
+<svg viewBox="0 0 1000 40" width="100%" height="40" aria-hidden="true"><path d="M0 20 Q35 11 71 22 Q126 13 181 22 Q214 29 248 24 Q298 10 349 20 Q398 14 448 19 Q498 24 548 17 Q597 33 645 21 Q681 29 718 24 Q750 27 783 18 Q830 14 877 22 Q908 33 939 19 Q994 22 1000 23" fill="none" stroke="#A39886" stroke-width="3"></path></svg>
+<span class="peq" style="background: rgba(232,226,212,.85)">#E8E2D4 - travertino más cálido</span>
+</div>
+<div class="sala" style="background: #ECE7DC; opacity: .45">
+<div><span class="cz" style="font-size: 44px; color: rgba(54,41,38,.35)">II</span><div class="etq">Teaser - B (descartado)</div></div>
+<svg viewBox="0 0 1000 40" width="100%" height="40" aria-hidden="true"><path d="M0 20 Q35 11 71 22 Q126 13 181 22 Q214 29 248 24 Q298 10 349 20 Q398 14 448 19 Q498 24 548 17 Q597 33 645 21 Q681 29 718 24 Q750 27 783 18 Q830 14 877 22 Q908 33 939 19 Q994 22 1000 23" fill="none" stroke="#8F877B" stroke-width="3"></path></svg>
+<span class="peq">#ECE7DC - travertino más gris</span>
+</div>
+<div class="sala" style="background: radial-gradient(120% 70% at 50% 0%, #f6f0dd, #EFE8D4 60%)">
+<div><span class="cz" style="font-size: 44px; color: rgba(54,41,38,.35)">III</span><div class="etq">Historia</div></div>
+<svg viewBox="0 0 1000 40" width="100%" height="40" aria-hidden="true"><path d="M0 18.8 L100 15.4 L200 18.2 L300 19.5 L400 20.1 L500 23.1 L600 29.1 L700 26.8 L800 25.6 L900 32 L1000 32" fill="none" stroke="#CDA434" stroke-width="3"></path></svg>
+<span class="peq">#EFE8D4 - papel de libro, oro</span>
+</div>
+<div class="sala" style="background: radial-gradient(120% 70% at 50% 0%, #f3f2e6, #ECEBDD 60%)">
+<div><span class="cz" style="font-size: 44px; color: rgba(54,41,38,.35)">IV</span><div class="etq">Proceso</div></div>
+<svg viewBox="0 0 1000 40" width="100%" height="40" aria-hidden="true"><path d="M0 20 Q56 25 112 17 Q171 29 230 18 Q279 26 328 23 Q372 13 415 18 Q455 28 495 24 Q534 17 574 21 Q608 24 642 19 Q682 32 723 21 Q761 20 800 21 Q858 7 917 19 Q966 14 1000 21" fill="none" stroke="#4B4543" stroke-width="2"></path></svg>
+<span class="peq">#ECEBDD - papel de boceto, grafito</span>
+</div>
+<div class="sala oscuro" style="background: radial-gradient(90% 60% at 50% 0%, #2a201c, #16110F 70%)">
+<div><span class="cz" style="font-size: 44px; color: rgba(233,228,216,.3)">-</span><div class="etq">Sala oscura</div></div>
+<div style="height: 40px"></div>
+<span class="peq" style="color: #b8ad9f">#16110F - vídeo, autor, final</span>
+</div>
+</div>
+<h3 class="etq" style="margin: 64px 0 22px; color: #6B5F58">Materiales reales (render cenital de tus .blend)</h3>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+<div class="sw"><div class="c" style="height: 220px; background-image: url(/_blob/331d2a81ca36ce1395383797ee788438); background-size: cover"></div><span class="etq">Rosso Levanto</span><span class="peq">Mat_Marmol_RossoLevanto.blend - estela de Historia, menú, disco de música</span></div>
+<div class="sw"><div class="c" style="height: 220px; background-image: url(/_blob/43cfef85983ba8898b005f85c0d88f3a); background-size: cover"></div><span class="etq">Mármol blanco</span><span class="peq">Mat_Marmol.blend - busto, piezas claras</span></div>
+</div>
+</section>
+
+<section class="sec">
+<div class="sec-cab"><span class="num">III</span><h2 class="h3">Tipografía</h2><span class="peq" style="margin-left: auto">Cinzel grabada + EB Garamond. Seis tamaños, nada por debajo de 13 px</span></div>
+<div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px">
+<div style="grid-column: span 7; display: flex; flex-direction: column; gap: 26px">
+<div style="display: flex; align-items: baseline; gap: 24px; border-bottom: 1px solid rgba(54,41,38,.12); padding-bottom: 18px"><span class="etq" style="width: 120px; color: #6B5F58">Display</span><span class="display grab" style="font-size: 96px">Historia</span></div>
+<div style="display: flex; align-items: baseline; gap: 24px; border-bottom: 1px solid rgba(54,41,38,.12); padding-bottom: 18px"><span class="etq" style="width: 120px; color: #6B5F58">H2</span><span class="h2 grab">Las seis partes</span></div>
+<div style="display: flex; align-items: baseline; gap: 24px; border-bottom: 1px solid rgba(54,41,38,.12); padding-bottom: 18px"><span class="etq" style="width: 120px; color: #6B5F58">H3</span><span class="h3">La infancia</span></div>
+<div style="display: flex; align-items: baseline; gap: 24px; border-bottom: 1px solid rgba(54,41,38,.12); padding-bottom: 18px"><span class="etq" style="width: 120px; color: #6B5F58">Texto</span><span>Su Creador las esculpe en mármol, en un taller que no pertenece a ningún universo.</span></div>
+<div style="display: flex; align-items: baseline; gap: 24px; border-bottom: 1px solid rgba(54,41,38,.12); padding-bottom: 18px"><span class="etq" style="width: 120px; color: #6B5F58">Pequeño</span><span class="peq" style="font-style: italic">Plano 4 - el claro del bosque, encuadre A.</span></div>
+<div style="display: flex; align-items: baseline; gap: 24px"><span class="etq" style="width: 120px; color: #6B5F58">Etiqueta</span><span class="etq">Sala III - Historia</span></div>
+</div>
+<div style="grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 22px">
+<div style="position: relative; height: 300px; display: flex; align-items: center; justify-content: center; background: radial-gradient(80% 70% at 30% 20%, #fafaf0, #e9e9da)">
+<span class="display hueco" style="font-size: 260px; -webkit-text-stroke: 2px rgba(54,41,38,.3)" aria-hidden="true">III</span>
+</div>
+<div class="cartela" style="max-width: none"><div class="filete"></div><span class="t">Grabado</span><span class="d">Luz arriba a la izquierda: filo de luz abajo y sombra arriba dentro de la letra. Más marcado en los títulos monumentales, casi nada en los pequeños. Numerales de sala huecos, solo contorno.</span></div>
+</div>
+</div>
+</section>
+
+<section class="sec">
+<div class="sec-cab"><span class="num">IV</span><h2 class="h3">Componentes</h2><span class="peq" style="margin-left: auto">Base común a las cuatro salas</span></div>
+
+<span class="etq" style="color: #6B5F58">Cabecera e indicador de sala</span>
+<div style="margin: 18px 0 14px; display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; border-bottom: 1px solid rgba(54,41,38,.1); background-image: linear-gradient(rgba(241,242,227,.95), rgba(241,242,227,.84)), url(/_blob/396c3cd0438258590b593c89d7b029e1); background-size: cover; background-position: center 20%; box-shadow: 0 8px 24px -18px rgba(54,41,38,.5)">
+<span class="etq" style="font-weight: 600; letter-spacing: .32em">Mármol</span>
+<div style="display: flex; align-items: center; gap: 16px">
+<span class="cz" style="font-size: 17px; color: #8B2626">II</span><span class="etq">Teaser</span>
+<svg width="132" height="20" viewBox="0 0 132 20" aria-hidden="true"><path d="M6 10 Q24 6 42 10 T78 10 T114 10 T128 10" fill="none" stroke="#A39886" stroke-width="1.2"></path><polygon points="6,6 10,10 6,14 2,10" fill="none" stroke="#6B5F58"></polygon><polygon points="46,2 54,10 46,18 38,10" fill="#CDA434" stroke="#9c7a1f"></polygon><polygon points="86,6 90,10 86,14 82,10" fill="none" stroke="#6B5F58"></polygon><polygon points="126,6 130,10 126,14 122,10" fill="none" stroke="#6B5F58"></polygon></svg>
+</div>
+<div style="display: flex; align-items: center; gap: 22px">
+<button aria-label="Música: activar" style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(54,41,38,.25); background-image: url(/_blob/331d2a81ca36ce1395383797ee788438); background-size: 300%; background-position: 40% 30%; cursor: pointer"></button>
+<button class="btn" style="padding: 0"><svg width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><path d="M0 1h22M0 9h14" stroke="#362926" stroke-width="1.2"></path></svg>Menú</button>
+</div>
+</div>
+<p class="peq" style="margin: 0 0 56px">La cabecera es una banda con el fondo de la sala al 85-95 % y desenfoque detrás: así las letras se leen aunque debajo haya mármol con vetas o la nebulosa. Nodo actual: rombo grande, relleno y en oro. Los demás: pequeños y huecos. Se distingue por forma y por texto, no solo por color. Al bajar se queda solo el indicador. El disco de música vive aquí, junto a MENÚ, para no tapar texto.</p>
+
+<div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 48px 24px">
+<div style="grid-column: span 4; display: flex; flex-direction: column; gap: 18px">
+<span class="etq" style="color: #6B5F58">Botones</span>
+<div><a class="btn btn-p" href="#">Ver el teaser<span class="ln" style="width: 28px"></span></a></div>
+<div><a class="btn" href="#">Leer más<span class="ln"></span></a></div>
+<div><a class="btn" href="#" style="color: #8B2626">Mostrar todos<span class="ln"></span></a></div>
+<p class="peq" style="margin: 0">Al pasar o enfocar, la línea se alarga. Nada de cajas con borde por todas partes.</p>
+</div>
+<div style="grid-column: span 4; display: flex; flex-direction: column; gap: 18px">
+<span class="etq" style="color: #6B5F58">Placeholder V3</span>
+<div class="ph" style="aspect-ratio: 4 / 3"><span class="ins">Placeholder</span><div class="rombo"></div></div>
+<div class="cartela" style="max-width: none"><div class="filete"></div><span class="t">Parte I - La infancia</span><span class="d">Cassian a los quince años frente a la criatura pura. S34 - 10/05 a 16/05</span></div>
+</div>
+<div style="grid-column: span 4; display: flex; flex-direction: column; gap: 18px">
+<span class="etq" style="color: #6B5F58">Vitrina con imagen</span>
+<div class="vitrina" style="aspect-ratio: 4 / 3; background-image: url(/_blob/396c3cd0438258590b593c89d7b029e1); background-size: cover; background-position: center"></div>
+<div class="cartela" style="max-width: none"><div class="filete"></div><span class="t">Fig. 1 - El título tallado</span><span class="d">Render del hero. Sombra de suelo, sin marco.</span></div>
+</div>
+
+<div style="grid-column: span 12; display: flex; flex-direction: column; gap: 24px">
+<span class="etq" style="color: #6B5F58">Divisores</span>
+<div style="display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 24px">
+<span class="peq">Grieta de oro<br>Portada, Historia</span>
+<svg viewBox="0 0 1000 40" width="100%" height="40" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#CDA434" stop-opacity="0"></stop><stop offset=".12" stop-color="#b8901f"></stop><stop offset=".5" stop-color="#e8c862"></stop><stop offset=".85" stop-color="#b08420"></stop><stop offset="1" stop-color="#CDA434" stop-opacity="0"></stop></linearGradient></defs><path d="M0.0 18.8 L16.7 19.0 L33.3 18.5 L50.0 18.9 L66.7 19.5 L83.3 17.6 L100.0 15.4 L116.7 16.9 L133.3 15.9 L150.0 14.7 L166.7 16.9 L183.3 16.7 L200.0 18.2 L216.7 18.1 L233.3 18.7 L250.0 17.2 L266.7 17.8 L283.3 19.4 L300.0 19.5 L316.7 20.6 L333.3 21.3 L350.0 19.4 L366.7 20.5 L383.3 20.9 L400.0 20.1 L416.7 18.0 L433.3 19.6 L450.0 19.5 L466.7 20.4 L483.3 22.1 L500.0 23.1 L516.7 24.9 L533.3 24.4 L550.0 25.8 L566.7 25.5 L583.3 27.4 L600.0 29.1 L616.7 27.3 L633.3 25.7 L650.0 24.5 L666.7 26.5 L683.3 26.3 L700.0 26.8 L716.7 25.9 L733.3 26.0 L750.0 25.5 L766.7 24.8 L783.3 25.2 L800.0 25.6 L816.7 27.3 L833.3 28.1 L850.0 30.0 L866.7 31.6 L883.3 32.0 L900.0 32.0 L916.7 30.5 L933.3 32.0 L950.0 32.0 L966.7 32.0 L983.3 32.0 L1000.0 32.0" fill="none" stroke="url(#g1)" stroke-width="2.4"></path><path d="M350.0 19.4 L358.3 21.1 L371.1 25.0 L377.8 28.5 L387.1 30.4 M433.3 19.6 L445.5 23.3 L451.8 26.3 L458.2 29.6 L466.8 33.3 M416.7 18.0 L430.7 15.7 L437.3 12.7 L443.5 10.7 L452.8 7.7 M283.3 19.4 L297.2 17.0 L306.1 15.2 L318.9 12.8 L331.9 10.3" fill="none" stroke="#6B5F58" stroke-opacity=".45" stroke-width=".8"></path></svg>
+</div>
+<div style="display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 24px">
+<span class="peq">Veta travertino<br>Teaser</span>
+<svg viewBox="0 0 1000 40" width="100%" height="40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q35 11 71 22 Q126 13 181 22 Q214 29 248 24 Q298 10 349 20 Q398 14 448 19 Q498 24 548 17 Q597 33 645 21 Q681 29 718 24 Q750 27 783 18 Q830 14 877 22 Q908 33 939 19 Q994 22 1000 23" fill="none" stroke="#A39886" stroke-width="1.2"></path></svg>
+</div>
+<div style="display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 24px">
+<span class="peq">Veta grafito<br>Proceso</span>
+<svg viewBox="0 0 1000 40" width="100%" height="40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q56 25 112 17 Q171 29 230 18 Q279 26 328 23 Q372 13 415 18 Q455 28 495 24 Q534 17 574 21 Q608 24 642 19 Q682 32 723 21 Q761 20 800 21 Q858 7 917 19 Q966 14 1000 21" fill="none" stroke="#4B4543" stroke-width="1"></path></svg>
+</div>
+</div>
+
+<div style="grid-column: span 5; display: flex; flex-direction: column; gap: 18px">
+<span class="etq" style="color: #6B5F58">Losa SPOILER</span>
+<button class="losa" style="aspect-ratio: 4 / 3; border: 0; width: 100%; cursor: pointer">
+<span class="cz grab" style="font-size: 26px; letter-spacing: .5em; color: #E9E4D8; text-shadow: 0 -1px 0 rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.12)">Spoiler</span>
+<span style="font-style: italic; font-size: 17px; color: #a39a90">Pulsa para descubrirlo</span>
+</button>
+<p class="peq" style="margin: 0">Piedra negra con la palabra grabada. Al pulsar se rompe y deja costuras de oro. Es un botón: también con Enter y Espacio.</p>
+</div>
+<div style="grid-column: span 7; display: flex; flex-direction: column; gap: 18px">
+<span class="etq" style="color: #6B5F58">Puerta a la siguiente sala</span>
+<a href="#" style="display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #362926; height: 220px; padding: 0 48px; background-color: #E8E2D4; background-image: linear-gradient(90deg, rgba(241,242,227,.9), rgba(232,226,212,.2)), url(/_blob/95617ffb1a0fa6be566b883e884bee33); background-size: cover">
+<div style="display: flex; flex-direction: column; gap: 6px"><span class="etq" style="color: #6B5F58">Siguiente sala</span><span class="h2 grab" style="font-size: 64px">II - Teaser</span></div>
+<svg width="64" height="20" viewBox="0 0 64 20" aria-hidden="true"><path d="M0 10h60M52 3l8 7-8 7" fill="none" stroke="#362926" stroke-width="1.4"></path></svg>
+</a>
+<p class="peq" style="margin: 0">Franja ancha con el material de la sala que viene. Sustituye al botón "Siguiente".</p>
+</div>
+
+<div style="grid-column: span 12; display: flex; flex-direction: column; gap: 18px">
+<span class="etq" style="color: #6B5F58">Regla graduada (Proceso)</span>
+<div style="position: relative; height: 70px; border-bottom: 1px solid #362926; background-image: repeating-linear-gradient(90deg, #362926 0 1px, transparent 1px calc(100% / 35)); background-size: 100% 18px; background-repeat: no-repeat; background-position: bottom">
+<div style="position: absolute; left: 0; bottom: 0; height: 30px; width: calc(100% / 35 * 3); background: rgba(54,41,38,.85)"></div>
+<div style="position: absolute; left: calc(100% / 35 * 3); bottom: 0; height: 42px; width: calc(100% / 35); background: #8B2626"></div>
+<span class="etq" style="position: absolute; left: calc(100% / 35 * 3); top: 0">S04</span>
+<span class="peq" style="position: absolute; right: 0; top: 0">S35</span>
+</div>
+<p class="peq" style="margin: 0">Lo hecho en tinta, la semana actual en rojo y más alta. Marca larga al empezar cada bloque.</p>
+</div>
+</div>
+</section>
+
+<section class="sec">
+<div class="sec-cab"><span class="num">V</span><h2 class="h3">Movimiento</h2><span class="peq" style="margin-left: auto">Mucho, pero cada animación cuenta algo. Con movimiento reducido, todo quieto</span></div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 160px; display: flex; align-items: center; justify-content: space-around; background: #E9E9DA">
+<span class="h3" style="filter: blur(5px); opacity: .3; transform: translateY(10px)">Pieza</span>
+<span class="h3" style="filter: blur(2px); opacity: .65; transform: translateY(4px)">Pieza</span>
+<span class="h3">Pieza</span>
+</div>
+<div class="cartela"><div class="filete"></div><span class="t">Sale de la piedra</span><span class="d">Aparición al hacer scroll: sube unos píxeles y pasa de desenfocado a nítido.</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 160px; display: flex; align-items: center; padding: 0 16px; background: #EFE8D4">
+<svg viewBox="0 0 1000 40" width="100%" height="40" aria-hidden="true"><path d="M0 18.8 L100 15.4 L200 18.2 L300 19.5 L400 20.1 L500 23.1" fill="none" stroke="#CDA434" stroke-width="5"></path><path d="M500 23.1 L600 29.1 L700 26.8 L800 25.6 L900 32 L1000 32" fill="none" stroke="#6B5F58" stroke-width="2" stroke-dasharray="4 6"></path><circle cx="500" cy="23" r="10" fill="#f6e3a0"></circle></svg>
+</div>
+<div class="cartela"><div class="filete"></div><span class="t">La grieta que sana</span><span class="d">Una chispa recorre la grieta al bajar y la deja en oro. Nunca retrocede.</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 160px; display: flex; background: #F1F2E3; overflow: hidden">
+<div style="width: 40%; background: #F1F2E3"></div><div style="width: 60%; background-color: #E8E2D4; background-image: url(/_blob/95617ffb1a0fa6be566b883e884bee33); background-size: cover; box-shadow: -12px 0 30px rgba(54,41,38,.18)"></div>
+</div>
+<div class="cartela"><div class="filete"></div><span class="t">Cortina de destino</span><span class="d">La cortina entre salas toma el material de la sala a la que vas.</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="height: 160px; background-image: radial-gradient(40% 70% at 70% 40%, rgba(255,236,200,.55), rgba(255,236,200,0) 70%), url(/_blob/396c3cd0438258590b593c89d7b029e1); background-size: cover, cover; background-position: center"></div>
+<div class="cartela"><div class="filete"></div><span class="t">Luz rasante</span><span class="d">En el hero, un foco cálido sigue al ratón despacio sobre la piedra.</span></div>
+</div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3750}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

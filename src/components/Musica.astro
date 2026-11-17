@@ -1,11 +1,12 @@
 ---
-// Mini reproductor de música: un disco de mármol con una veta de progreso
-// alrededor. Un solo botón (sonar / silenciar), apagado por defecto: nunca
-// arranca solo. El crédito CC BY va siempre visible a su lado.
+// Disco de música: un disco de mármol Rosso Levanto con una veta de progreso
+// alrededor. Va en la cabecera, junto a MENÚ (nunca tapa texto). Un solo
+// botón (sonar / silenciar), apagado por defecto: nunca arranca solo.
+// El crédito CC BY va en el pie de todas las salas (Base.astro).
 // Comportamiento en js/musica.js; datos en src/data/musica.js.
-import { musica, creditoMusica } from '../data/musica.js';
+import { musica } from '../data/musica.js';
 ---
-<aside class="musica" aria-label="Música de la web" data-musica data-src={musica.src} data-bucle={musica.bucle ? '' : undefined}>
+<div class="musica" data-musica data-src={musica.src} data-bucle={musica.bucle ? '' : undefined}>
   <button class="musica__boton" type="button" aria-pressed="false" aria-label="Música: activar" data-musica-boton>
     <span class="musica__disco" aria-hidden="true"></span>
     <svg class="musica__veta" viewBox="0 0 52 52" aria-hidden="true" focusable="false">
@@ -17,8 +18,4 @@ import { musica, creditoMusica } from '../data/musica.js';
       <path class="musica__icono-silenciar" d="M4.2 3.4h2.6v9.2H4.2zM9.2 3.4h2.6v9.2H9.2z" />
     </svg>
   </button>
-  <p class="musica__credito">
-    <span class="musica__titulo">{creditoMusica}</span>
-    <a href={musica.urlLicencia} target="_blank" rel="noopener license">{musica.licencia}</a>
-  </p>
-</aside>
+</div>

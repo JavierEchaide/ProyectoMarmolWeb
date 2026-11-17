@@ -1,23 +1,21 @@
 ---
-// Enlace al final de cada página hacia la siguiente del menú.
+// Puerta a la siguiente sala: franja ancha con el material de la sala que
+// viene, su numeral y su nombre en grande. Sustituye al botón "Siguiente".
+// Desde la última sala (Proceso) es la puerta de vuelta a la Portada.
 import { siguiente } from '../data/sitio.js';
 const { actual } = Astro.props;
 const destino = siguiente(actual);
 const vuelta = destino.id === 'portada';
 ---
-<nav class="siguiente contenedor" aria-label="Página siguiente" data-revelar>
-  <a class="boton boton--grande" href={destino.archivo}>
-    {vuelta ? (
-      <>
-        <svg class="flecha flecha--izq" viewBox="0 0 24 12" aria-hidden="true"><path d="M23 6H1M6 1 1 6l5 5" /></svg>
-        <span>Volver a la {destino.titulo}</span>
-      </>
-    ) : (
-      <>
-        <span class="siguiente__etiqueta">Siguiente</span>
-        <span class="siguiente__destino">{destino.numero} · {destino.titulo}</span>
-        <svg class="flecha" viewBox="0 0 24 12" aria-hidden="true"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
-      </>
-    )}
+<nav class:list={['puerta', 'siguiente', { 'puerta--vuelta': vuelta }]} aria-label="Página siguiente" data-destino={destino.id} data-revelar>
+  <a class="puerta__enlace" href={destino.archivo}>
+    <span class="puerta__material" aria-hidden="true"></span>
+    <span class="puerta__texto">
+      <span class="puerta__etiqueta etiqueta">{vuelta ? 'Volver a la primera sala' : 'Siguiente sala'}</span>
+      <span class="puerta__destino"><span class="puerta__numero">{destino.numero}</span>{destino.titulo}</span>
+    </span>
+    <span class="puerta__flecha" aria-hidden="true">
+      <svg viewBox="0 0 24 12" focusable="false"><path d="M1 6h22M18 1l5 5-5 5" /></svg>
+    </span>
   </a>
 </nav>

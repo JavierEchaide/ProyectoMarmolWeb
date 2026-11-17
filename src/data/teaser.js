@@ -49,7 +49,28 @@ export const teaser = {
     { plano: '7', estado: 'placeholder', pie: 'Deja de tallar.', imagen: { src: null, alt: 'El Creador se detiene.', falta: 'Plano 7 · el Creador se detiene', semana: 'S27' } },
     { plano: '8', estado: 'placeholder', pie: 'Se gira hacia este mundo.', imagen: { src: null, alt: 'El Creador se gira hacia la ventana.', falta: 'Plano 8 · se gira con el cincel en la mano', semana: 'S27' } },
     { plano: '9', estado: 'placeholder', pie: 'Pie del plano 9, pendiente.', imagen: { src: null, alt: 'Fotograma del plano 9 (pendiente de describir).', falta: 'Plano 9 · fotograma y descripción pendientes', semana: 'S27' } },
+    // V3: el storyboard v2 tiene 12 huecos. Estos dos están pendientes de
+    // numerar y describir (los escribe Javi).
+    { plano: '10', estado: 'placeholder', pie: 'Pie del plano 10, pendiente.', imagen: { src: null, alt: 'Fotograma del plano 10 (pendiente de describir).', falta: 'Plano 10 · fotograma y descripción pendientes', semana: 'S27' } },
+    { plano: '11', estado: 'placeholder', pie: 'Pie del plano 11, pendiente.', imagen: { src: null, alt: 'Fotograma del plano 11 (pendiente de describir).', falta: 'Plano 11 · fotograma y descripción pendientes', semana: 'S27' } },
   ],
+
+  // Lema bajo el título (V3)
+  lema: 'Tres lugares · una ventana',
+
+  // Cruzar la ventana (V3): escena fijada al scroll, del taller al bosque.
+  // Textos de trabajo (placeholder, vienen del diseño): los revisa Javi.
+  cruce: {
+    antetitulo: 'Del taller al bosque',
+    titulo: 'Cruzar la ventana',
+    texto: 'Al bajar, la cámara avanza hacia la ventana del taller hasta atravesarla. Es el paso de los planos 2 y 3, contado con la página.',
+    semana: 'S28', // capas de los renders
+    pasos: [
+      { numero: 'I', titulo: 'El taller', texto: 'La ventana al fondo, la nebulosa alrededor.', p: 0 },
+      { numero: 'II', titulo: 'La ventana', texto: 'La cámara se acerca; el marco llena la pantalla.', p: 0.5 },
+      { numero: 'III', titulo: 'El bosque', texto: 'Al otro lado, el claro donde abre los ojos.', p: 1 },
+    ],
+  },
 
   // La rima: planos 4 y 6, mismo recorte y encuadre A, en un comparador
   // con una línea que se arrastra.

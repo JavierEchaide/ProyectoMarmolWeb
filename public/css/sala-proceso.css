@@ -1,0 +1,504 @@
+/* ==========================================================================
+   IV · PROCESO (V3): cuaderno de taller
+   Todo el CSS propio de la sala. Se apoya en el sistema V3 de site.css
+   (apartado 23): tokens, .monumental, .numeral-hueco, .etiqueta, .pieza,
+   .boton y [data-revelar]. Veta de grafito y rojo para lo actual; sin oro.
+   Índice:
+     1. Variables y cabecera (pórtico)
+     2. Taller: índice lateral de placas con plomada
+     3. Tramos (secciones) y piezas comunes
+     4. Estado: regla graduada de 35 semanas
+     5. Desarrollo visual: láminas
+     6. Método fijado, cajones y dato de render
+     7. Calendario como veta luminosa
+     8. Archivo: colección con filtros
+     9. Registros semanales
+   ========================================================================== */
+
+/* 1. Variables y cabecera ------------------------------------------------- */
+[data-sala='proceso'] {
+  --grafito: #4b4543;
+  --gris-taller: #5f544e;
+  --filete: rgba(54, 41, 38, 0.16);
+  --papel-taller: rgba(255, 255, 250, 0.4);
+}
+
+.portico {
+  position: relative;
+  padding-block: clamp(3.5rem, 9vw, 8rem) clamp(2rem, 5vw, 4.5rem);
+  overflow: clip;
+}
+.portico__numeral {
+  position: absolute;
+  top: clamp(0.5rem, 3vw, 2.5rem);
+  right: 0;
+  font-size: calc(var(--t-display) * 2.4);
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
+}
+.portico__sala { position: relative; color: var(--gris-taller); margin: 0 0 1rem; }
+.portico__titulo { position: relative; margin: 0; }
+.portico__intro { position: relative; max-width: 46rem; margin: clamp(1.5rem, 3vw, 2.5rem) 0 0; }
+
+/* 2. Taller e índice de placas -------------------------------------------- */
+.taller {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+  padding-bottom: clamp(3rem, 6vw, 6rem);
+}
+.taller__contenido { min-width: 0; display: flex; flex-direction: column; }
+
+.placas {
+  position: sticky;
+  top: calc(var(--cabecera) + 28px);
+  padding: 0 0 46px 26px;
+}
+.placas__lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.placas__plomo { position: absolute; left: 6px; top: 0; bottom: 40px; width: 1px; background: var(--grafito); }
+.placas__pesa {
+  position: absolute; left: 0; bottom: 18px; width: 13px; height: 22px; background: var(--grafito);
+  clip-path: polygon(50% 100%, 0 30%, 0 0, 100% 0, 100% 30%);
+}
+/* La placa: canto de mármol a la izquierda y el texto sobre zona lisa */
+.placas__placa {
+  position: relative;
+  display: flex; align-items: center; gap: 10px;
+  min-height: 44px;
+  padding: 10px 12px 10px 26px;
+  background: linear-gradient(#f6f4ec, #eceadd);
+  box-shadow: 0 6px 10px -6px rgba(54, 41, 38, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  font-family: var(--f-titulo);
+  font-size: var(--t-etiqueta);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--gris-taller);
+  transition: transform 0.4s var(--curva-salida, ease), color 0.3s, box-shadow 0.4s;
+}
+.placas__placa::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 14px;
+  background-color: var(--grafito);
+  background-image: var(--mat-grafito);
+  background-size: 400%;
+  background-position: 30% 40%;
+}
+.placas__numero { color: var(--gris-taller); }
+.placas__placa[aria-current='true'] {
+  color: var(--tinta);
+  font-weight: 600;
+  transform: translateX(8px);
+  box-shadow: 0 10px 14px -8px rgba(54, 41, 38, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.6), inset -3px 0 0 var(--rojo);
+}
+.placas__placa[aria-current='true'] .placas__numero { color: var(--rojo); }
+.placas__placa:focus-visible { outline: 2px solid var(--rojo); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .placas__placa:hover { color: var(--tinta); transform: translateX(8px); }
+}
+
+@media (max-width: 999px) {
+  .taller { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+  .placas { position: static; padding: 0; }
+  .placas__lista { flex-direction: row; flex-wrap: wrap; gap: 10px; }
+  .placas__plomo, .placas__pesa { display: none; }
+  .placas__placa[aria-current='true'] { transform: none; }
+}
+@media (max-width: 999px) and (hover: hover) and (pointer: fine) {
+  .placas__placa:hover { transform: none; }
+}
+
+/* 3. Tramos y piezas comunes ---------------------------------------------- */
+.tramo { padding-block: 40px 80px; scroll-margin-top: calc(var(--cabecera) + 16px); }
+.tramo + .tramo { border-top: 1px solid var(--filete); }
+.tramo__cabecera { display: flex; flex-direction: column; gap: 10px; margin-bottom: clamp(1.75rem, 4vw, 3rem); }
+.tramo__cabecera .etiqueta { margin: 0; color: var(--gris-taller); }
+.tramo__titulo {
+  margin: 0;
+  font-family: var(--f-titulo);
+  font-size: var(--t-h2);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  color: var(--tinta);
+}
+.tramo__subtitulo {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px;
+  margin: clamp(3rem, 6vw, 5rem) 0 1.5rem;
+  padding-top: 18px;
+  border-top: 1px solid var(--grafito);
+  font-family: var(--f-titulo);
+  font-size: var(--t-h3);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  scroll-margin-top: calc(var(--cabecera) + 16px);
+}
+.tramo__subnota { font-family: var(--f-texto); font-size: var(--t-pequeno); font-style: italic; letter-spacing: 0; color: var(--gris-taller); }
+
+.insignia {
+  display: inline-block; margin-right: 10px; padding: 2px 8px;
+  font-family: var(--f-titulo); font-size: var(--t-etiqueta); font-style: normal; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gris-taller); border: 1px solid rgba(54, 41, 38, 0.3);
+}
+.sello {
+  align-self: flex-start; display: inline-block; padding: 2px 8px;
+  font-family: var(--f-titulo); font-size: var(--t-etiqueta); letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gris-taller); border: 1px solid rgba(54, 41, 38, 0.35);
+}
+.sello--hecho { color: var(--tinta); border-color: var(--tinta); }
+.sello--en-curso { color: var(--rojo); border-color: var(--rojo); }
+
+.rombo {
+  flex: none; display: inline-block; width: 12px; height: 12px;
+  transform: rotate(45deg);
+  border: 1px solid var(--grafito);
+  background: var(--sala-fondo, #ecebdd);
+}
+.rombo--hecho { background: var(--tinta); border-color: var(--tinta); }
+.rombo--en-curso { background: var(--rojo); border-color: var(--rojo); }
+
+/* 4. Estado: regla graduada ----------------------------------------------- */
+.hoy { display: flex; flex-direction: column; gap: 22px; }
+.hoy__semana { display: flex; align-items: flex-end; gap: 24px; margin: 0; }
+.hoy__numero {
+  font-family: var(--f-titulo);
+  font-size: calc(var(--t-display) * 0.9);
+  font-weight: 500;
+  line-height: 0.85;
+  letter-spacing: 0.04em;
+  color: var(--tinta);
+}
+.hoy__texto { font-size: var(--t-pequeno); font-style: italic; color: var(--gris-taller); line-height: 1.45; padding-bottom: 4px; }
+
+.regla {
+  list-style: none; margin: 34px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(35, minmax(0, 1fr));
+  height: 64px;
+  border-bottom: 1px solid var(--grafito);
+}
+.regla__marca { position: relative; }
+.regla__marca::before {
+  content: '';
+  position: absolute; left: 0; bottom: 0;
+  width: 1px; height: 38%;
+  background: rgba(75, 69, 67, 0.55);
+}
+.regla__marca--hecho::before { width: 2px; height: 52%; background: var(--tinta); }
+.regla__marca--bloque::before { height: 78%; }
+.regla__marca--en-curso::before { width: 2px; background: var(--rojo); }
+.regla__marca--actual::before { width: 3px; height: 100%; background: var(--rojo); }
+.regla__marca a { position: absolute; inset: 0; }
+.regla__marca a:focus-visible { outline: 2px solid var(--rojo); outline-offset: 2px; }
+.regla__bloque {
+  position: absolute; left: 0; top: -22px; transform: translateX(-35%);
+  font-family: var(--f-titulo); font-size: var(--t-etiqueta); letter-spacing: 0.1em; color: var(--gris-taller); line-height: 1;
+}
+.regla__cota {
+  display: flex; justify-content: space-between; gap: 12px; margin: 0;
+  font-family: var(--f-titulo); font-size: var(--t-etiqueta); letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris-taller);
+}
+.regla__cota span:nth-child(2) { text-align: center; }
+@media (hover: hover) and (pointer: fine) {
+  .regla__marca a:hover { background: rgba(139, 38, 38, 0.1); }
+}
+.hoy__datos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 32px; margin: 26px 0 0; }
+.hoy__datos > div { display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid var(--filete); }
+.hoy__datos dt { color: var(--gris-taller); }
+.hoy__datos dd { margin: 0; font-size: var(--t-pequeno); line-height: 1.5; }
+.hoy__hueco { font-style: italic; color: var(--gris-taller); }
+@media (max-width: 899px) {
+  .regla__marca a { display: none; }
+  .regla { height: 52px; }
+  .regla__cota span:nth-child(2) { display: none; }
+  .hoy__datos { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 5. Desarrollo visual: láminas ------------------------------------------- */
+.laminas, .fichas-taller { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(3rem, 7vw, 6rem); }
+.lamina { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 22px; align-items: end; }
+.lamina__pieza { grid-column: 1 / span 8; min-width: 0; }
+.lamina__nota { grid-column: 9 / -1; display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
+.lamina:nth-child(even) .lamina__pieza { grid-column: 5 / -1; grid-row: 1; }
+.lamina:nth-child(even) .lamina__nota { grid-column: 1 / span 4; grid-row: 1; }
+.lamina__fig { margin: 0; color: var(--rojo); }
+.lamina__filete { width: 36px; height: 1px; background: var(--tinta); margin-bottom: 6px; }
+.lamina__titulo { margin: 0; font-family: var(--f-titulo); font-size: var(--t-h3); font-weight: 500; letter-spacing: 0.08em; line-height: 1.2; }
+.lamina__texto { margin: 0; font-size: var(--t-pequeno); font-style: italic; line-height: 1.5; color: var(--grafito); }
+@media (max-width: 899px) {
+  .lamina__pieza, .lamina__nota,
+  .lamina:nth-child(even) .lamina__pieza,
+  .lamina:nth-child(even) .lamina__nota { grid-column: 1 / -1; grid-row: auto; }
+}
+
+/* 6. Método --------------------------------------------------------------- */
+/* 6.1 Lista (por defecto: sin JS, móvil o movimiento reducido) */
+.recorrido__fijo { padding: clamp(18px, 3vw, 36px); background: var(--papel-taller); border: 1px solid var(--filete); }
+.estaciones { list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 1px solid var(--grafito); }
+.estacion {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px); gap: 16px 28px; align-items: start;
+  padding: 18px 0 18px 18px;
+  border-bottom: 1px dashed var(--filete);
+}
+.estacion:last-child { border-bottom: 0; }
+.estacion__nodo {
+  position: absolute; left: -43px; top: 10px; width: 12px; height: 12px;
+  transform: rotate(45deg);
+  border: 1px solid var(--grafito);
+  background: var(--sala-fondo, #ecebdd);
+  transition: background-color 0.4s, border-color 0.4s;
+}
+.estacion--hecho .estacion__nodo { background: var(--tinta); border-color: var(--tinta); }
+.estacion--en-curso .estacion__nodo { background: var(--rojo); border-color: var(--rojo); }
+.estacion__texto { position: relative; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.estacion__titulo { margin: 0; font-family: var(--f-titulo); font-size: var(--t-h3); font-weight: 500; letter-spacing: 0.08em; line-height: 1.2; }
+.estacion__numero { margin-right: 14px; font-size: var(--t-etiqueta); letter-spacing: 0.2em; color: var(--gris-taller); vertical-align: middle; }
+.estacion__boton {
+  display: block; width: 100%; padding: 0; background: none; border: 0; cursor: pointer;
+  font: inherit; letter-spacing: inherit; color: inherit; text-align: left;
+}
+.estacion__boton:focus-visible { outline: 2px solid var(--rojo); outline-offset: 4px; }
+.estacion__detalle { margin: 0; font-size: var(--t-pequeno); line-height: 1.5; color: var(--grafito); }
+.estacion__captura { margin: 0; min-width: 0; }
+.recorrido__pie { display: none; }
+@media (max-width: 699px) {
+  .estacion { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 6.2 Fijado (lo activa proceso.js en escritorio): estaciones a la izquierda,
+   captura del paso, contador y regla a la derecha */
+.recorrido--fijado { height: calc(var(--pasos) * 46vh + 100vh); }
+.recorrido--fijado .recorrido__fijo {
+  position: sticky;
+  top: calc(var(--cabecera) + 12px);
+  height: calc(100vh - var(--cabecera) - 24px);
+  max-height: 860px;
+  padding: 36px;
+  overflow: hidden;
+}
+.recorrido--fijado .estaciones { width: 40%; }
+.recorrido--fijado .estacion { position: static; display: block; padding: 0 0 0 18px; }
+.recorrido--fijado .estacion__texto { position: relative; padding: 13px 0; }
+.recorrido--fijado .estacion__nodo { top: 22px; }
+.recorrido--fijado .estacion__titulo { color: var(--gris-taller); transition: color 0.4s; }
+.recorrido--fijado .estacion__detalle,
+.recorrido--fijado .estacion .sello { display: none; }
+.recorrido--fijado .estacion--activa .estacion__titulo { color: var(--tinta); }
+.recorrido--fijado .estacion--activa .estacion__numero { color: var(--rojo); }
+.recorrido--fijado .estacion--activa .estacion__detalle { display: block; }
+.recorrido--fijado .estacion--activa .sello { display: inline-block; }
+.recorrido--fijado .estacion--activa .estacion__nodo { background: var(--rojo); border-color: var(--rojo); box-shadow: 0 0 0 5px rgba(139, 38, 38, 0.14); }
+.recorrido--fijado .estacion__captura {
+  position: absolute; top: 36px; right: 36px; width: calc(60% - 36px - 56px);
+  opacity: 0; visibility: hidden; transform: translateY(14px);
+  transition: opacity 0.5s var(--curva-salida, ease), transform 0.6s var(--curva-salida, ease), visibility 0s 0.5s;
+}
+.recorrido--fijado .estacion--activa .estacion__captura { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.recorrido--fijado .recorrido__pie {
+  display: block;
+  position: absolute; right: 36px; bottom: 30px; width: calc(60% - 36px - 56px);
+}
+.recorrido__contador { margin: 0; font-family: var(--f-titulo); font-size: calc(var(--t-h2) * 1.2); line-height: 1; letter-spacing: 0.06em; color: var(--tinta); }
+.recorrido__de { font-size: var(--t-h3); color: var(--gris-taller); }
+.recorrido__regla {
+  margin-top: 18px; height: 6px;
+  background: repeating-linear-gradient(90deg, var(--grafito) 0 1px, transparent 1px 12.5%);
+  border-bottom: 1px solid var(--grafito);
+}
+.recorrido__regla div { width: 12.5%; height: 100%; background: var(--rojo); transition: width 0.5s var(--curva-salida, ease); }
+/* 6.3 Referencias como cajones */
+.cajones { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.cajon {
+  display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  padding: 18px;
+  background: linear-gradient(#f2f1e6, #e6e5d6);
+  border: 1px solid var(--filete);
+  box-shadow: inset 0 -3px 0 rgba(54, 41, 38, 0.06), 0 14px 18px -16px rgba(54, 41, 38, 0.5);
+}
+.cajon__tirador { width: 34px; height: 4px; border-radius: 2px; background: var(--grafito); opacity: 0.5; margin-bottom: 6px; }
+.cajon__titulo { margin: 0; font-family: var(--f-titulo); font-size: var(--t-etiqueta); font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; overflow-wrap: anywhere; }
+.cajon__lista { margin: 0; flex: 1; font-size: var(--t-pequeno); font-style: italic; line-height: 1.45; color: var(--gris-taller); }
+.cajon__abrir { align-self: flex-start; }
+.cajon--vacio { background: none; box-shadow: none; border-style: dashed; }
+@media (max-width: 1199px) { .cajones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 479px) { .cajones { grid-template-columns: minmax(0, 1fr); } }
+
+/* 6.4 Dato de render */
+.medida { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 24px 56px; align-items: end; }
+.medida__cifra { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.medida__cifra .etiqueta { color: var(--gris-taller); }
+.medida__numero { font-family: var(--f-titulo); font-size: var(--t-display); font-weight: 500; line-height: 0.9; letter-spacing: 0.04em; color: var(--rojo); white-space: nowrap; }
+.medida__cifra--menor .medida__numero { font-size: var(--t-h2); color: var(--gris-taller); }
+.medida__nota { padding-left: 24px; border-left: 1px solid var(--grafito); font-size: var(--t-pequeno); font-style: italic; color: var(--grafito); line-height: 1.5; }
+.medida__nota p { margin: 0; }
+.medida__calculo { font-family: var(--f-titulo); font-size: var(--t-etiqueta); font-style: normal; letter-spacing: 0.2em; text-transform: uppercase; color: var(--tinta); margin-bottom: 8px !important; }
+/* Con el índice lateral, las dos cifras enormes y la nota no caben en una
+   fila hasta unos 1280 px: la nota baja a su propia fila */
+@media (max-width: 1279px) {
+  .medida { grid-template-columns: auto minmax(0, 1fr); }
+  .medida__nota { grid-column: 1 / -1; padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--grafito); }
+}
+@media (max-width: 899px) {
+  .medida { grid-template-columns: minmax(0, 1fr); }
+  .medida__nota { padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--grafito); }
+}
+
+/* 7. Calendario como veta ------------------------------------------------- */
+.leyenda-veta { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: var(--t-pequeno); font-style: italic; color: var(--gris-taller); }
+.leyenda-veta li { display: flex; align-items: center; gap: 12px; }
+
+.calveta { position: relative; }
+.calveta__trazo { display: none; }
+.calveta__lista { list-style: none; margin: 0; padding: 0; }
+.calveta__nodo { list-style: none; cursor: pointer; }
+.calveta__nodo::-webkit-details-marker { display: none; }
+.calveta__nodo:focus-visible { outline: 2px solid var(--rojo); outline-offset: 4px; }
+.calveta__cartela { display: flex; flex-direction: column; gap: 4px; }
+.calveta__rango { color: var(--gris-taller); }
+.calveta__titulo { font-family: var(--f-titulo); font-size: var(--t-h3); font-weight: 500; letter-spacing: 0.08em; line-height: 1.2; color: var(--tinta); }
+.calveta__fechas { font-size: var(--t-pequeno); font-style: italic; color: var(--gris-taller); }
+.calveta__ahora {
+  align-self: flex-start; margin-top: 4px; padding: 2px 8px;
+  font-family: var(--f-titulo); font-size: var(--t-etiqueta); letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--rojo); border: 1px solid var(--rojo); background: var(--sala-fondo, #ecebdd);
+}
+.calveta__caja { display: flex; flex-direction: column; gap: 10px; }
+.calveta__caja > .etiqueta { margin: 0; color: var(--rojo); }
+.calveta__objetivo { margin: 0 0 8px; font-size: var(--t-pequeno); font-style: italic; line-height: 1.5; color: var(--grafito); }
+.calveta__semanas, .calveta__capturas { list-style: none; margin: 0; padding: 0; }
+.calveta__semana { display: flex; flex-direction: column; gap: 8px; padding: 16px 0; border-top: 1px solid var(--filete); scroll-margin-top: calc(var(--cabecera) + 24px); }
+.calveta__semana:target { box-shadow: inset 3px 0 0 var(--rojo); padding-left: 14px; }
+.calveta__cabecera { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: 0; }
+.calveta__numero { font-family: var(--f-titulo); font-size: var(--t-h3); letter-spacing: 0.08em; color: var(--tinta); text-decoration: none; }
+.calveta__semana--en-curso .calveta__numero { color: var(--rojo); }
+.calveta__numero:focus-visible { outline: 2px solid var(--rojo); outline-offset: 3px; }
+.calveta__dias { font-size: var(--t-pequeno); font-style: italic; color: var(--gris-taller); }
+.calveta__plan { margin: 0; font-size: var(--t-pequeno); line-height: 1.45; }
+.calveta__registro { margin: 0; padding-left: 1.1em; font-size: var(--t-pequeno); line-height: 1.5; color: var(--grafito); }
+.calveta__registro li + li { margin-top: 4px; }
+.calveta__ver { align-self: flex-start; }
+.calveta__capturas li { padding: 16px 0; border-top: 1px solid var(--filete); display: flex; flex-direction: column; gap: 8px; }
+.calveta__capturas p { margin: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .calveta__nodo:hover .calveta__titulo { color: var(--rojo); }
+  .calveta__numero:hover { color: var(--rojo); }
+}
+
+/* 7.1 Lista recta (móvil y pantallas medias) */
+@media (max-width: 1199px) {
+  .calveta__bloque { border-left: 3px solid var(--grafito); margin-bottom: 8px; }
+  .calveta__bloque--hecho, .calveta__bloque--actual { border-left-color: var(--rojo); }
+  .calveta__nodo { display: flex; align-items: flex-start; gap: 16px; padding: 14px 0 14px 16px; }
+  .calveta__nodo .rombo { margin-top: 5px; }
+  .calveta__panel { padding: 4px 0 18px 16px; }
+}
+
+/* 7.2 Veta sinuosa con panel al lado (escritorio) */
+@media (min-width: 1200px) {
+  .calveta { padding-right: 42%; }
+  .calveta__trazo {
+    display: block; position: absolute; left: 0; top: 0; width: 58%; height: 100%;
+    overflow: visible; pointer-events: none;
+  }
+  .calveta__trazo path { fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+  .calveta__grafito { stroke: var(--grafito); stroke-width: 2; }
+  .calveta__halo { stroke: var(--grafito); stroke-width: 9; opacity: 0.1; }
+  .calveta__trazo--rojo {
+    clip-path: inset(0 -20px calc(100% - var(--encendido) * 1%) -20px);
+    transition: clip-path 0.5s linear;
+  }
+  .calveta__rojo { stroke: var(--rojo); stroke-width: 3; }
+  .calveta__brillo { stroke: var(--rojo); stroke-width: 11; opacity: 0.16; }
+  .calveta__bloque { height: var(--alto-nodo); display: flex; align-items: center; }
+  .calveta__bloque details { width: 100%; }
+  .calveta__nodo { position: relative; display: block; width: 244px; padding-left: 26px; margin-left: calc(var(--x) * 1%); }
+  .calveta__nodo .rombo { position: absolute; left: 0; top: 50%; margin: 0; width: 14px; height: 14px; transform: translate(-50%, -50%) rotate(45deg); transition: box-shadow 0.4s; }
+  .calveta__bloque--actual .rombo { width: 20px; height: 20px; }
+  details[open] > .calveta__nodo .rombo { box-shadow: 0 0 0 6px rgba(139, 38, 38, 0.16); }
+  .calveta__cartela {
+    padding: 12px 14px;
+    background: rgba(236, 235, 221, 0.94);
+    border-top: 1px solid var(--grafito);
+    box-shadow: 0 14px 20px -16px rgba(54, 41, 38, 0.5);
+    transition: border-color 0.3s, box-shadow 0.4s;
+  }
+  details[open] > .calveta__nodo .calveta__cartela { border-top-color: var(--rojo); box-shadow: 0 22px 26px -18px rgba(54, 41, 38, 0.6); }
+  .calveta__nodo:focus-visible { outline: none; }
+  .calveta__nodo:focus-visible .calveta__cartela { outline: 2px solid var(--rojo); outline-offset: 3px; }
+  /* El panel ocupa la columna derecha entera y su caja se queda fija al bajar */
+  .calveta__panel { position: absolute; top: 0; bottom: 0; right: 0; width: calc(42% - 40px); pointer-events: none; }
+  .calveta__caja {
+    position: sticky; top: calc(var(--cabecera) + 26px);
+    max-height: calc(100vh - var(--cabecera) - 52px);
+    overflow: auto; overscroll-behavior: contain;
+    padding: 26px;
+    background: rgba(255, 255, 250, 0.45);
+    border: 1px solid var(--filete);
+    box-shadow: 0 24px 30px -26px rgba(54, 41, 38, 0.5);
+    pointer-events: auto;
+    animation: calveta-panel 0.5s var(--curva-salida, ease) both;
+  }
+  .calveta__semana { scroll-margin-top: 12px; }
+}
+@keyframes calveta-panel { from { opacity: 0; transform: translateY(12px); } }
+
+/* 8. Archivo: colección --------------------------------------------------- */
+.filtros { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+.filtros[hidden] { display: none; }
+.filtros__grupo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; }
+.filtros__nombre { min-width: 72px; color: var(--gris-taller); }
+.filtro {
+  min-height: 40px; padding: 8px 14px;
+  font-family: var(--f-titulo); font-size: var(--t-etiqueta); letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--tinta); background: transparent; border: 1px solid rgba(54, 41, 38, 0.3); border-radius: 0; cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+.filtro[aria-pressed='true'] { background: var(--tinta); border-color: var(--tinta); color: #f1f0e4; }
+.filtro:focus-visible { outline: 2px solid var(--rojo); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .filtro:hover { border-color: var(--tinta); }
+}
+.filtros__cuenta { margin: 0; font-size: var(--t-pequeno); font-style: italic; color: var(--gris-taller); min-height: 1.5em; }
+
+.coleccion { list-style: none; margin: 0; padding: 0; columns: 3; column-gap: 24px; }
+.coleccion__pieza { break-inside: avoid; margin: 0 0 34px; display: flex; flex-direction: column; gap: 8px; }
+.coleccion__pieza[hidden] { display: none; }
+.coleccion__tipo { margin: 6px 0 0; color: var(--gris-taller); }
+.coleccion__titulo { margin: 0; font-family: var(--f-titulo); font-size: var(--t-etiqueta); font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; line-height: 1.5; }
+.coleccion__texto { margin: 0; font-size: var(--t-pequeno); font-style: italic; line-height: 1.45; color: var(--grafito); }
+.coleccion__pieza--fallos, .coleccion__pieza--notas { padding: 18px; border: 1px solid var(--filete); border-top: 1px solid var(--grafito); background: var(--papel-taller); }
+.coleccion__pieza--fallos .coleccion__tipo { margin-top: 0; color: var(--rojo); }
+.coleccion__pieza--notas .coleccion__tipo { margin-top: 0; }
+.coleccion__notas { list-style: none; margin: 0; padding: 0; font-size: var(--t-pequeno); }
+.coleccion__notas li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--filete); }
+.coleccion__nota-tipo { font-style: italic; color: var(--gris-taller); }
+.coleccion code { font-size: inherit; }
+@media (max-width: 1199px) { .coleccion { columns: 2; } }
+@media (max-width: 559px) { .coleccion { columns: 1; } }
+
+/* 9. Registros semanales (retoque V3) ------------------------------------- */
+[data-sala='proceso'] .registro { padding-block: clamp(2.5rem, 6vw, 5rem); }
+[data-sala='proceso'] .registro__volver a { font-family: var(--f-titulo); font-size: var(--t-etiqueta); letter-spacing: 0.24em; text-transform: uppercase; }
+[data-sala='proceso'] .registro__cuerpo { padding: clamp(18px, 4vw, 40px); background: var(--papel-taller); border: 1px solid var(--filete); border-top: 1px solid var(--grafito); }
+
+/* Movimiento reducido ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .placas__placa, .estacion__nodo, .estacion__captura, .recorrido__regla div,
+  .calveta__trazo--rojo, .calveta__cartela, .calveta__nodo .rombo, .filtro { transition: none; }
+  .calveta__caja { animation: none; }
+  .placas__placa[aria-current='true'] { transform: none; }
+}
+
+/* La puerta de vuelta (componente común): a anchos medios su material asoma
+   por la derecha; aquí se recorta para que no haya desplazamiento horizontal */
+[data-sala='proceso'] .puerta { overflow-x: clip; }
+
+/* Sin monoespaciada en Proceso (descartada en la V3): el código va en la
+   misma letra, en cursiva normal y con un filete abajo */
+[data-sala='proceso'] code {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: normal;
+  border-bottom: 1px solid currentColor;
+}

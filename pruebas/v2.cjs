@@ -99,7 +99,7 @@ const SALAS = [['index', 'portada', 'Sala I de IV: Portada'], ['teaser', 'teaser
     const p = await nueva({ reducedMotion: 'no-preference' });
     await p.goto(`${BASE}/teaser.html`); await p.waitForTimeout(500);
     const actual = () => p.evaluate(() => [...document.querySelectorAll('[data-carrusel-plano]')].findIndex((x) => x.classList.contains('carrusel__plano--actual')) + '/' + [...document.querySelectorAll('[data-carrusel-miniatura]')].findIndex((x) => x.getAttribute('aria-current') === 'true'));
-    ver('carrusel: 10 planos', await p.evaluate(() => document.querySelectorAll('[data-carrusel-plano]').length === 10 && document.querySelectorAll('[data-carrusel-miniatura]').length === 10));
+    ver('carrusel: 12 planos', await p.evaluate(() => document.querySelectorAll('[data-carrusel-plano]').length === 12 && document.querySelectorAll('[data-carrusel-miniatura]').length === 12));
     await p.locator('[data-carrusel-miniatura]').nth(4).click(); await p.waitForTimeout(600);
     ver('carrusel: clic en miniatura', (await actual()) === '4/4');
     await p.keyboard.press('ArrowRight'); await p.waitForTimeout(100);
@@ -131,7 +131,7 @@ const SALAS = [['index', 'portada', 'Sala I de IV: Portada'], ['teaser', 'teaser
     const m = await nueva({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, reducedMotion: 'no-preference' });
     await m.goto(`${BASE}/teaser.html`); await m.evaluate(() => window.scrollTo(0, 1500)); await m.waitForTimeout(400);
     ver('nebulosa en móvil: dos capas y quietas', await m.evaluate(() => { const c = [...document.querySelectorAll('[data-nebulosa-capa]')]; return getComputedStyle(c[2]).display === 'none' && c.slice(0, 2).every((x) => getComputedStyle(x).transform === 'none'); }));
-    ver('portada: botón "Ver el teaser"', await (async () => { await m.goto(`${BASE}/index.html`); await m.waitForTimeout(300); return m.evaluate(() => document.querySelector('.presentacion .boton').textContent.trim() === 'Ver el teaser'); })());
+    ver('portada: botón "Ver el teaser"', await (async () => { await m.goto(`${BASE}/index.html`); await m.waitForTimeout(300); return m.evaluate(() => document.querySelector('.gancho .boton').textContent.trim() === 'Ver el teaser'); })());
     await m.context().close();
   }
 
@@ -163,18 +163,18 @@ const SALAS = [['index', 'portada', 'Sala I de IV: Portada'], ['teaser', 'teaser
     const p = await nueva();
     await p.goto(`${BASE}/proceso.html`); await p.waitForTimeout(500);
     ver('proceso: cinco secciones en orden', await p.evaluate(() => [...document.querySelectorAll('[data-indice-seccion]')].map((s) => s.id).join() === 'estado,desarrollo-visual,metodo,calendario,archivo'));
-    ver('proceso: solo el bloque actual abierto', await p.evaluate(() => { const d = [...document.querySelectorAll('.linea-tiempo details')]; return d.filter((x) => x.open).length === 1 && d.findIndex((x) => x.open) === 1; }));
-    ver('proceso: 35 semanas con ancla', await p.evaluate(() => document.querySelectorAll('.semana[id^="s"]').length === 35 && !!document.getElementById('s35')));
+    ver('proceso: solo el bloque actual abierto', await p.evaluate(() => { const d = [...document.querySelectorAll('.calveta details')]; return d.filter((x) => x.open).length === 1 && d.findIndex((x) => x.open) === 1; }));
+    ver('proceso: 35 semanas con ancla', await p.evaluate(() => document.querySelectorAll('.calveta__semana[id^="s"]').length === 35 && !!document.getElementById('s35')));
     await p.locator('[data-indice-semana]').nth(26).click(); await p.waitForTimeout(500);
     ver('índice: S27 abre su bloque y baja', await p.evaluate(() => { const s = document.getElementById('s27'); const r = s.getBoundingClientRect(); return location.hash === '#s27' && s.closest('details').open && r.top >= 0 && r.top < innerHeight; }));
     ver('índice: scrollspy marca Calendario', await p.evaluate(() => document.querySelector('[data-indice-enlace][aria-current="true"]')?.getAttribute('href') === '#calendario'));
     await p.goto(`${BASE}/proceso.html#s12`); await p.waitForTimeout(600);
     ver('enlace directo #s12', await p.evaluate(() => { const s = document.getElementById('s12'); const r = s.getBoundingClientRect(); return s.closest('details').open && r.top >= 0 && r.top < innerHeight; }));
-    ver('índice lateral fijo en escritorio', await p.evaluate(() => getComputedStyle(document.querySelector('.indice')).position === 'sticky'));
-    ver('referencias: 8 categorías con Narrativa', await p.evaluate(() => { const t = [...document.querySelectorAll('.referencia__titulo')].map((x) => x.textContent); return t.length === 8 && t.includes('Narrativa'); }));
+    ver('índice lateral fijo en escritorio', await p.evaluate(() => getComputedStyle(document.querySelector('.placas')).position === 'sticky'));
+    ver('referencias: 8 categorías con Narrativa', await p.evaluate(() => { const t = [...document.querySelectorAll('.cajon__titulo')].map((x) => x.textContent); return t.length === 8 && t.includes('Narrativa'); }));
     await p.goto(`${BASE}/proceso.html`); await p.waitForTimeout(300);
-    await p.evaluate(() => { document.querySelector('.linea-tiempo details').open = true; });
-    await p.locator('.semana__ver').first().click(); await p.waitForURL('**/registro-s01.html', { timeout: 4000 }).catch(() => {});
+    await p.evaluate(() => { document.querySelector('.calveta details').open = true; });
+    await p.locator('.calveta__ver').first().click(); await p.waitForURL('**/registro-s01.html', { timeout: 4000 }).catch(() => {});
     ver('ver registro lleva a registro-s01.html', p.url().endsWith('registro-s01.html') && await p.evaluate(() => document.body.dataset.sala === 'proceso' && /Registro S01/.test(document.querySelector('h1').textContent)));
     await p.context().close();
   }
@@ -185,7 +185,7 @@ const SALAS = [['index', 'portada', 'Sala I de IV: Portada'], ['teaser', 'teaser
     await p.goto(`${BASE}/teaser.html`); await p.waitForTimeout(400);
     const m = () => p.evaluate(() => { const b = document.querySelector('[data-musica-boton]'); return b.getAttribute('aria-pressed') + '|' + b.getAttribute('aria-label'); });
     ver('música: apagada al entrar', (await m()) === 'false|Música: activar');
-    ver('música: crédito CC BY visible', await p.evaluate(() => { const c = document.querySelector('.musica__credito'); const r = c.getBoundingClientRect(); return /Darkness is Coming.*Kevin MacLeod.*incompetech\.com/.test(c.textContent) && c.querySelector('a').href === 'https://creativecommons.org/licenses/by/4.0/' && r.width > 0 && r.bottom <= innerHeight; }));
+    ver('música: crédito CC BY visible en el pie', await p.evaluate(() => { const c = document.querySelector('.pie .musica__credito'); c.scrollIntoView({ block: 'end' }); const r = c.getBoundingClientRect(); return /Darkness is Coming.*Kevin MacLeod.*incompetech\.com/.test(c.textContent) && c.querySelector('a').href === 'https://creativecommons.org/licenses/by/4.0/' && r.width > 0 && r.bottom <= innerHeight + 1; }));
     // pista de prueba (silencio) para no depender del MP3, que sube Javi
     const wav = 'data:audio/wav;base64,' + (() => { const n = 8000 * 30; const b = Buffer.alloc(44 + n); b.write('RIFF', 0); b.writeUInt32LE(36 + n, 4); b.write('WAVEfmt ', 8); b.writeUInt32LE(16, 16); b.writeUInt16LE(1, 20); b.writeUInt16LE(1, 22); b.writeUInt32LE(8000, 24); b.writeUInt32LE(8000, 28); b.writeUInt16LE(1, 32); b.writeUInt16LE(8, 34); b.write('data', 36); b.writeUInt32LE(n, 40); b.fill(128, 44); return b.toString('base64'); })();
     await p.evaluate((w) => { document.querySelector('[data-musica]').dataset.src = w; }, wav);
@@ -205,7 +205,7 @@ const SALAS = [['index', 'portada', 'Sala I de IV: Portada'], ['teaser', 'teaser
     await sinPista.context().close();
     const mov = await nueva({ viewport: { width: 390, height: 844 } });
     await mov.goto(`${BASE}/proceso.html`); await mov.waitForTimeout(300);
-    ver('música en 390: dentro de la pantalla y bajo el menú', await mov.evaluate(() => { const r = document.querySelector('.musica').getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.height <= 60 && +getComputedStyle(document.querySelector('.musica')).zIndex < 50; }));
+    ver('música en 390: en la cabecera, dentro de la pantalla y bajo el menú', await mov.evaluate(() => { const r = document.querySelector('.musica').getBoundingClientRect(); return !!document.querySelector('.cabecera .musica') && r.left >= 0 && r.right <= innerWidth && r.height <= 60 && +getComputedStyle(document.querySelector('.musica')).zIndex < 50; }));
     await mov.context().close();
   }
 

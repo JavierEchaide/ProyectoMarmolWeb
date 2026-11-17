@@ -63,6 +63,67 @@
     mover();
   }
 
+  /* 2b. Cruzar la ventana (V3) -------------------------------------------
+     Escena fijada al scroll (position: sticky en CSS). El avance del
+     recorrido (0 a 1) se escribe en --p y el CSS mueve cada capa a su
+     velocidad y escala (solo transform y opacity). En requestAnimationFrame
+     y solo mientras la sección está en pantalla. Con "reducir movimiento" (o
+     sin JavaScript) no se activa: quedan los tres fotogramas en lista. */
+  var cruce = document.querySelector('[data-cruce]');
+  if (cruce && !movimientoReducido) {
+    var recorridoCruce = cruce.querySelector('[data-cruce-recorrido]');
+    var fija = cruce.querySelector('[data-cruce-fija]');
+    var pasosCruce = Array.prototype.slice.call(cruce.querySelectorAll('[data-cruce-paso]'));
+    var contadorCruce = cruce.querySelector('[data-cruce-contador]');
+    var cruceVisible = true;
+    var crucePendiente = false;
+    var pasoActual = -1;
+    cruce.classList.add('cruce--viva');
+    var medidas = function () {
+      var tope = parseFloat(getComputedStyle(fija).top) || 0;
+      var r = recorridoCruce.getBoundingClientRect();
+      return { tope: tope, arriba: r.top, total: r.height - fija.offsetHeight };
+    };
+    var pintarCruce = function () {
+      crucePendiente = false;
+      var m = medidas();
+      var p = m.total > 0 ? Math.min(1, Math.max(0, (m.tope - m.arriba) / m.total)) : 0;
+      fija.style.setProperty('--p', p.toFixed(4));
+      var n = p < 0.3 ? 0 : p < 0.74 ? 1 : 2;
+      if (n !== pasoActual) {
+        pasoActual = n;
+        pasosCruce.forEach(function (b, i) {
+          if (i === n) b.setAttribute('aria-current', 'step');
+          else b.removeAttribute('aria-current');
+        });
+        if (contadorCruce) contadorCruce.textContent = '0' + (n + 1) + ' / 0' + pasosCruce.length;
+      }
+    };
+    var pedirCruce = function () {
+      if (cruceVisible && !crucePendiente) {
+        crucePendiente = true;
+        requestAnimationFrame(pintarCruce);
+      }
+    };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) {
+        cruceVisible = e[0].isIntersecting;
+        pedirCruce();
+      }).observe(cruce);
+    }
+    window.addEventListener('scroll', pedirCruce, { passive: true });
+    window.addEventListener('resize', pedirCruce);
+    // Las cartelas llevan a su punto del recorrido
+    pasosCruce.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var m = medidas();
+        var destino = window.scrollY + m.arriba - m.tope + m.total * parseFloat(b.dataset.crucePaso);
+        window.scrollTo({ top: destino, behavior: 'smooth' });
+      });
+    });
+    pintarCruce();
+  }
+
   /* 3. Carrusel ----------------------------------------------------------
      Miniatura -> cambia el fotograma grande (fundido de 450 ms en CSS).
      Flechas con el foco dentro, deslizar con el dedo. Precarga solo el
@@ -72,9 +133,13 @@
     var minis = Array.prototype.slice.call(c.querySelectorAll('[data-carrusel-miniatura]'));
     var aviso = c.querySelector('[data-carrusel-aviso]');
     var escena = c.querySelector('[data-carrusel-escena]');
+    var contador = c.querySelector('[data-carrusel-contador]');
+    var anterior = c.querySelector('[data-carrusel-anterior]');
+    var siguiente = c.querySelector('[data-carrusel-siguiente]');
     var actual = 0;
     if (planos.length < 2) return;
     c.classList.add('carrusel--activo');
+    var dos = function (n) { return (n < 10 ? '0' : '') + n; };
 
     function cargar(i) {
       var img = planos[i] && planos[i].querySelector('img[data-src]');
@@ -107,7 +172,10 @@
       if (minis[i].scrollIntoView) minis[i].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: movimientoReducido ? 'auto' : 'smooth' });
       if (enfocar) minis[i].focus({ preventScroll: true });
       if (aviso) aviso.textContent = minis[i].getAttribute('aria-label');
+      if (contador) contador.textContent = dos(i + 1) + ' / ' + dos(planos.length);
     }
+    if (anterior) anterior.addEventListener('click', function () { ir(actual - 1, false); });
+    if (siguiente) siguiente.addEventListener('click', function () { ir(actual + 1, false); });
 
     minis.forEach(function (m, i) {
       m.addEventListener('click', function () { ir(i, false); });

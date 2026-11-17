@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>IV - Proceso (V3)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap">
+<style>
+body{margin:0;background:#ECEBDD}
+*{box-sizing:border-box}
+a{color:#8B2626;text-decoration:none}a:hover{color:#5f1919}
+.v3{position:relative;container-type:inline-size;font-family:'EB Garamond',Georgia,serif;color:#362926;font-size:20px;line-height:1.55;-webkit-font-smoothing:antialiased;background-color:#ECEBDD;background-image:radial-gradient(80% 30% at 50% 0%, rgba(255,255,248,.8), rgba(255,255,248,0)),url(/_blob/b23139aa8eacbaa6bd0e57aa18df145b);overflow:hidden}
+.cz{font-family:'Cinzel',Georgia,serif}
+.etq{font-family:'Cinzel',Georgia,serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:500}
+.peq{font-size:17px;line-height:1.5;color:#6B5F58}
+.h3{font-family:'Cinzel',Georgia,serif;font-size:26px;letter-spacing:.08em;line-height:1.2;font-weight:500;margin:0}
+.h2{font-family:'Cinzel',Georgia,serif;font-size:48px;letter-spacing:.06em;line-height:1.1;font-weight:500;margin:0}
+.mono{font-family:'Cinzel',Georgia,serif;font-size:176px;letter-spacing:.1em;line-height:.9;font-weight:500;margin:0}
+.grab{color:#3a2c29;text-shadow:0 2px 1px rgba(255,255,255,.85),0 -1px 0 rgba(30,20,18,.3)}
+.grab-osc{color:#efe9dd;text-shadow:0 -1px 0 rgba(0,0,0,.75),0 1px 0 rgba(255,255,255,.16)}
+.pad{padding-left:96px;padding-right:96px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px}
+.largo{text-align:justify;hyphens:auto;margin:0}
+.cab{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:linear-gradient(rgba(236,235,221,.95),rgba(236,235,221,.84));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(54,41,38,.1);box-shadow:0 8px 24px -18px rgba(54,41,38,.5)}
+.cab .etq{font-weight:600;color:#362926}
+.cab .ind{display:flex;align-items:center;gap:14px}
+.disco{width:36px;height:36px;border-radius:50%;border:1px solid rgba(54,41,38,.25);background-image:url(/_blob/331d2a81ca36ce1395383797ee788438);background-size:300%;background-position:40% 30%;cursor:pointer}
+.btn{display:inline-flex;align-items:center;gap:14px;font-family:'Cinzel';font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:#362926;background:none;border:0;padding:14px 0;cursor:pointer}
+.cuerpo{display:flex;flex-wrap:wrap;gap:56px}
+.indice{flex:0 0 200px;display:flex;flex-direction:column;gap:12px;position:relative;padding-left:26px}
+.indice .plomo{position:absolute;left:6px;top:0;bottom:40px;width:1px;background:#4B4543}
+.indice .pesa{position:absolute;left:0;bottom:16px;width:13px;height:22px;background:#4B4543;clip-path:polygon(50% 100%,0 30%,0 0,100% 0,100% 30%)}
+.placa{display:flex;align-items:center;gap:10px;padding:10px 14px;background-image:linear-gradient(rgba(246,244,236,.55),rgba(246,244,236,.55)),url(/_blob/1fd0488e6ba433c59ac8531d675be84f);background-size:cover,400%;box-shadow:0 6px 10px -6px rgba(54,41,38,.5),inset 0 1px 0 rgba(255,255,255,.6);font-family:'Cinzel';font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#362926}
+.contenido{flex:999 1 560px;min-width:0;display:flex;flex-direction:column}
+.bloque{padding-top:40px;padding-bottom:80px}
+.cartela{display:flex;flex-direction:column;gap:6px}
+.cartela .filete{width:36px;height:1px;background:#362926;margin-bottom:8px}
+.cartela .t{font-family:'Cinzel';font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:600}
+.cartela .d{font-style:italic;font-size:17px;color:#6B5F58;line-height:1.45}
+.ph{position:relative;background:#E2E1D2;border:1px solid rgba(54,41,38,.14);display:flex;align-items:center;justify-content:center;box-shadow:0 34px 40px -30px rgba(54,41,38,.45)}
+.ph .rombo{width:40px;height:40px;transform:rotate(45deg);border:1px solid rgba(54,41,38,.2)}
+.ph .ins{position:absolute;top:12px;left:12px;font-family:'Cinzel';font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#6B5F58;background:rgba(236,235,221,.9);padding:3px 8px;border:1px solid rgba(54,41,38,.18)}
+.nota{font-style:italic;font-size:17px;color:#4B4543}
+.estaciones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:40px 24px}
+.est{position:relative;display:flex;flex-direction:column;gap:8px;padding-top:30px;border-top:1px solid #4B4543}
+.est::before{content:"";position:absolute;top:-6px;left:0;width:11px;height:11px;transform:rotate(45deg);background:#ECEBDD;border:1px solid #4B4543}
+.tag{align-self:flex-start;font-family:'Cinzel';font-size:13px;letter-spacing:.2em;text-transform:uppercase;padding:2px 8px;border:1px solid rgba(54,41,38,.35);color:#6B5F58}
+.cajones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.cajon{display:flex;flex-direction:column;gap:6px;padding:18px;background:linear-gradient(#f2f1e6,#e6e5d6);border:1px solid rgba(54,41,38,.16);box-shadow:inset 0 -3px 0 rgba(54,41,38,.06)}
+.cajon .tirador{width:34px;height:4px;border-radius:2px;background:#4B4543;opacity:.5;margin-bottom:6px}
+.fila{display:grid;grid-template-columns:110px 1fr 170px 130px 24px;align-items:center;gap:18px;padding:18px 0;border-top:1px solid rgba(54,41,38,.2);background:none;border-left:0;border-right:0;border-bottom:0;width:100%;text-align:left;cursor:pointer;font-family:inherit;color:inherit}
+.metodo-fijo{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:start;padding:36px;background:rgba(255,255,250,.35);border:1px solid rgba(54,41,38,.12)}
+.estaciones-v{list-style:none;margin:0;padding:0 0 0 18px;position:relative;border-left:1px solid #4B4543}
+.est-v{position:relative;display:flex;align-items:center;gap:14px;width:100%;background:none;border:0;padding:13px 0 13px 18px;text-align:left;cursor:pointer;font-family:inherit;border-bottom:1px dashed rgba(54,41,38,.16)}
+.nodo-v{position:absolute;left:-25px;top:50%;width:12px;height:12px;margin-top:-6px;transform:rotate(45deg);border:1px solid #4B4543}
+.regla-m{margin-top:22px;height:6px;background:repeating-linear-gradient(90deg,#4B4543 0 1px,transparent 1px 12.5%);border-bottom:1px solid #4B4543}
+.regla-m div{height:100%;background:#8B2626}
+.cal{display:grid;grid-template-columns:minmax(0,8fr) minmax(0,4fr);gap:40px;align-items:start}
+.veta-cal{position:relative;height:1420px}
+.nodo-cal{position:absolute;display:block;width:0;height:0;background:none;border:0;padding:0;cursor:pointer;font-family:inherit;color:inherit;text-align:left}
+.rombo-cal{position:absolute;left:0;top:0;transform:translate(-50%,-50%) rotate(45deg);border:1px solid #4B4543;background:#ECEBDD}
+.cartela-cal{position:absolute;top:-14px;width:230px;display:flex;flex-direction:column;gap:4px;padding:12px 14px;background:rgba(236,235,221,.94);border-top:1px solid #4B4543;box-shadow:0 14px 20px -16px rgba(54,41,38,.5)}
+.ahora{position:absolute;transform:translate(14px,-50%);white-space:nowrap;padding:2px 8px;background:#ECEBDD;border:1px solid #8B2626}
+.cal-movil{display:none;list-style:none;margin:0;padding:0}
+.fila-m{display:flex;flex-direction:column;gap:6px;width:100%;background:none;border:0;border-left:3px solid #4B4543;padding:14px 0 14px 16px;margin-bottom:6px;text-align:left;cursor:pointer;font-family:inherit;color:inherit}
+.panel-cal{position:sticky;top:90px;display:flex;flex-direction:column;gap:6px;padding:26px;background:rgba(255,255,250,.45);border:1px solid rgba(54,41,38,.14);box-shadow:0 24px 30px -26px rgba(54,41,38,.5)}
+.filtros{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.chip{font-family:'Cinzel';font-size:13px;letter-spacing:.16em;text-transform:uppercase;padding:8px 14px;border:1px solid rgba(54,41,38,.3);background:transparent;color:#362926;cursor:pointer;min-height:40px}
+.coleccion{margin-top:40px;columns:4;column-gap:24px}
+.pieza{break-inside:avoid;margin:0 0 30px}
+.puerta-sig{display:flex;align-items:center;justify-content:space-between;height:280px;background-color:#F1F2E3;background-image:linear-gradient(90deg, rgba(241,242,227,.95), rgba(241,242,227,.3)),url(/_blob/883ee0d4290f45c057beb9962e7537db);background-size:cover}
+.pie{padding-top:30px;padding-bottom:40px;display:flex;justify-content:space-between;gap:20px;background:#F1F2E3}
+@container (max-width: 760px){
+.pad{padding-left:22px;padding-right:22px}
+.g12{grid-template-columns:minmax(0,1fr);row-gap:30px}
+.g12 > *{grid-column:1 / -1 !important}
+.mono{font-size:60px;letter-spacing:.08em}
+.h2{font-size:34px}
+.largo{text-align:left;hyphens:manual}
+.cab{padding:12px 16px}
+.cab .marca,.cab .indnom{display:none}
+.cabecera{height:auto !important;padding-top:130px !important}
+.hueco-g{font-size:200px !important;top:60px !important}
+.cuerpo{gap:30px}
+.indice{flex:1 1 100%;flex-direction:row;flex-wrap:wrap;padding-left:0}
+.indice .plomo,.indice .pesa{display:none}
+.semana{font-size:120px !important}
+.estaciones{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cajones{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fila{grid-template-columns:70px 1fr 24px}
+.fila .fecha,.fila .tagc{display:none}
+.antesdesp{grid-template-columns:minmax(0,1fr) !important}
+.metodo-fijo{grid-template-columns:minmax(0,1fr);padding:18px;gap:28px}
+.cal{grid-template-columns:minmax(0,1fr)}
+.cal-escritorio{display:none}
+.cal-movil{display:block}
+.panel-cal{position:static}
+.coleccion{columns:2}
+.puerta-sig{height:200px}
+.puerta-sig .h2{font-size:34px !important}
+.pie{flex-direction:column}
+}
+</style>
+</helmet>
+<div class="v3">
+
+<header class="cab">
+<span class="etq marca" style="font-weight: 600; letter-spacing: .32em; color: #362926">Mármol</span>
+<div class="ind">
+<span class="cz" style="font-size: 17px; color: #8B2626">IV</span><span class="etq indnom">Proceso</span>
+<svg width="132" height="20" viewBox="0 0 132 20" aria-hidden="true"><path d="M6 10 Q24 6 42 10 T78 10 T114 10 T128 10" fill="none" stroke="#4B4543" stroke-width="1.2"></path><polygon points="6,6 10,10 6,14 2,10" fill="none" stroke="#6B5F58"></polygon><polygon points="46,6 50,10 46,14 42,10" fill="none" stroke="#6B5F58"></polygon><polygon points="86,6 90,10 86,14 82,10" fill="none" stroke="#6B5F58"></polygon><polygon points="124,2 132,10 124,18 116,10" fill="#4B4543" stroke="#4B4543"></polygon></svg>
+</div>
+<div style="display: flex; align-items: center; gap: 22px">
+<button class="disco" aria-label="Música: activar"></button>
+<button class="btn" style="padding: 0"><svg width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><path d="M0 1h22M0 9h14" stroke="#362926" stroke-width="1.2"></path></svg>Menú</button>
+</div>
+</header>
+
+<section class="cabecera pad" style="position: relative; height: 620px; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 70px">
+<span class="mono hueco-g" style="position: absolute; top: 80px; left: 70px; font-size: 420px; color: transparent; -webkit-text-stroke: 1.5px rgba(75,69,67,.2)" aria-hidden="true">IV</span>
+<div class="g12" style="position: relative; align-items: end">
+<div style="grid-column: span 7; display: flex; flex-direction: column; gap: 22px">
+<span class="etq" style="color: #6B5F58">Sala IV de IV - cuaderno de taller</span>
+<h1 class="mono grab">Proceso</h1>
+</div>
+<p class="largo" style="grid-column: 9 / span 4; padding-bottom: 14px">[Placeholder] El proyecto se planificó en 35 semanas, de septiembre de 2026 a mayo de 2027, con un registro semanal de lo que se hace y cuánto se tarda.</p>
+</div>
+</section>
+
+<div class="pad" style="padding-top: 10px; padding-bottom: 120px">
+<div class="cuerpo">
+
+<nav class="indice" aria-label="Índice de Proceso">
+<span class="plomo"></span><span class="pesa"></span>
+<span class="etq" style="color: #6B5F58; margin-bottom: 6px">Índice</span>
+<a class="placa" href="#estado" style="box-shadow: 0 6px 10px -6px rgba(54,41,38,.5), inset 3px 0 0 #8B2626"><span style="color: #8B2626">I</span>Estado</a>
+<a class="placa" href="#desarrollo"><span>II</span>Desarrollo</a>
+<a class="placa" href="#metodo"><span>III</span>Método</a>
+<a class="placa" href="#calendario"><span>IV</span>Calendario</a>
+<a class="placa" href="#archivo"><span>V</span>Archivo</a>
+</nav>
+
+<div class="contenido">
+
+<section id="estado" class="bloque" style="padding-top: 10px">
+<span class="etq" style="color: #6B5F58">I - Estado</span>
+<div style="display: flex; align-items: flex-end; gap: 28px; margin: 18px 0 30px; flex-wrap: wrap">
+<span class="mono semana grab" style="font-size: 200px; color: #8B2626; text-shadow: 0 2px 1px rgba(255,255,255,.7)">04</span>
+<div style="display: flex; flex-direction: column; gap: 4px; padding-bottom: 20px"><span class="h3">Semana de 35</span><span class="peq">Bloque 1 - Previz. 2 hechas, 2 en curso.</span><span class="etq" style="color: #8B2626">Placeholder</span></div>
+</div>
+<div style="position: relative; height: 74px; border-bottom: 1px solid #362926; background-image: repeating-linear-gradient(90deg, #362926 0 1px, transparent 1px calc(100% / 35)); background-size: 100% 16px; background-repeat: no-repeat; background-position: bottom">
+<div style="position: absolute; left: 0; bottom: 0; height: 30px; width: calc(100% / 35 * 3); background: rgba(54,41,38,.85)"></div>
+<div style="position: absolute; left: calc(100% / 35 * 3); bottom: 0; height: 46px; width: calc(100% / 35); background: #8B2626"></div>
+<div style="position: absolute; left: calc(100% / 35 * 2); bottom: 0; width: 1px; height: 30px; background: #362926"></div>
+<div style="position: absolute; left: calc(100% / 35 * 6); bottom: 0; width: 1px; height: 30px; background: #362926"></div>
+<div style="position: absolute; left: calc(100% / 35 * 13); bottom: 0; width: 1px; height: 30px; background: #362926"></div>
+<div style="position: absolute; left: calc(100% / 35 * 16); bottom: 0; width: 1px; height: 30px; background: #362926"></div>
+<div style="position: absolute; left: calc(100% / 35 * 25); bottom: 0; width: 1px; height: 30px; background: #362926"></div>
+<div style="position: absolute; left: calc(100% / 35 * 29); bottom: 0; width: 1px; height: 30px; background: #362926"></div>
+<span class="etq" style="position: absolute; left: 0; top: 0">S01</span>
+<span class="etq" style="position: absolute; left: calc(100% / 35 * 3); top: 0; color: #8B2626">S04</span>
+<span class="etq" style="position: absolute; right: 0; top: 0">S35</span>
+</div>
+<div class="g12" style="margin-top: 40px; grid-template-columns: repeat(3, minmax(0, 1fr))">
+<div class="cartela"><div class="filete"></div><span class="t">En curso</span><span class="d">Bloque 1 - Previz: blockout 3D de los tres sets y cámaras.</span></div>
+<div class="cartela"><div class="filete"></div><span class="t">Último resultado</span><span class="d">[Placeholder] En una frase, lo último que se puede enseñar.</span></div>
+<div class="cartela"><div class="filete"></div><span class="t">Próximo hito</span><span class="d">1.ª evaluación - S10 (23/11 a 29/11).</span></div>
+</div>
+</section>
+
+<svg viewBox="0 0 1000 40" width="100%" height="40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q56 25 112 17 Q171 29 230 18 Q279 26 328 23 Q372 13 415 18 Q455 28 495 24 Q534 17 574 21 Q608 24 642 19 Q682 32 723 21 Q761 20 800 21 Q858 7 917 19 Q966 14 1000 21" fill="none" stroke="#4B4543" stroke-width="1"></path></svg>
+
+<section id="desarrollo" class="bloque">
+<span class="etq" style="color: #6B5F58">II - Antes y después</span>
+<h2 class="h2 grab" style="margin: 12px 0 44px">Desarrollo visual</h2>
+<div style="position: relative">
+<div class="antesdesp" style="display: grid; grid-template-columns: 1fr 1fr; aspect-ratio: 16 / 9; box-shadow: 0 34px 40px -30px rgba(54,41,38,.45); position: relative">
+<div class="ph" style="box-shadow: none"><span class="ins">Antes - v1</span><div class="rombo"></div></div>
+<div class="ph" style="box-shadow: none; background: #d9d8c8"><span class="ins">Después - v3</span><div class="rombo"></div></div>
+<div style="position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: #362926"></div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; margin-top: 14px"><svg width="100%" height="12" viewBox="0 0 1000 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 6H998M2 1v10M998 1v10M500 1v10" fill="none" stroke="#4B4543" stroke-width="1"></path></svg></div>
+<div style="display: flex; justify-content: space-between; margin-top: 6px"><span class="nota">primer intento: óvalo con ruido</span><span class="nota">Voronoi: bordes de grieta de verdad</span></div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; margin-top: 30px; flex-wrap: wrap">
+<div class="cartela"><div class="filete"></div><span class="cz" style="font-size: 13px; letter-spacing: .24em; color: #8B2626">Fig. 1</span><span class="t">Las ventanas del taller</span><span class="d">Portal v1 a v3. Hay tres comparativos: portal, blockout a render, criatura.</span></div>
+<span class="peq" style="font-style: italic">1 de 3</span>
+</div>
+<span class="etq" style="color: #6B5F58; display: block; margin: 70px 0 22px">Sets y Creador - versión pública, sin spoilers</span>
+<div class="g12" style="grid-template-columns: repeat(4, minmax(0, 1fr))">
+<div style="display: flex; flex-direction: column; gap: 14px"><div class="ph" style="aspect-ratio: 3 / 4"><div class="rombo" style="width: 26px; height: 26px"></div></div><div class="cartela"><div class="filete"></div><span class="t">Set 1 - Taller</span><span class="d">Borrador. 2-3 frases.</span></div></div>
+<div style="display: flex; flex-direction: column; gap: 14px"><div class="ph" style="aspect-ratio: 3 / 4"><div class="rombo" style="width: 26px; height: 26px"></div></div><div class="cartela"><div class="filete"></div><span class="t">Set 2 - Bosque</span><span class="d">Borrador. 2-3 frases.</span></div></div>
+<div style="display: flex; flex-direction: column; gap: 14px"><div class="ph" style="aspect-ratio: 3 / 4"><div class="rombo" style="width: 26px; height: 26px"></div></div><div class="cartela"><div class="filete"></div><span class="t">Set 3 - Bodega</span><span class="d">Borrador. 2-3 frases.</span></div></div>
+<div style="display: flex; flex-direction: column; gap: 14px"><div class="ph" style="aspect-ratio: 3 / 4"><div class="rombo" style="width: 26px; height: 26px"></div></div><div class="cartela"><div class="filete"></div><span class="t">El Creador</span><span class="d">Borrador. 2-3 frases.</span></div></div>
+</div>
+</section>
+
+<svg viewBox="0 0 1000 40" width="100%" height="40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q35 11 71 22 Q126 13 181 22 Q214 29 248 24 Q298 10 349 20 Q398 14 448 19 Q498 24 548 17 Q597 33 645 21 Q681 29 718 24 Q750 27 783 18 Q830 14 877 22 Q908 33 939 19 Q994 22 1000 23" fill="none" stroke="#4B4543" stroke-width="1"></path></svg>
+
+<section id="metodo" class="bloque">
+<span class="etq" style="color: #6B5F58">III - Del guion a la entrega</span>
+<h2 class="h2 grab" style="margin: 12px 0 18px">Método</h2>
+<p class="peq" style="margin: 0 0 40px; max-width: 40em">La sección se queda fija mientras bajas y va pasando de estación. Pulsa una estación para verla.</p>
+<div class="metodo-fijo">
+<ol class="estaciones-v">
+<sc-for list="{{ pipeline }}" as="e" hint-placeholder-count="8">
+<li><button class="est-v" onClick="{{ e.ir }}" style="color: {{ e.colorTxt }}"><span class="nodo-v" style="background: {{ e.nodo }}; border-color: {{ e.nodoBorde }}"></span><span class="cz" style="font-size: 13px; letter-spacing: .24em; width: 40px">{{ e.n }}</span><span class="h3" style="font-size: 22px">{{ e.t }}</span><span class="tag" style="margin-left: auto; border-color: {{ e.borde }}; color: {{ e.color }}; background: {{ e.fondo }}">{{ e.estado }}</span></button></li>
+</sc-for>
+</ol>
+<div class="escenario">
+<div class="ph" style="aspect-ratio: 16 / 10"><span class="ins">WIP - {{ actualM.t }}</span><div class="rombo"></div></div>
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; margin-top: 20px">
+<div class="cartela"><div class="filete"></div><span class="t">{{ actualM.n }} - {{ actualM.t }}</span><span class="d">{{ actualM.d }}</span></div>
+<span class="cz" style="font-size: 48px; color: rgba(54,41,38,.25)">{{ actualM.contador }}</span>
+</div>
+<div class="regla-m"><div style="width: {{ actualM.avance }}"></div></div>
+</div>
+</div>
+<div class="g12" style="margin-top: 90px; align-items: start">
+<div style="grid-column: span 8">
+<span class="etq" style="color: #6B5F58">Referencias - qué es, qué cojo, dónde aplica</span>
+<div class="cajones" style="margin-top: 20px">
+<sc-for list="{{ refs }}" as="r" hint-placeholder-count="8">
+<a class="cajon" href="#"><span class="tirador"></span><span class="etq" style="color: #362926">{{ r.c }}</span><span class="peq" style="font-style: italic">{{ r.n }}</span></a>
+</sc-for>
+</div>
+</div>
+<div style="grid-column: 10 / span 3; display: flex; flex-direction: column; gap: 10px">
+<span class="etq" style="color: #6B5F58">Dato de render</span>
+<span class="mono grab" style="font-size: 96px; letter-spacing: .02em">57 s</span>
+<span class="h3" style="color: #6B5F58; text-decoration: line-through; text-decoration-thickness: 1px">4 min 12 s</span>
+<span class="peq">Por fotograma, ajustes propios frente a los de fábrica. 768 fotogramas (32 s) = unas 12,2 h. Se repite con la escena real en S16.</span>
+</div>
+</div>
+</section>
+
+<svg viewBox="0 0 1000 40" width="100%" height="40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q56 25 112 17 Q171 29 230 18 Q279 26 328 23 Q372 13 415 18 Q455 28 495 24 Q534 17 574 21 Q608 24 642 19 Q682 32 723 21 Q761 20 800 21 Q858 7 917 19 Q966 14 1000 21" fill="none" stroke="#4B4543" stroke-width="1"></path></svg>
+
+<section id="calendario" class="bloque">
+<span class="etq" style="color: #6B5F58">IV - S01 a S35</span>
+<h2 class="h2 grab" style="margin: 12px 0 18px">Calendario</h2>
+<p class="peq" style="margin: 0 0 40px; max-width: 40em">Las 35 semanas sobre una veta. Al bajar se enciende hasta la semana actual. Pulsa un bloque para ver sus semanas.</p>
+<div class="cal">
+<div class="veta-cal cal-escritorio">
+<svg viewBox="0 0 1000 1300" width="100%" height="1300" preserveAspectRatio="none" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 1300px"><path d="M500.0 30.0 L511.4 36.2 L522.8 42.4 L534.1 48.6 L545.4 54.8 L556.6 61.0 L567.7 67.2 L578.7 73.4 L589.6 79.6 L600.4 85.8 L611.0 92.0 L621.4 98.2 L631.7 104.4 L641.7 110.6 L651.5 116.8 L661.1 123.0 L670.5 129.2 L679.5 135.4 L688.3 141.6 L696.9 147.8 L705.1 154.0 L713.0 160.2 L720.5 166.4 L727.7 172.6 L734.6 178.8 L741.1 185.0 L747.3 191.2 L753.0 197.4 L758.4 203.6 L763.4 209.8 L767.9 216.0 L772.1 222.2 L775.8 228.4 L779.1 234.6 L782.0 240.8 L784.4 247.0 L786.4 253.2 L788.0 259.4 L789.1 265.6 L789.8 271.8 L790.0 278.0 L789.8 284.2 L789.1 290.4 L788.0 296.6 L786.4 302.8 L784.4 309.0 L782.0 315.2 L779.1 321.4 L775.8 327.6 L772.1 333.8 L767.9 340.0 L763.4 346.2 L758.4 352.4 L753.0 358.6 L747.3 364.8 L741.1 371.0 L734.6 377.2 L727.7 383.4 L720.5 389.6 L713.0 395.8 L705.1 402.0 L696.9 408.2 L688.3 414.4 L679.5 420.6 L670.5 426.8 L661.1 433.0 L651.5 439.2 L641.7 445.4 L631.7 451.6 L621.4 457.8 L611.0 464.0 L600.4 470.2 L589.6 476.4 L578.7 482.6 L567.7 488.8 L556.6 495.0 L545.4 501.2 L534.1 507.4 L522.8 513.6 L511.4 519.8 L500.0 526.0 L488.6 532.2 L477.2 538.4 L465.9 544.6 L454.6 550.8 L443.4 557.0 L432.3 563.2 L421.3 569.4 L410.4 575.6 L399.6 581.8 L389.0 588.0 L378.6 594.2 L368.3 600.4 L358.3 606.6 L348.5 612.8 L338.9 619.0 L329.5 625.2 L320.5 631.4 L311.7 637.6 L303.1 643.8 L294.9 650.0 L287.0 656.2 L279.5 662.4 L272.3 668.6 L265.4 674.8 L258.9 681.0 L252.7 687.2 L247.0 693.4 L241.6 699.6 L236.6 705.8 L232.1 712.0 L227.9 718.2 L224.2 724.4 L220.9 730.6 L218.0 736.8 L215.6 743.0 L213.6 749.2 L212.0 755.4 L210.9 761.6 L210.2 767.8 L210.0 774.0 L210.2 780.2 L210.9 786.4 L212.0 792.6 L213.6 798.8 L215.6 805.0 L218.0 811.2 L220.9 817.4 L224.2 823.6 L227.9 829.8 L232.1 836.0 L236.6 842.2 L241.6 848.4 L247.0 854.6 L252.7 860.8 L258.9 867.0 L265.4 873.2 L272.3 879.4 L279.5 885.6 L287.0 891.8 L294.9 898.0 L303.1 904.2 L311.7 910.4 L320.5 916.6 L329.5 922.8 L338.9 929.0 L348.5 935.2 L358.3 941.4 L368.3 947.6 L378.6 953.8 L389.0 960.0 L399.6 966.2 L410.4 972.4 L421.3 978.6 L432.3 984.8 L443.4 991.0 L454.6 997.2 L465.9 1003.4 L477.2 1009.6 L488.6 1015.8 L500.0 1022.0 L511.4 1028.2 L522.8 1034.4 L534.1 1040.6 L545.4 1046.8 L556.6 1053.0 L567.7 1059.2 L578.7 1065.4 L589.6 1071.6 L600.4 1077.8 L611.0 1084.0 L621.4 1090.2 L631.7 1096.4 L641.7 1102.6 L651.5 1108.8 L661.1 1115.0 L670.5 1121.2 L679.5 1127.4 L688.3 1133.6 L696.9 1139.8 L705.1 1146.0 L713.0 1152.2 L720.5 1158.4 L727.7 1164.6 L734.6 1170.8 L741.1 1177.0 L747.3 1183.2 L753.0 1189.4 L758.4 1195.6 L763.4 1201.8 L767.9 1208.0 L772.1 1214.2 L775.8 1220.4 L779.1 1226.6 L782.0 1232.8 L784.4 1239.0 L786.4 1245.2 L788.0 1251.4 L789.1 1257.6 L789.8 1263.8 L790.0 1270.0" fill="none" stroke="#4B4543" stroke-opacity=".55" stroke-width="2" vector-effect="non-scaling-stroke"></path><path d="M500.0 30.0 L511.4 36.2 L522.8 42.4 L534.1 48.6 L545.4 54.8 L556.6 61.0 L567.7 67.2 L578.7 73.4 L589.6 79.6 L600.4 85.8 L611.0 92.0 L621.4 98.2 L631.7 104.4 L641.7 110.6 L651.5 116.8 L661.1 123.0 L670.5 129.2 L679.5 135.4 L688.3 141.6 L696.9 147.8 L705.1 154.0 L713.0 160.2 L720.5 166.4 L727.7 172.6 L734.6 178.8 L741.1 185.0 L747.3 191.2 L753.0 197.4 L758.4 203.6 L763.4 209.8 L767.9 216.0 L772.1 222.2 L775.8 228.4 L779.1 234.6 L782.0 240.8 L784.4 247.0 L786.4 253.2 L788.0 259.4 L789.1 265.6 L789.8 271.8 L790.0 278.0 L789.8 284.2 L789.1 290.4 L788.0 296.6 L786.4 302.8 L784.4 309.0 L782.0 315.2 L779.1 321.4 L775.8 327.6 L772.1 333.8 L767.9 340.0 L763.4 346.2 L758.4 352.4 L753.0 358.6 L747.3 364.8 L741.1 371.0 L734.6 377.2 L727.7 383.4 L720.5 389.6 L713.0 395.8 L705.1 402.0 L696.9 408.2 L688.3 414.4 L679.5 420.6 L670.5 426.8 L661.1 433.0 L651.5 439.2 L641.7 445.4 L631.7 451.6 L621.4 457.8 L611.0 464.0 L600.4 470.2 L589.6 476.4 L578.7 482.6 L567.7 488.8 L556.6 495.0 L545.4 501.2 L534.1 507.4 L522.8 513.6 L511.4 519.8 L500.0 526.0 L488.6 532.2 L477.2 538.4 L465.9 544.6 L454.6 550.8 L443.4 557.0 L432.3 563.2 L421.3 569.4 L410.4 575.6 L399.6 581.8 L389.0 588.0 L378.6 594.2 L368.3 600.4 L358.3 606.6 L348.5 612.8 L338.9 619.0 L329.5 625.2 L320.5 631.4 L311.7 637.6 L303.1 643.8 L294.9 650.0 L287.0 656.2 L279.5 662.4 L272.3 668.6 L265.4 674.8 L258.9 681.0 L252.7 687.2 L247.0 693.4 L241.6 699.6 L236.6 705.8 L232.1 712.0 L227.9 718.2 L224.2 724.4 L220.9 730.6 L218.0 736.8 L215.6 743.0 L213.6 749.2 L212.0 755.4 L210.9 761.6 L210.2 767.8 L210.0 774.0 L210.2 780.2 L210.9 786.4 L212.0 792.6 L213.6 798.8 L215.6 805.0 L218.0 811.2 L220.9 817.4 L224.2 823.6 L227.9 829.8 L232.1 836.0 L236.6 842.2 L241.6 848.4 L247.0 854.6 L252.7 860.8 L258.9 867.0 L265.4 873.2 L272.3 879.4 L279.5 885.6 L287.0 891.8 L294.9 898.0 L303.1 904.2 L311.7 910.4 L320.5 916.6 L329.5 922.8 L338.9 929.0 L348.5 935.2 L358.3 941.4 L368.3 947.6 L378.6 953.8 L389.0 960.0 L399.6 966.2 L410.4 972.4 L421.3 978.6 L432.3 984.8 L443.4 991.0 L454.6 997.2 L465.9 1003.4 L477.2 1009.6 L488.6 1015.8 L500.0 1022.0 L511.4 1028.2 L522.8 1034.4 L534.1 1040.6 L545.4 1046.8 L556.6 1053.0 L567.7 1059.2 L578.7 1065.4 L589.6 1071.6 L600.4 1077.8 L611.0 1084.0 L621.4 1090.2 L631.7 1096.4 L641.7 1102.6 L651.5 1108.8 L661.1 1115.0 L670.5 1121.2 L679.5 1127.4 L688.3 1133.6 L696.9 1139.8 L705.1 1146.0 L713.0 1152.2 L720.5 1158.4 L727.7 1164.6 L734.6 1170.8 L741.1 1177.0 L747.3 1183.2 L753.0 1189.4 L758.4 1195.6 L763.4 1201.8 L767.9 1208.0 L772.1 1214.2 L775.8 1220.4 L779.1 1226.6 L782.0 1232.8 L784.4 1239.0 L786.4 1245.2 L788.0 1251.4 L789.1 1257.6 L789.8 1263.8 L790.0 1270.0" pathLength="100" stroke-dasharray="22.9 100" fill="none" stroke="#8B2626" stroke-width="3.5" vector-effect="non-scaling-stroke"></path></svg>
+<sc-for list="{{ bloques }}" as="b" hint-placeholder-count="7">
+<button class="nodo-cal" onClick="{{ b.toggle }}" aria-pressed="{{ b.abierto }}" style="left: {{ b.x }}; top: {{ b.y }}"><span class="rombo-cal" style="background: {{ b.fondoNodo }}; border-color: {{ b.bordeNodo }}; width: {{ b.tam }}; height: {{ b.tam }}"></span><span class="cartela-cal" style="{{ b.lado }}"><span class="etq" style="color: #6B5F58">{{ b.rango }}</span><span class="h3" style="font-size: 22px; color: {{ b.colorTit }}">{{ b.nombre }}</span><span class="peq" style="font-style: italic">{{ b.fechas }}</span><span class="tag" style="border-color: {{ b.borde }}; color: {{ b.color }}; background: {{ b.fondo }}">{{ b.estado }}</span></span></button>
+</sc-for>
+<span class="ahora" style="left: {{ hoy.x }}; top: {{ hoy.y }}"><span class="etq" style="color: #8B2626">Hoy - S04</span></span>
+</div>
+<ol class="cal-movil">
+<sc-for list="{{ bloques }}" as="b" hint-placeholder-count="7">
+<li><button class="fila-m" onClick="{{ b.toggle }}" style="border-left-color: {{ b.bordeNodo }}"><span class="etq" style="color: #6B5F58">{{ b.rango }}</span><span class="h3" style="font-size: 22px">{{ b.nombre }}</span><span class="tag" style="border-color: {{ b.borde }}; color: {{ b.color }}; background: {{ b.fondo }}">{{ b.estado }}</span></button></li>
+</sc-for>
+</ol>
+<aside class="panel-cal">
+<span class="etq" style="color: #6B5F58">Bloque abierto</span>
+<span class="h3">{{ abierto.nombre }}</span>
+<span class="peq" style="font-style: italic">{{ abierto.fechas }}</span>
+<div style="margin-top: 12px; display: flex; flex-direction: column">
+<sc-for list="{{ abierto.semanas }}" as="s" hint-placeholder-count="4">
+<div style="display: grid; grid-template-columns: 56px 1fr; gap: 4px 12px; padding: 12px 0; border-top: 1px dashed rgba(54,41,38,.22)"><span class="cz" style="font-size: 17px; font-weight: 600; color: {{ s.color }}">{{ s.id }}</span><span>{{ s.t }}</span><span></span><span style="display: flex; justify-content: space-between"><span class="peq">{{ s.f }}</span><a class="etq" href="#" style="color: #8B2626">Ver registro</a></span></div>
+</sc-for>
+<sc-if value="{{ abierto.vacio }}" hint-placeholder-val="{{ false }}"><p class="peq" style="margin: 12px 0 0; font-style: italic">[Placeholder] Las semanas de este bloque.</p></sc-if>
+</div>
+</aside>
+</div>
+</section>
+
+<svg viewBox="0 0 1000 40" width="100%" height="40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q35 11 71 22 Q126 13 181 22 Q214 29 248 24 Q298 10 349 20 Q398 14 448 19 Q498 24 548 17 Q597 33 645 21 Q681 29 718 24 Q750 27 783 18 Q830 14 877 22 Q908 33 939 19 Q994 22 1000 23" fill="none" stroke="#4B4543" stroke-width="1"></path></svg>
+
+<section id="archivo" class="bloque">
+<span class="etq" style="color: #6B5F58">V - La colección</span>
+<h2 class="h2 grab" style="margin: 12px 0 30px">Archivo</h2>
+<div class="filtros">
+<span class="etq" style="color: #6B5F58; margin-right: 6px">Tipo</span>
+<sc-for list="{{ filtrosTipo }}" as="t" hint-placeholder-count="5">
+<button class="chip" onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="background: {{ t.fondo }}; color: {{ t.color }}; border-color: {{ t.borde }}">{{ t.n }}</button>
+</sc-for>
+</div>
+<div class="filtros" style="margin-top: 10px">
+<span class="etq" style="color: #6B5F58; margin-right: 6px">Bloque</span>
+<button class="chip" style="background: #362926; color: #F1F2E3; border-color: #362926">Todos</button><button class="chip">Previz</button><button class="chip">Assets</button><button class="chip">Look dev</button><button class="chip">Animación</button><button class="chip">Render</button><button class="chip">Post</button>
+</div>
+<div class="coleccion">
+<sc-for list="{{ piezas }}" as="p" hint-placeholder-count="8">
+<figure class="pieza"><div class="ph" style="aspect-ratio: {{ p.ratio }}; box-shadow: none"><span class="ins">{{ p.tipo }}</span><div class="rombo" style="width: 26px; height: 26px"></div></div><figcaption class="cartela" style="margin-top: 12px"><div class="filete"></div><span class="t">{{ p.t }}</span><span class="d">{{ p.d }}</span></figcaption></figure>
+</sc-for>
+</div>
+<p class="peq" style="margin: 24px 0 0">{{ cuentaArchivo }} Sin JavaScript se ven todas.</p>
+</section>
+
+</div>
+</div>
+</div>
+
+<a class="puerta-sig pad" href="Portada.dc.html">
+<div style="display: flex; flex-direction: column; gap: 6px"><span class="etq" style="color: #6B5F58">Volver al inicio</span><span class="h2 grab" style="font-size: 64px">I - Portada</span></div>
+<svg width="64" height="20" viewBox="0 0 64 20" aria-hidden="true"><path d="M0 10h60M52 3l8 7-8 7" fill="none" stroke="#362926" stroke-width="1.4"></path></svg>
+</a>
+
+<footer>
+<svg width="100%" height="22" aria-hidden="true" style="display: block; background: #F1F2E3"><defs><pattern id="grecaPr" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M1 21 V1 H21 V17 H5 V5 H17 V13 H9 V9" fill="none" stroke="#CDA434" stroke-width="1.4"></path></pattern></defs><rect width="100%" height="22" fill="url(#grecaPr)"></rect></svg>
+<div class="pie pad">
+<span class="etq">Serie Mármol</span>
+<span class="peq">Música: "Darkness is Coming", Kevin MacLeod (incompetech.com), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></span>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7300}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { abierto: 1, metodo: 1, tipo: 'Todo' }; }
+renderVals() {
+const st = this.state;
+const est = (e) => e === 'Hecho' ? { borde: '#362926', color: '#F1F2E3', fondo: '#362926' } : (e === 'En curso' ? { borde: '#8B2626', color: '#8B2626', fondo: 'transparent' } : { borde: 'rgba(54,41,38,.35)', color: '#6B5F58', fondo: 'transparent' });
+const pip = [
+['I', 'Guion', 'La escena en una página: qué pasa en cada set y cuál es el último plano.', 'Hecho'],
+['II', 'Previz', 'Thumbnails, storyboard y primitivas contra la música.', 'En curso'],
+['III', 'Modelado', 'Solo lo que entra en cámara.', 'Planificado'],
+['IV', 'Rig', 'Un solo rig para la criatura pura y la corrupta.', 'Planificado'],
+['V', 'Look dev', 'Materiales y luz cerrados antes de animar.', 'Planificado'],
+['VI', 'Animación', 'Layout, blocking y animación fina.', 'Planificado'],
+['VII', 'Render', 'Cycles, secuencias OpenEXR multicapa.', 'Planificado'],
+['VIII', 'Post', 'Composición, montaje, sonido y color.', 'Planificado']
+];
+const pipeline = pip.map(([n, t, d, e], i) => ({ n, t, d, estado: e, ...est(e), colorTxt: i === st.metodo ? '#8B2626' : '#362926', nodo: i === st.metodo ? '#8B2626' : (e === 'Hecho' ? '#362926' : '#ECEBDD'), nodoBorde: i === st.metodo ? '#8B2626' : '#4B4543', ir: () => this.setState({ metodo: i }) }));
+const m = pip[st.metodo];
+const actualM = { n: m[0], t: m[1], d: m[2], contador: '0' + (st.metodo + 1) + ' / 08', avance: ((st.metodo + 1) / 8 * 100) + '%' };
+const refs = [
+{ c: 'Personajes', n: '4 referencias' }, { c: 'Sets', n: '2 referencias' },
+{ c: 'Color y luz', n: 'Por documentar' }, { c: 'Cámara', n: 'Por documentar' },
+{ c: 'Materiales', n: '1 referencia' }, { c: 'Sonido y música', n: '1 referencia' },
+{ c: 'Narrativa', n: '1 referencia' }, { c: 'Producción', n: '3 referencias' }
+];
+const pos = [[50.0,30],[76.8,216],[61.4,462],[33.0,625],[27.7,884],[55.7,1053],[79.0,1270]];
+const datos = [
+{ rango: 'S01 - S02', nombre: 'Cimientos', fechas: '21/09 a 04/10', estado: 'Hecho', semanas: [] },
+{ rango: 'S03 - S06', nombre: 'Previz', fechas: '05/10 a 01/11', estado: 'En curso', semanas: [
+{ id: 'S03', f: '05/10 a 11/10', t: 'Thumbnails y storyboard' },
+{ id: 'S04', f: '12/10 a 18/10', t: 'Blockout 3D de los tres sets y cámaras' },
+{ id: 'S05', f: '19/10 a 25/10', t: 'Previz animada contra la música' },
+{ id: 'S06', f: '26/10 a 01/11', t: 'Lista de planos y assets, color script' }
+] },
+{ rango: 'S07 - S13', nombre: 'Assets', fechas: '02/11 a 20/12', estado: 'Planificado', semanas: [] },
+{ rango: 'S14 - S16', nombre: 'Look dev', fechas: '21/12 a 10/01', estado: 'Planificado', semanas: [] },
+{ rango: 'S17 - S25', nombre: 'Animación', fechas: '11/01 a 14/03', estado: 'Planificado', semanas: [] },
+{ rango: 'S26 - S29', nombre: 'Render', fechas: '15/03 a 11/04', estado: 'Planificado', semanas: [] },
+{ rango: 'S30 - S35', nombre: 'Post y entrega', fechas: '12/04 a 21/05', estado: 'Planificado', semanas: [] }
+];
+const bloques = datos.map((b, i) => {
+const x = pos[i][0], y = pos[i][1];
+const sel = i === st.abierto;
+const hecho = b.estado === 'Hecho', curso = b.estado === 'En curso';
+return { ...b, ...est(b.estado),
+x: x + '%', y: y + 'px',
+lado: x < 50 ? 'left: 22px' : 'right: 22px',
+tam: sel ? '22px' : '16px',
+fondoNodo: sel ? '#8B2626' : (hecho || curso ? '#362926' : '#ECEBDD'),
+bordeNodo: sel || curso ? '#8B2626' : '#4B4543',
+colorTit: sel ? '#8B2626' : '#362926',
+abierto: sel,
+toggle: () => this.setState({ abierto: i }) };
+});
+const ab = datos[st.abierto] || datos[1];
+const abierto = { nombre: 'Bloque ' + st.abierto + ' - ' + ab.nombre, fechas: ab.rango + ', ' + ab.fechas, semanas: ab.semanas.map((s) => ({ ...s, color: s.id === 'S04' ? '#8B2626' : '#362926' })), vacio: ab.semanas.length === 0 };
+const tipos = ['Todo', 'WIP', 'Versiones', 'Fallos', 'Cuaderno'];
+const filtrosTipo = tipos.map((t) => ({ n: t, on: t === st.tipo, fondo: t === st.tipo ? '#362926' : 'transparent', color: t === st.tipo ? '#F1F2E3' : '#362926', borde: t === st.tipo ? '#362926' : 'rgba(54,41,38,.3)', pick: () => this.setState({ tipo: t }) }));
+const todas = [
+{ tipo: 'WIP', t: 'Blockout del taller', d: 'Previz, S04.', ratio: '4 / 3' },
+{ tipo: 'Versiones', t: 'Portal v1, v2 y v3', d: 'Del óvalo con ruido a Voronoi.', ratio: '3 / 4' },
+{ tipo: 'Fallos', t: 'Grieta que no cerraba', d: 'Qué falló y cómo se arregló.', ratio: '16 / 10' },
+{ tipo: 'Cuaderno', t: 'Grafo del proyecto', d: 'Captura del vault de Obsidian.', ratio: '1 / 1' },
+{ tipo: 'WIP', t: 'Thumbnails 3D', d: 'Los planos en primitivas, S03.', ratio: '16 / 9' },
+{ tipo: 'Versiones', t: 'Criatura, primera silueta', d: 'Antes del diseño final.', ratio: '4 / 5' },
+{ tipo: 'WIP', t: 'Test de render', d: 'Ajustes propios frente a los de fábrica.', ratio: '4 / 3' },
+{ tipo: 'Fallos', t: 'Calavera boca abajo', d: 'El busto exportado del revés.', ratio: '3 / 4' }
+];
+const piezas = st.tipo === 'Todo' ? todas : todas.filter((p) => p.tipo === st.tipo);
+return { pipeline, actualM, refs, bloques, abierto, hoy: { x: '70.9%', y: '309px' }, filtrosTipo, piezas, cuentaArchivo: piezas.length + ' de ' + todas.length + ' piezas.' };
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+---
+// Escena 2.5D de "Cruzar la ventana": pared del taller, marco de ventana en
+// arco, tres capas de nebulosa y el bosque. Todo dibujado con CSS y marcado
+// como placeholder (capas de los renders previstas en S28).
+// La variable --p (0 a 1) mueve cada capa a su velocidad y escala (solo
+// transform y opacity; css/sala-teaser.css). En la escena fijada la pone
+// js/teaser.js; en los fotogramas fijos va escrita aquí con `p`.
+// Props: p (0 a 1; sin él, la hereda), contador ('01 / 03'), clase.
+const { p, contador = '', clase = '' } = Astro.props;
+---
+<div class:list={['ventana-escena', clase]} style={p === undefined ? undefined : `--p: ${p}`} aria-hidden="true">
+  <div class="ventana-escena__pared"></div>
+  <div class="ventana-escena__neb ventana-escena__neb--lejana"></div>
+  <div class="ventana-escena__neb ventana-escena__neb--media"></div>
+  <div class="ventana-escena__ventana">
+    <div class="ventana-escena__vista"><div class="ventana-escena__arboles"></div></div>
+    <div class="ventana-escena__parteluz"></div>
+  </div>
+  <div class="ventana-escena__bosque"><div class="ventana-escena__arboles"></div></div>
+  <div class="ventana-escena__neb ventana-escena__neb--cercana"></div>
+  <span class="ventana-escena__insignia">Placeholder · capas de los renders, S28</span>
+  {contador && <span class="ventana-escena__contador" data-cruce-contador>{contador}</span>}
+</div>

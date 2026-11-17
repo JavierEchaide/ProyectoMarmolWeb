@@ -51,12 +51,12 @@ const base = BASE, out = SALIDA;
   await p.keyboard.press('Escape');
   // proceso
   await p.goto(base + '/proceso.html'); await p.waitForTimeout(800);
-  await p.click('.bloque summary'); await p.waitForTimeout(400);
-  await p.locator('.bloque').first().screenshot({ path: out + '/bloque.png' });
+  await p.click('.calveta summary'); await p.waitForTimeout(400);
+  await p.locator('.calveta__bloque').first().screenshot({ path: out + '/bloque.png' });
   await p.locator('[data-abrir-dialogo]').first().click(); await p.waitForTimeout(700); await p.screenshot({ path: out + '/dialogo.png' });
   await p.keyboard.press('Escape'); await p.waitForTimeout(300);
-  await p.click('.archivo summary'); await p.waitForTimeout(400);
-  await p.locator('.archivo').screenshot({ path: out + '/archivo.png' });
+  await p.click('[data-filtro-tipo="fallos"]'); await p.waitForTimeout(400);
+  await p.locator('#archivo').screenshot({ path: out + '/archivo.png' });
   const c = p.locator('[data-comparador-control]').first(); await c.scrollIntoViewIfNeeded();
   await c.evaluate(el => { el.value = 25; el.dispatchEvent(new Event('input')); }); await p.waitForTimeout(200);
   await p.locator('.comparador').first().screenshot({ path: out + '/comparador.png' });

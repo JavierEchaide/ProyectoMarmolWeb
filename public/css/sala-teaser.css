@@ -1,0 +1,835 @@
+/* II · Teaser (V3). Todo el CSS propio de la sala, acotado a
+   [data-sala='teaser']. Travertino crema, nebulosa en grises cálidos, sin oro.
+   Índice:
+     1. Base de la sala (márgenes, rejilla, franjas, títulos)
+     2. Título a contraluz
+     3. Vídeo (franja de sala oscura)
+     4. Sinopsis y ficha
+     5. Cruzar la ventana (escena fijada y fotogramas fijos)
+     6. Fotogramas (carrusel)
+     7. La rima
+     8. Movimiento reducido */
+
+/* 1. Base de la sala ------------------------------------------------------ */
+
+[data-sala='teaser'] {
+  --teaser-pad: clamp(20px, 6.67vw, 96px);
+  --teaser-linea: rgb(54 41 38 / 0.18);
+}
+/* La nebulosa, atenuada: acompaña, no compite con el texto */
+[data-sala='teaser'] .nebulosa {
+  opacity: 0.5;
+}
+.sala-pad {
+  padding-inline: var(--teaser-pad);
+}
+/* Franja del fondo de la sala: el texto va sobre el travertino liso, con la
+   nebulosa asomando solo en los bordes (nunca cajas blancas) */
+.sala-franja {
+  position: relative;
+  background: linear-gradient(
+    rgb(232 226 212 / 0.72),
+    rgb(232 226 212 / 0.9) 90px,
+    rgb(232 226 212 / 0.9) calc(100% - 90px),
+    rgb(232 226 212 / 0.72)
+  );
+}
+.sala-veta {
+  padding-block: 20px;
+}
+.sala-rejilla {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 30px;
+  align-items: end;
+}
+.sala-antetitulo {
+  display: block;
+  margin: 0;
+  color: var(--tinta-2);
+}
+.sala-titulo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sala-h2 {
+  margin: 0;
+  font-family: var(--f-titulo);
+  font-size: var(--t-h2);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  color: #3a2c29;
+  text-shadow: var(--grabado-monumental);
+}
+
+/* 2. Título a contraluz --------------------------------------------------- */
+
+.contraluz {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(420px, 47vw, 680px);
+  text-align: center;
+  overflow: hidden;
+}
+.contraluz__numeral {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: calc(var(--t-display) * 3.1);
+  letter-spacing: 0.1em;
+  margin-right: -0.1em;
+  -webkit-text-stroke: 1.5px rgb(54 41 38 / 0.16);
+}
+/* El halo: luz blanca cálida detrás de las letras */
+.contraluz__halo {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: min(1100px, 130vw);
+  height: clamp(260px, 30vw, 420px);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(50% 50% at 50% 50%, rgb(255 253 246 / 0.95), rgb(255 250 236 / 0.55) 45%, rgb(255 250 236 / 0) 72%);
+  pointer-events: none;
+}
+.contraluz__texto {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(16px, 1.8vw, 26px);
+  margin-top: clamp(20px, 4vw, 60px);
+  max-width: 100%;
+}
+.contraluz__sala {
+  color: var(--tinta-2);
+  letter-spacing: 0.4em;
+  margin-right: -0.4em;
+}
+/* Tinta oscura; la luz está detrás (nunca letras blancas sobre el travertino) */
+.contraluz__titulo {
+  margin: 0 -0.42em 0 0;
+  font-family: var(--f-titulo);
+  font-size: var(--t-display);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #2e2320;
+  text-shadow: 0 0 1px rgb(255 255 255 / 0.9), 0 0 30px rgb(255 251 240 / 0.95), 0 0 80px rgb(255 248 230 / 0.8);
+}
+.contraluz__filete {
+  width: 60px;
+  height: 1px;
+  background: rgb(54 41 38 / 0.4);
+}
+.contraluz__lema {
+  color: #4f433d;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  margin-right: -0.4em;
+}
+
+/* 3. Vídeo ---------------------------------------------------------------- */
+
+.pantalla {
+  position: relative;
+  padding-top: clamp(40px, 5.5vw, 80px);
+  padding-bottom: clamp(36px, 4.2vw, 60px);
+}
+.pantalla__video {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 2.35 / 1;
+  padding: 0;
+  border: 0;
+  color: var(--claro-oscura);
+  background: radial-gradient(60% 80% at 50% 40%, #2b231f, #0d0d0d 75%);
+  /* veta fina de travertino en el marco */
+  outline: 1px solid rgb(163 152 134 / 0.55);
+  outline-offset: clamp(6px, 0.7vw, 10px);
+  cursor: pointer;
+  box-shadow: 0 30px 40px -24px rgb(0 0 0 / 0.8);
+}
+.pantalla__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pantalla__insignia {
+  position: absolute;
+  top: clamp(10px, 1.2vw, 16px);
+  left: clamp(10px, 1.2vw, 16px);
+  padding: 3px 8px;
+  border: 1px solid rgb(163 154 144 / 0.5);
+  color: var(--cartela-oscura);
+}
+.pantalla__play {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(64px, 7.2vw, 104px);
+  height: clamp(64px, 7.2vw, 104px);
+  border-radius: 50%;
+  border: 1px solid rgb(233 228 216 / 0.7);
+  background: rgb(13 13 13 / 0.35);
+  transition: transform 0.6s var(--curva-salida), border-color 0.4s, background-color 0.4s;
+}
+.pantalla__play svg {
+  width: 27%;
+  height: auto;
+  margin-left: 6%;
+}
+.pantalla__video:focus-visible {
+  outline: 2px solid var(--claro-oscura);
+}
+.pantalla__video:focus-visible .pantalla__play {
+  border-color: #fff;
+  background: rgb(13 13 13 / 0.6);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pantalla__video:hover .pantalla__play {
+    transform: scale(1.08);
+    border-color: #fff;
+    background: rgb(13 13 13 / 0.6);
+  }
+}
+.pantalla__cartela {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px 20px;
+  margin-top: clamp(24px, 2.4vw, 34px);
+}
+.pantalla__dato {
+  color: #b8ad9f;
+}
+.pantalla__nota {
+  font-size: var(--t-pequeno);
+  font-style: italic;
+  color: var(--cartela-oscura);
+}
+
+/* 4. Sinopsis y ficha ------------------------------------------------------ */
+
+.sinopsis {
+  padding-top: clamp(64px, 8.3vw, 120px);
+  padding-bottom: clamp(56px, 5.6vw, 80px);
+}
+.sinopsis__texto {
+  grid-column: span 7;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+[data-sala='teaser'] .sinopsis__pared {
+  max-width: none;
+}
+[data-sala='teaser'] .sinopsis__pared p {
+  margin: 0;
+  font-size: var(--t-h3);
+  line-height: 1.5;
+}
+[data-sala='teaser'] .sinopsis__pared p + p {
+  margin-top: 22px;
+  font-style: italic;
+  color: #4f433d;
+}
+.sinopsis .sala-rejilla {
+  align-items: start;
+}
+.sinopsis__ficha {
+  align-self: end;
+  grid-column: 9 / span 4;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ficha-v3 {
+  margin: 0;
+  border-bottom: 1px solid var(--teaser-linea);
+}
+.ficha-v3__fila {
+  display: grid;
+  grid-template-columns: minmax(0, 118px) minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--teaser-linea);
+}
+.ficha-v3__titulo {
+  padding-top: 3px;
+}
+.ficha-v3__valor {
+  margin: 0;
+  font-size: var(--t-pequeno);
+  line-height: 1.5;
+}
+.ficha-v3__valor p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.ficha-v3__secundaria {
+  color: var(--tinta-2);
+}
+
+/* 5. Cruzar la ventana ------------------------------------------------------ */
+
+.cruce {
+  position: relative;
+  background: var(--sala-fondo);
+  padding-bottom: clamp(60px, 7.6vw, 110px);
+}
+.cruce__intro {
+  padding-top: clamp(64px, 8.3vw, 120px);
+  padding-bottom: clamp(24px, 2.8vw, 40px);
+}
+.cruce__titulo {
+  grid-column: span 6;
+}
+.cruce__texto {
+  grid-column: 8 / span 5;
+  margin: 0;
+}
+
+/* Sin JavaScript (o con movimiento reducido): los tres fotogramas en lista */
+.cruce__recorrido {
+  display: none;
+}
+.cruce__lista {
+  list-style: none;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 30px 24px;
+}
+.cruce__fotograma {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.cruce__fotograma .ventana-escena {
+  aspect-ratio: 2.35 / 1;
+}
+.cruce__fotograma .ventana-escena__insignia {
+  display: none;
+}
+.cruce__lista li:first-child .ventana-escena__insignia {
+  display: block;
+}
+
+/* Con JavaScript: escena fijada al scroll unas 3 pantallas */
+.cruce--viva .cruce__lista {
+  display: none;
+}
+.cruce--viva .cruce__recorrido {
+  display: block;
+  height: 320vh;
+}
+.cruce__fija {
+  --p: 0;
+  position: sticky;
+  top: var(--cabecera);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--cabecera));
+  height: calc(100svh - var(--cabecera));
+  padding-top: 16px;
+  padding-bottom: 18px;
+}
+.cruce__escena {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.cruce__pasos {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.cruce__paso {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 2px solid var(--teaser-linea);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.5s;
+}
+.cruce__paso-titulo {
+  color: var(--tinta-2);
+  font-weight: 600;
+  transition: color 0.5s;
+}
+.cruce__paso-texto {
+  font-size: var(--t-pequeno);
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--tinta-2);
+}
+.cruce__paso[aria-current='step'] {
+  border-top-color: var(--rojo);
+}
+.cruce__paso[aria-current='step'] .cruce__paso-titulo {
+  color: var(--rojo);
+}
+.cruce__paso:focus-visible {
+  outline: 2px solid var(--rojo);
+  outline-offset: 4px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cruce__paso:hover .cruce__paso-titulo {
+    color: var(--tinta);
+  }
+}
+/* Regla de avance */
+.cruce__regla {
+  position: relative;
+  height: 2px;
+  margin-top: 16px;
+  background: var(--teaser-linea);
+  overflow: hidden;
+}
+.cruce__avance {
+  position: absolute;
+  inset: 0;
+  background: var(--tinta);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p));
+}
+
+/* La escena 2.5D (EscenaVentana.astro). --p va de 0 (taller) a 1 (bosque);
+   cada capa tiene su velocidad y su escala. Solo transform y opacity. */
+.ventana-escena {
+  --marco: clamp(6px, 1vw, 14px);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: #dcd6c8;
+}
+.ventana-escena__pared {
+  position: absolute;
+  inset: -4%;
+  background:
+    radial-gradient(60% 80% at 50% 45%, rgb(245 242 234 / 0) 30%, rgb(214 208 196 / 0.85) 70%),
+    linear-gradient(#ebe7dd, #d9d3c5);
+  transform: scale(calc(1 + var(--p) * 0.12));
+}
+.ventana-escena__neb {
+  position: absolute;
+  inset: -10%;
+  background: center / cover no-repeat;
+  mix-blend-mode: multiply;
+  will-change: transform;
+}
+.ventana-escena__neb--lejana {
+  background-image: url(../img/teaser/nebulosa-1.webp);
+  opacity: 0.45;
+  transform: scale(calc(1 + var(--p) * 0.2));
+}
+.ventana-escena__neb--media {
+  background-image: url(../img/teaser/nebulosa-2.webp);
+  opacity: 0.35;
+  transform: scale(calc(1 + var(--p) * 0.5));
+}
+.ventana-escena__neb--cercana {
+  background-image: url(../img/teaser/nebulosa-3.webp);
+  mix-blend-mode: screen;
+  opacity: calc(var(--p) * 0.5);
+  transform: scale(calc(1 + var(--p) * 0.8));
+}
+/* Ventana en arco: la cámara se acerca hasta que llena la pantalla */
+.ventana-escena__ventana {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 62%;
+  aspect-ratio: 26 / 33;
+  border-radius: 50% 50% 2% 2% / 39.4% 39.4% 1.6% 1.6%;
+  box-shadow: 0 0 0 var(--marco) #f4f2ea, 0 0 0 calc(var(--marco) + 1px) rgb(54 41 38 / 0.25), 0 30px 60px rgb(54 41 38 / 0.35);
+  transform: scale(calc(1 + var(--zoom-recto, 1.6) * var(--p) + var(--zoom-cubo, 9) * var(--p) * var(--p) * var(--p)));
+}
+.ventana-escena__vista {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background: linear-gradient(#cfe0d2 0%, #6f9a7c 45%, #2f5b45 100%);
+}
+.ventana-escena__vista::before,
+.ventana-escena__bosque::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 40% at 50% 30%, rgb(255 255 255 / 0.7), rgb(255 255 255 / 0) 70%);
+}
+.ventana-escena__arboles {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 55%;
+  background:
+    repeating-linear-gradient(90deg, rgb(25 52 38 / 0) 0 18px, rgb(25 52 38 / 0.55) 18px 24px, rgb(25 52 38 / 0) 24px 46px),
+    repeating-linear-gradient(90deg, rgb(25 52 38 / 0) 0 31px, rgb(25 52 38 / 0.28) 31px 35px, rgb(25 52 38 / 0) 35px 71px);
+}
+.ventana-escena__parteluz {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 3px), #f4f2ea calc(50% - 3px), #f4f2ea calc(50% + 3px), transparent calc(50% + 3px)),
+    linear-gradient(transparent calc(42% - 3px), #f4f2ea calc(42% - 3px), #f4f2ea calc(42% + 3px), transparent calc(42% + 3px));
+  opacity: calc(1 - var(--p) * 1.5);
+}
+/* El bosque: al otro lado, cuando la ventana ya llena la pantalla */
+.ventana-escena__bosque {
+  position: absolute;
+  inset: -4%;
+  background: linear-gradient(#d4e4d6 0%, #7aa486 40%, #2c5642 100%);
+  opacity: calc((var(--p) - 0.66) * 3.4);
+  transform: scale(calc(1.24 - var(--p) * 0.24));
+}
+.ventana-escena__bosque .ventana-escena__arboles {
+  height: 80%;
+  background:
+    repeating-linear-gradient(90deg, rgb(25 52 38 / 0) 0 74px, rgb(25 52 38 / 0.6) 74px 92px, rgb(25 52 38 / 0) 92px 196px),
+    repeating-linear-gradient(90deg, rgb(25 52 38 / 0) 0 41px, rgb(25 52 38 / 0.3) 41px 51px, rgb(25 52 38 / 0) 51px 137px);
+  -webkit-mask-image: linear-gradient(transparent, #000 22%);
+  mask-image: linear-gradient(transparent, #000 22%);
+}
+.ventana-escena__insignia {
+  position: absolute;
+  top: clamp(10px, 1.2vw, 16px);
+  left: clamp(10px, 1.2vw, 16px);
+  max-width: calc(100% - 20px);
+  padding: 3px 8px;
+  border: 1px solid var(--teaser-linea);
+  background: rgb(241 242 227 / 0.92);
+  font-family: var(--f-titulo);
+  font-size: var(--t-etiqueta);
+  letter-spacing: 0.2em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--tinta);
+}
+.ventana-escena__contador {
+  position: absolute;
+  right: clamp(12px, 1.5vw, 22px);
+  bottom: clamp(10px, 1.2vw, 16px);
+  padding: 2px 8px;
+  background: rgb(241 242 227 / 0.92);
+  font-family: var(--f-titulo);
+  font-size: var(--t-etiqueta);
+  letter-spacing: 0.3em;
+  color: var(--tinta);
+}
+
+/* 6. Fotogramas (carrusel) -------------------------------------------------- */
+
+.teaser-fotogramas {
+  padding-top: clamp(56px, 5.6vw, 80px);
+  padding-bottom: clamp(64px, 7vw, 100px);
+}
+.carrusel__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px 20px;
+  margin-bottom: clamp(22px, 2.5vw, 36px);
+}
+.carrusel__mando {
+  display: none;
+  align-items: center;
+  gap: clamp(8px, 1.2vw, 18px);
+}
+.carrusel--activo .carrusel__mando {
+  display: flex;
+}
+/* Contador grande: "03 / 12" */
+.carrusel__contador {
+  font-family: var(--f-titulo);
+  font-size: var(--t-h2);
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  color: rgb(54 41 38 / 0.42);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.carrusel__flecha {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  background: none;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: transform 0.4s var(--curva-salida), color 0.3s;
+}
+.carrusel__flecha:focus-visible {
+  outline: 2px solid var(--rojo);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .carrusel__flecha:hover {
+    color: var(--rojo);
+  }
+  .carrusel__flecha[data-carrusel-anterior]:hover {
+    transform: translateX(-4px);
+  }
+  .carrusel__flecha[data-carrusel-siguiente]:hover {
+    transform: translateX(4px);
+  }
+}
+[data-sala='teaser'] .carrusel figure {
+  margin: 0;
+}
+[data-sala='teaser'] .carrusel:not(.carrusel--activo) .carrusel__plano + .carrusel__plano {
+  margin-top: 40px;
+}
+[data-sala='teaser'] .carrusel__cartela {
+  margin-top: 22px;
+  padding: 0;
+}
+.carrusel__cuenta {
+  font-weight: 500;
+  color: var(--tinta-2);
+}
+.carrusel--activo .carrusel__cuenta {
+  display: none;
+}
+.carrusel__estado-v3 {
+  margin-top: 4px;
+  color: var(--tinta-2);
+}
+/* Tira de miniaturas: 12 huecos, número debajo */
+[data-sala='teaser'] .carrusel__tira {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 10px;
+  margin: clamp(22px, 2.2vw, 30px) 0 0;
+  padding: 4px;
+  overflow: visible;
+}
+[data-sala='teaser'] .carrusel__tira li {
+  flex: none;
+  width: auto;
+  min-width: 0;
+}
+[data-sala='teaser'] .carrusel__miniatura {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+  color: var(--tinta-2);
+}
+[data-sala='teaser'] .carrusel__miniatura img,
+[data-sala='teaser'] .carrusel__hueco {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2.35 / 1;
+  object-fit: cover;
+  background: var(--sala-hueco, rgb(241 242 227 / 0.7));
+  border: 1px solid rgb(54 41 38 / 0.16);
+  outline: 1px solid transparent;
+  outline-offset: 3px;
+  opacity: 1;
+  transition: outline-color 0.3s;
+}
+[data-sala='teaser'] .carrusel__numero {
+  position: static;
+  padding: 0;
+  background: none;
+  font-family: var(--f-titulo);
+  font-size: var(--t-etiqueta);
+  letter-spacing: 0.24em;
+  line-height: 1.4;
+  text-align: left;
+  color: inherit;
+}
+[data-sala='teaser'] .carrusel__miniatura[aria-current='true'] {
+  color: var(--rojo);
+  border: 0;
+}
+[data-sala='teaser'] .carrusel__miniatura[aria-current='true'] .carrusel__numero {
+  background: none;
+  color: inherit;
+}
+[data-sala='teaser'] .carrusel__miniatura[aria-current='true'] img,
+[data-sala='teaser'] .carrusel__miniatura[aria-current='true'] .carrusel__hueco {
+  outline-color: var(--rojo);
+}
+[data-sala='teaser'] .carrusel__miniatura:focus-visible {
+  outline: 2px solid var(--rojo);
+  outline-offset: 5px;
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-sala='teaser'] .carrusel__miniatura:hover {
+    color: var(--tinta);
+  }
+  [data-sala='teaser'] .carrusel__miniatura:hover .carrusel__hueco,
+  [data-sala='teaser'] .carrusel__miniatura:hover img {
+    outline-color: rgb(54 41 38 / 0.45);
+  }
+}
+
+/* 7. La rima --------------------------------------------------------------- */
+
+.teaser-rima {
+  padding-top: clamp(40px, 4.2vw, 60px);
+  padding-bottom: clamp(80px, 9.7vw, 140px);
+}
+.teaser-rima__intro {
+  margin-bottom: clamp(26px, 2.8vw, 40px);
+}
+.teaser-rima__titulo {
+  grid-column: span 5;
+}
+.teaser-rima__texto {
+  grid-column: 7 / span 6;
+  margin: 0;
+}
+/* Los dos huecos del comparador: claro (bosque) y oscuro (jaula), sin rayas */
+[data-sala='teaser'] .comparador__capa--antes .imagen {
+  background: radial-gradient(70% 70% at 60% 40%, #f4f3e8, #dedcca);
+}
+[data-sala='teaser'] .comparador__capa--despues .imagen {
+  background: radial-gradient(70% 70% at 40% 40%, #4a3f3a, #1e1816);
+}
+[data-sala='teaser'] .comparador__capa .imagen__falta {
+  background: none;
+}
+[data-sala='teaser'] .comparador__capa--despues .imagen__falta,
+[data-sala='teaser'] .comparador__capa--despues .imagen__texto,
+[data-sala='teaser'] .comparador__capa--despues .imagen__semana {
+  color: var(--claro-oscura);
+}
+.teaser-rima__ayuda {
+  margin: 18px 0 0;
+  font-size: var(--t-pequeno);
+  font-style: italic;
+  color: var(--tinta-2);
+}
+
+/* Móvil ---------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .sala-rejilla {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .sala-rejilla > * {
+    grid-column: 1 / -1;
+  }
+  .contraluz__numeral {
+    font-size: calc(var(--t-display) * 4.3);
+  }
+  .contraluz__titulo {
+    letter-spacing: 0.3em;
+    margin-right: -0.3em;
+  }
+  .contraluz__sala,
+  .contraluz__lema {
+    letter-spacing: 0.24em;
+    margin-right: -0.24em;
+  }
+  [data-sala='teaser'] .sinopsis__pared p {
+    text-align: left;
+    hyphens: manual;
+  }
+  /* Cruzar la ventana en móvil: más corta y con 2 capas de nebulosa menos */
+  .cruce--viva .cruce__recorrido {
+    height: 230vh;
+  }
+  .ventana-escena__neb--media,
+  .ventana-escena__neb--cercana {
+    display: none;
+  }
+  .cruce__lista {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cruce__fotograma .ventana-escena {
+    aspect-ratio: 16 / 10;
+  }
+  .cruce__pasos {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: 16px;
+  }
+  /* solo se ve la cartela del paso actual */
+  .cruce__paso:not([aria-current='step']) {
+    display: none;
+  }
+  .cruce__paso {
+    min-height: 92px;
+  }
+  .ventana-escena__ventana {
+    height: 46%;
+  }
+  /* escena fijada en vertical: ventana más pequeña y acercamiento más tardío,
+     para que el marco siga viéndose a mitad de recorrido */
+  .cruce__escena {
+    --zoom-recto: 0.2;
+    --zoom-cubo: 5.5;
+  }
+  .cruce__escena .ventana-escena__ventana {
+    height: 34%;
+  }
+  [data-sala='teaser'] .carrusel__tira {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px 8px;
+  }
+  [data-sala='teaser'] .carrusel__numero {
+    letter-spacing: 0.1em;
+  }
+}
+@media (max-width: 360px) {
+  .contraluz__titulo {
+    letter-spacing: 0.2em;
+    margin-right: -0.2em;
+  }
+}
+
+/* 8. Movimiento reducido ------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .pantalla__play,
+  .carrusel__flecha,
+  .cruce__paso,
+  .cruce__paso-titulo {
+    transition: none;
+  }
+}
