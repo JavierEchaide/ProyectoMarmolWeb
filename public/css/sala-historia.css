@@ -517,27 +517,27 @@
 }
 
 /* 5. SPOILER: la losa tapa imagen y texto juntos ---------------------------- */
-.js .hist-tomo .spoiler[data-spoiler='tapado'] .spoiler__contenido {
+.js [data-sala='historia'] .spoiler[data-spoiler='tapado'] .spoiler__contenido {
   aspect-ratio: auto;
   height: 400px;
 }
-.hist-tomo .spoiler__tapa {
+[data-sala='historia'] .spoiler__tapa {
   inset: 0;
 }
-.hist-tomo .spoiler__cara {
+[data-sala='historia'] .spoiler__cara {
   gap: 12px;
   padding: 16px;
   text-align: center;
   box-shadow: inset 0 0 90px rgb(0 0 0 / 0.65), inset 0 1px 0 rgb(241 242 227 / 0.14), 0 34px 40px -30px rgb(54 41 38 / 0.55);
 }
-.hist-tomo .spoiler__texto {
+[data-sala='historia'] .spoiler__texto {
   letter-spacing: 0.55em;
   margin-right: -0.55em;
   font-weight: 500;
   color: #efe9dd;
   text-shadow: 0 -1px 0 rgb(0 0 0 / 0.75), 0 1px 0 rgb(255 255 255 / 0.16);
 }
-.hist-tomo .spoiler__ayuda {
+[data-sala='historia'] .spoiler__ayuda {
   color: var(--cartela-oscura);
 }
 
@@ -667,7 +667,7 @@
     scrollbar-width: none;
   }
   .hist-sumario__lista li {
-    flex: 0 0 74px;
+    flex: 0 0 88px;
   }
   .hist-premisa__pagina,
   .hist-premisa__notas {
@@ -707,7 +707,7 @@
   .hist-capitulo__cuerpo {
     padding-top: 36px;
   }
-  .js .hist-tomo .spoiler[data-spoiler='tapado'] .spoiler__contenido {
+  .js [data-sala='historia'] .spoiler[data-spoiler='tapado'] .spoiler__contenido {
     height: 240px;
   }
   .js .hist-final .spoiler[data-spoiler='tapado'] .spoiler__contenido {

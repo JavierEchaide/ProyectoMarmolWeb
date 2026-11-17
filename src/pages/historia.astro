@@ -138,7 +138,7 @@ const sumario = [
                 <p class="etiqueta hist-capitulo__parte">Parte {p.numero}</p>
               </div>
               <div class="hist-capitulo__cuerpo">
-                <Spoiler activo={p.spoiler} semilla={40 + i} descripcion={`la parte ${p.numero}`} ayuda={`Pulsa para descubrir la parte ${p.numero}`}>
+                <Spoiler activo={p.spoiler} semilla={40 + i} ayuda={`Pulsa para descubrir la parte ${p.numero}`}>
                   <div class="hist-fila">
                     <div class="hist-fila__imagen">
                       <Imagen imagen={p.imagen} ratio="3 / 2" ver={!p.spoiler} grupo="partes" pie={`Parte ${p.numero}. ${p.titulo}`} clase="pieza" />
@@ -165,13 +165,15 @@ const sumario = [
         </ol>
       </div>
     </section>
+  </div>
 
-    {/* El final: sala oscura. Destapado, la cita en grande entre dos costuras de oro. */}
-    <section id="final" class="hist-final sala-oscura hist-pad" aria-labelledby="titulo-final" data-capitulo>
+  {/* El final: sala oscura, ya fuera del tomo (el sumario fijo se queda atrás).
+      Destapado, la cita en grande entre dos costuras de oro. */}
+  <section id="final" class="hist-final sala-oscura hist-pad" aria-labelledby="titulo-final" data-capitulo>
       <div class="hist-final__columna">
         <p class="etiqueta hist-final__ante">Final · p. {folioFinal}</p>
         <h2 id="titulo-final" class="hist-final__titulo">{final.titulo}</h2>
-        <Spoiler semilla={77} descripcion="el final" ayuda="Pulsa para descubrir el final">
+        <Spoiler semilla={77} ayuda="Pulsa para descubrir el final">
           <div class="hist-final__cuerpo">
             <svg class="hist-costura" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 20 L100 18 L200 22 L300 17 L400 21 L500 19 L600 23 L700 18 L800 22 L900 19 L1000 20" /></svg>
             <blockquote class="hist-final__cita"><p>{final.cita}</p></blockquote>
@@ -182,8 +184,7 @@ const sumario = [
           </div>
         </Spoiler>
       </div>
-    </section>
-  </div>
+  </section>
 
   <Siguiente actual="historia" />
 </Base>

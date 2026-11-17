@@ -1,4 +1,4 @@
-/* Cartas de "Las páginas": el hover no parpadea con el ratón quieto cerca de los bordes (16/16 en cada punto).
+/* Estelas de "Las salas" (V3; antes, cartas de "Las páginas"): el hover no parpadea con el ratón quieto cerca de los bordes (16/16 en cada punto).
    Uso: ver NOTA-WEB.md, apartado "Pruebas". Necesita la web servida en BASE
    (por defecto http://localhost:4400) y Playwright con Chromium. */
 const BASE = process.env.BASE || 'http://localhost:4400';
@@ -11,9 +11,9 @@ const { chromium } = require('playwright');
   const err = []; p.on('pageerror', e => err.push(e.message));
   await p.goto(BASE + '/index.html');
   await p.waitForTimeout(500);
-  await p.evaluate(() => document.querySelector('[data-cartas]').scrollIntoView({ block: 'center', behavior: 'instant' }));
+  await p.evaluate(() => document.querySelector('[data-estelas]').scrollIntoView({ block: 'center', behavior: 'instant' }));
   await p.waitForTimeout(1500);
-  const sel = process.argv[3] || '.carta__enlace';
+  const sel = process.argv[3] || '[data-estela]';
   let malos = 0;
   for (const c of (process.argv[4] || "0,1,2").split(",").map(Number)) {
     const r = await (await p.$$(sel))[c].boundingBox();
@@ -28,7 +28,7 @@ const { chromium } = require('playwright');
       if (si < 16) malos++;
       fila.push(n + ' ' + si + '/16');
     }
-    console.log('carta', c + 1, fila.join(' · '));
+    console.log('estela', c + 1, fila.join(' · '));
   }
   console.log('fallos:', malos, err);
   await b.close();

@@ -56,7 +56,13 @@
   function marcar() {
     // la primera sección que cruza la franja de lectura
     var actual = secciones.filter(function (s) { return visibles[s.id]; })[0];
-    if (!actual) return;
+    if (!actual) {
+      // por encima de la primera sección no hay ninguna placa encendida
+      if (secciones[0].getBoundingClientRect().top > window.innerHeight * 0.3) {
+        enlaces.forEach(function (a) { a.removeAttribute('aria-current'); });
+      }
+      return;
+    }
     enlaces.forEach(function (a) {
       if (a.getAttribute('href') === '#' + actual.id) a.setAttribute('aria-current', 'true');
       else a.removeAttribute('aria-current');

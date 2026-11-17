@@ -341,7 +341,7 @@
 }
 .estela--rosso {
   --placa: #efeadf;
-  --canto: #6d2a26;
+  --canto: #54221f;
 }
 .estela--rosso .estela__losa {
   background-color: #7a2c28;
@@ -522,7 +522,7 @@
 .estela__pedestal {
   position: relative;
   display: block;
-  margin: 0 -16px;
+  margin: 0 -10px;
 }
 .estela__pedestal span {
   display: block;
@@ -532,7 +532,7 @@
 }
 .estela__pedestal span + span {
   height: 26px;
-  margin: 0 -12px;
+  margin: 0 -8px;
   background: linear-gradient(#e2e0d0, #c9c6b2);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6);
 }
@@ -693,9 +693,9 @@
 .autor__lienzo {
   position: absolute;
   left: 0;
-  top: -24%;
+  top: -8%;
   width: 100%;
-  height: 128%;
+  height: 122%;
   opacity: 0;
   pointer-events: none; /* el ratón se lee en toda la ventana */
   transition: opacity 0.9s var(--curva);

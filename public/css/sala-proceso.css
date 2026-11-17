@@ -187,7 +187,7 @@
 }
 .regla__marca--hecho::before { width: 2px; height: 52%; background: var(--tinta); }
 .regla__marca--bloque::before { height: 78%; }
-.regla__marca--en-curso::before,
+.regla__marca--en-curso::before { width: 2px; background: var(--rojo); }
 .regla__marca--actual::before { width: 3px; height: 100%; background: var(--rojo); }
 .regla__marca a { position: absolute; inset: 0; }
 .regla__marca a:focus-visible { outline: 2px solid var(--rojo); outline-offset: 2px; }
@@ -404,7 +404,6 @@
   }
   .calveta__rojo { stroke: var(--rojo); stroke-width: 3; }
   .calveta__brillo { stroke: var(--rojo); stroke-width: 11; opacity: 0.16; }
-  .calveta__lista { position: relative; }
   .calveta__bloque { height: var(--alto-nodo); display: flex; align-items: center; }
   .calveta__bloque details { width: 100%; }
   .calveta__nodo { position: relative; display: block; width: 244px; padding-left: 26px; margin-left: calc(var(--x) * 1%); }
@@ -484,3 +483,7 @@
   .calveta__caja { animation: none; }
   .placas__placa[aria-current='true'] { transform: none; }
 }
+
+/* La puerta de vuelta (componente común): a anchos medios su material asoma
+   por la derecha; aquí se recorta para que no haya desplazamiento horizontal */
+[data-sala='proceso'] .puerta { overflow-x: clip; }

@@ -69,8 +69,8 @@ const encendido = Math.round(((iActual + 0.5 + dentro * 0.6) / nodos.length) * 1
 const bloqueDe = (id) => semanas.find((s) => s.id === id)?.bloque.numero ?? '';
 const piezas = [
   ...proceso.archivo.wips.map((w) => ({ tipo: 'wips', bloque: bloqueDe(w.semana), titulo: w.falta, imagen: w, grupo: 'wips' })),
-  ...proceso.archivo.versiones.map((v) => ({ tipo: 'versiones', bloque: bloqueDe(v.imagen?.semana) || '0', titulo: v.titulo, texto: v.texto, imagen: v.imagen, grupo: 'versiones' })),
-  ...proceso.archivo.fallos.map((f) => ({ tipo: 'fallos', bloque: '0', titulo: f.titulo, texto: f.texto })),
+  ...proceso.archivo.versiones.map((v) => ({ tipo: 'versiones', bloque: bloqueDe(v.imagen?.semana), titulo: v.titulo, texto: v.texto, imagen: v.imagen, grupo: 'versiones' })),
+  ...proceso.archivo.fallos.map((f) => ({ tipo: 'fallos', bloque: '', titulo: f.titulo, texto: f.texto })),
 ];
 const tipos = [
   { id: 'wips', nombre: 'WIPs' },

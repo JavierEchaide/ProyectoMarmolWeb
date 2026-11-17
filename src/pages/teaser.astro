@@ -127,23 +127,23 @@ const numero = pagina('teaser').numero;
   <div class="sala-pad sala-franja sala-veta"><Veta semilla={12} /></div>
 
   {/* 5. Fotogramas clave: fotograma grande, contador y tira de 12 */}
-  <section class="fotogramas sala-pad sala-franja" aria-labelledby="titulo-fotogramas">
+  <section class="teaser-fotogramas sala-pad sala-franja" aria-labelledby="titulo-fotogramas">
     <Carrusel planos={teaser.planos} titulo="Fotogramas clave del teaser" encabezado="Fotogramas clave" idTitulo="titulo-fotogramas" />
   </section>
 
   {/* 6. La rima: los dos planos de los ojos, en un comparador a casi todo el ancho */}
-  <section class="rima sala-pad sala-franja" aria-labelledby="titulo-rima">
-    <div class="sala-rejilla rima__intro" data-revelar>
-      <div class="sala-titulo rima__titulo">
+  <section class="teaser-rima sala-pad sala-franja" aria-labelledby="titulo-rima">
+    <div class="sala-rejilla teaser-rima__intro" data-revelar>
+      <div class="sala-titulo teaser-rima__titulo">
         <span class="etiqueta sala-antetitulo">Planos {rima.antes.plano} y {rima.despues.plano}</span>
         <h2 id="titulo-rima" class="sala-h2">{rima.titulo}</h2>
       </div>
-      <p class="rima__texto">{rima.texto}</p>
+      <p class="teaser-rima__texto">{rima.texto}</p>
     </div>
-    <div class="pieza rima__pieza">
+    <div class="pieza teaser-rima__pieza">
       <AntesDespues antes={rima.antes.imagen} despues={rima.despues.imagen} titulo={rima.titulo} ratio="2.35 / 1" etiquetaAntes={rima.antes.etiqueta} etiquetaDespues={rima.despues.etiqueta} />
     </div>
-    <p class="rima__ayuda">Arrastra la línea, o usa las flechas del teclado, para pasar de un plano al otro.</p>
+    <p class="teaser-rima__ayuda">Arrastra la línea, o usa las flechas del teclado, para pasar de un plano al otro.</p>
   </section>
 
   <Siguiente actual="teaser" />
