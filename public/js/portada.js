@@ -203,7 +203,9 @@
      web (precarga), cuando la página ya ha cargado y sin estorbar a la intro.
      Mientras tanto, y si algo falla, se ve la silueta de respaldo. */
   var busto = document.querySelector('[data-busto]');
-  if (busto) {
+  // Desde un USB (file://) el navegador no deja leer el .glb y lo anuncia
+  // como error en la consola: ahí se queda directamente el respaldo.
+  if (busto && location.protocol !== 'file:') {
     var cargarBusto = function () {
       try {
         var s = document.createElement('script');

@@ -333,6 +333,12 @@
 .medida__nota { padding-left: 24px; border-left: 1px solid var(--grafito); font-size: var(--t-pequeno); font-style: italic; color: var(--grafito); line-height: 1.5; }
 .medida__nota p { margin: 0; }
 .medida__calculo { font-family: var(--f-titulo); font-size: var(--t-etiqueta); font-style: normal; letter-spacing: 0.2em; text-transform: uppercase; color: var(--tinta); margin-bottom: 8px !important; }
+/* Con el índice lateral, las dos cifras enormes y la nota no caben en una
+   fila hasta unos 1280 px: la nota baja a su propia fila */
+@media (max-width: 1279px) {
+  .medida { grid-template-columns: auto minmax(0, 1fr); }
+  .medida__nota { grid-column: 1 / -1; padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--grafito); }
+}
 @media (max-width: 899px) {
   .medida { grid-template-columns: minmax(0, 1fr); }
   .medida__nota { padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--grafito); }
@@ -487,3 +493,12 @@
 /* La puerta de vuelta (componente común): a anchos medios su material asoma
    por la derecha; aquí se recorta para que no haya desplazamiento horizontal */
 [data-sala='proceso'] .puerta { overflow-x: clip; }
+
+/* Sin monoespaciada en Proceso (descartada en la V3): el código va en la
+   misma letra, en cursiva normal y con un filete abajo */
+[data-sala='proceso'] code {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: normal;
+  border-bottom: 1px solid currentColor;
+}

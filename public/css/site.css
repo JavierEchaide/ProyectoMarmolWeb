@@ -5604,3 +5604,12 @@ html .cortina[data-destino='proceso'] { --cortina-material: var(--mat-grafito); 
     transform: none;
   }
 }
+
+/* Placeholders V3 también en comparadores y miniaturas: sin rayas. La capa
+   "antes" va un punto más oscura para que se distingan las dos mitades. */
+.comparador__capa--antes .imagen__falta {
+  background: color-mix(in srgb, var(--sala-hueco) 90%, var(--tinta));
+}
+.carrusel__hueco {
+  background: var(--sala-hueco);
+}

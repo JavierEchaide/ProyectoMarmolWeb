@@ -14,11 +14,15 @@ const { chromium } = require('playwright');
   const estado = await p.evaluate(() => ({
     fuente: document.fonts.check('16px Cinzel'),
     css: getComputedStyle(document.body).backgroundColor,
-    hero: document.querySelector('.hero img').naturalWidth,
+    hero: (document.querySelector('img[fetchpriority="high"]') || {}).naturalWidth || 0,
+    estelas: document.querySelectorAll('[data-estela]').length,
   }));
   console.log('file:// index', estado);
   await p.click('[data-boton-menu]'); await p.waitForTimeout(900);
   await p.click('.menu__item a[href="proceso.html"]'); await p.waitForURL('**/proceso.html'); await p.waitForTimeout(800);
+  // también por una estela (la cortina toma el material de destino)
+  await p.goto(require('url').pathToFileURL(require('path').resolve(__dirname, '../dist/historia.html')).href); await p.waitForTimeout(1500);
+  await p.evaluate(() => document.querySelector('.puerta a').scrollIntoView()); await p.click('.puerta a'); await p.waitForURL('**/proceso.html'); await p.waitForTimeout(1500);
   console.log('navegó a', p.url().split('/').pop(), 'marmol tarjetas:', await p.evaluate(() => getComputedStyle(document.querySelector('.menu__marmol')).backgroundImage.slice(0,60)));
   console.log('peticiones fallidas:', fallos.length ? fallos : 'ninguna', 'errores:', err.length ? err : 'ninguno');
   await b.close();

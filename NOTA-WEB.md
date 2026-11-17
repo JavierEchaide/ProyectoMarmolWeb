@@ -24,7 +24,8 @@ Documento de referencia de la web del Proyecto Final Mármol (Javier Echaide, An
 12. Decisiones tomadas (y lo que se probó y se quitó)
 13. Problemas encontrados y cómo se resolvieron
 14. Ideas propuestas que no se han aplicado
-15. **V2 (noviembre 2026): qué cambió y dónde está** ← leer primero; corrige a los apartados 3 a 8 donde no coincidan
+15. V2 (noviembre 2026): qué cambió y dónde está
+16. **V3 (noviembre 2026): qué cambió y dónde está** ← leer primero; corrige a los apartados 3 a 8 y 15 donde no coincidan (la especificación está en `docs/v3/WEB-V3.md`)
 
 ---
 
@@ -631,7 +632,6 @@ La web está terminada: lo que queda es meter los assets reales y comprobar.
 ---
 
 ## 14. Ideas propuestas que no se han aplicado
-15. **V2 (noviembre 2026): qué cambió y dónde está** ← leer primero; corrige a los apartados 3 a 8 donde no coincidan
 
 Salieron de comparar la web con webs premiadas (Awwwards, museos). **Son propuestas: preguntar a Javi antes de hacer ninguna.**
 
@@ -721,3 +721,86 @@ El `.blend` de trabajo (`busto_web.blend`, piezas ya normalizadas con los materi
 **Colocación de la calavera (16/11/2026):** en el `.glb` la calavera venía boca abajo y tumbada (su arriba era −Z y su cara −Y; se ve al mirarla desde abajo: las cuencas y los dientes quedan de frente). `src/3d/busto.js` la corrige al cargar: giro de 180° sobre el eje (0, 1, −1), +0,01 en X, +0,06 en Y, −0,02 en Z y escala ×1,14 (casi el máximo que cabe en el hueco real del `.glb`, más de 1 cm de holgura; las cuencas quedan a la altura de la grieta). Al abrirse crece un 30 % más y sube 0,12 (`calavera` en `pintar()`). Si se vuelve a exportar el modelo con la calavera ya derecha, quitar ese bloque.
 
 **Prueba:** `pruebas/busto.cjs` (en `todas.sh`): comprueba que el `.glb` responde 200, que no hay errores y hace capturas cerrado / a medias / abierto en 1440 y 390. En este entorno sin GPU tarda unos 3 minutos.
+
+---
+
+## 16. V3 (noviembre 2026): qué cambió y dónde está
+
+Sale de `docs/v3/WEB-V3.md` (la especificación, copia de la nota de Obsidian "web v3") y del diseño de referencia de Claude Design (`docs/v3/diseno/*.dc.html` y `docs/v3/prototipo/index.html`). Dirección: **museo monumental**. Cada sala abre con una pieza que impone y después baja a lectura; todo es **monumental**, **pieza** o **cartela**; las tarjetas con doble filete dorado dejan de ser el recurso general. La estructura de la V2 (salas, indicador, atajos, placeholders, exportación, música) se mantiene. Los textos siguen siendo placeholder: en la V4 Javi pone textos y fotos reales y se rehace el contenido de Proceso.
+
+Está en la rama `claude/v3-web` (PR en borrador a `main`, sin fusionar). Se hizo en una sola sesión: la Fase 1 (sistema) primero y las cuatro salas en paralelo, cada una con su hoja de estilos.
+
+### 16.1 Sistema común (`site.css`, apartado 23; manda sobre los apartados anteriores)
+
+- **Tokens nuevos** en `:root`: `--negro-calido` (#16110F, sala oscura con luz), `--claro-oscura` y `--cartela-oscura` (texto y cartelas sobre sala oscura), `--mat-blanco`, `--mat-rosso`, `--mat-travertino`, `--mat-grafito` (materiales), `--grabado-monumental` y `--sombra-suelo`. Por sala: `--sala-luz` (luz cenital del fondo), `--sala-hueco` (fondo de los placeholders) y `--sala-material` (piedra de la sala). Teaser pasa a travertino `#E8E2D4` con veta `#A39886`.
+- **`--t-display` es monumental** (`clamp(2.75rem, 0.6rem + 9.6vw, 9.5rem)`): títulos de sala. El menú, la intro y la 404 la redefinen a la escala de antes (siguen siendo seis tamaños). Clases `.monumental` (título grabado), `.numeral-hueco` (solo contorno) y `.etiqueta`.
+- **Materiales**: `public/img/marmol/rosso-levanto.webp` y `marmol-blanco.webp` son los renders reales de los `.blend` de Javi (copiados de `materiales/texturas/`). `travertino.webp` y `grafito.webp` son **provisionales**: `python3 scripts/generar-materiales-v3.py`. El menú sigue con `marmol.webp` (provisional de la V1).
+- **Cabecera en banda** (`Base.astro`): rejilla de tres columnas: MÁRMOL · indicador de sala · disco de música + MENÚ. Fondo de la sala al 85-95 % con `backdrop-filter: blur(10px)` y línea fina. Sigue siendo `position: sticky` de 64 px (z-index 60); las salas que quieren el hero a sangre debajo usan `margin-top: calc(-1 * var(--cabecera))`. Al bajar se queda solo el indicador, con su propia banda. Por debajo de 380 px el indicador se queda en numeral y veta.
+- **Disco de música** (`Musica.astro`): ahora es solo el botón (40 px, Rosso Levanto real) dentro de la cabecera. El **crédito CC BY** pasa al pie de todas las salas (`.pie .musica__credito`). `musica.js` no cambia.
+- **Cartela** (`Cartela.astro`: `numero`, `titulo`, `texto`, `ancha`, `etiqueta`), **pieza** (`.pieza`, sombra de suelo) y **sala oscura** (`.sala-oscura`).
+- **Placeholder V3** (`Imagen.astro`, mismo marcado; cambia el CSS): hueco del color `--sala-hueco`, filete fino, rombo suave en el centro, insignia pequeña y cartela con lo que falta y la semana. Sin rayas. `oscuro` para las salas oscuras.
+- **Botones**: `.boton` es Cinzel pequeño con una línea que se alarga; `.boton--principal` con fondo tinta; `.boton--acento` en rojo. Ya no hay cajas con borde ni flechas.
+- **Puerta a la siguiente sala** (`Siguiente.astro`, clases `.puerta`): franja con el material de la sala que viene; el texto va sobre la mitad lisa. Conserva la clase `siguiente` porque la usan las pruebas de la cortina.
+- **Aparición "sale de la piedra"**: `[data-revelar]` sube 14 px y pasa de desenfocado a nítido. `site.js` (bloque 3) reparte un retraso escalonado (`--i`) entre las piezas que entran a la vez. **No poner `data-revelar` en un contenedor con hijos `position: sticky`**: el filtro rompe el sticky mientras dura.
+- **Cortina con el material de destino**: `site.js` (bloque 2) pone `data-destino` en la cortina al salir (lo lee de `data-sala-destino` de los enlaces del menú); al llegar, la placa lleva el material de la propia sala (`--cortina-material`). El nombre va en una placa lisa, nunca sobre las vetas.
+- **Hojas por sala**: `Base.astro` acepta `estilos={[...]}`. Cada sala tiene la suya (`public/css/sala-portada.css`, `sala-teaser.css`, `sala-historia.css`, `sala-proceso.css`), enlazada solo en su página. El CSS de la V2 de cada sala sigue en `site.css` (apartados 10 a 13 y 19 a 21): lo que ya no se usa es código muerto pendiente de limpiar.
+- **Placeholders sin rayas también en comparadores y miniaturas**: la capa "antes" del comparador va un punto más oscura (`color-mix`) para que se distingan las mitades.
+
+### 16.2 I · Portada — `index.astro`, `data/portada.js`, `js/portada.js`, `css/sala-portada.css`
+
+- **Hero** a sangre bajo la cabecera con **luz rasante**: un foco cálido (`soft-light`) que sigue al ratón con suavizado en `requestAnimationFrame`; quieto en táctil y con movimiento reducido. Señal fina de "baja".
+- **Presentación**: gancho monumental (la segunda línea en rojo), párrafo justificado con capitular y botón principal "Ver el teaser" (la sección conserva la clase `presentacion` por la prueba v2).
+- **La historia en cuatro fotogramas** (`[data-cuatro]`): escena fijada al scroll; el fotograma 16:9 cambia de I a IV, con cartela, contador "01 / 04" y los numerales como índice. En móvil, sin JS o con movimiento reducido, los cuatro en lista.
+- **Estelas A+** (`[data-estela]`): frontón, numeral tallado, tabula ansata lisa con nombre y frase, material de la sala (travertino, Rosso Levanto real, grafito), canto, pedestal de dos escalones, sombra y foco. Al pasar o enfocar sube la luz, se eleva, aparece la veta y "Entrar" se abre. **Se inclinan con el cursor** (solo la losa de dentro, `[data-estela-cuerpo]`; el enlace no se mueve para que el hover sea estable). Al pulsar, la cortina cae con su material. Sustituyen a las cartas flotantes de la V2.
+- **Hecho por**: sala oscura con cono de luz, busto centrado sobre pedestal de grafito con el nombre grabado y MMXXVI - MMXXVII; cartelas Autor y La pieza; "Baja para abrirla" con tres rombos de estado (cerrada, se abre, abierta) que avanzan con el scroll; frase placeholder en cursiva. "Hecho por" es texto claro con dos rombos de oro decorativos (el oro nunca es texto).
+- **Busto con precarga** (`portada.js`, bloque del busto): `js/busto.js` y el `.glb` se piden al entrar en la Portada, con `requestIdleCallback` tras `load` (sin estorbar a la intro). Mientras, imagen de respaldo con la misma silueta; si falla (sin WebGL, 404...), se queda el respaldo sin errores en consola. **Desde un USB (`file://`) no se intenta**: Chromium no deja leer el `.glb` y lo anuncia como error; ahí se ve directamente el respaldo.
+
+### 16.3 II · Teaser — `teaser.astro`, `data/teaser.js`, `js/teaser.js`, `Carrusel.astro`, `teaser/EscenaVentana.astro`, `css/sala-teaser.css`
+
+- **Título a contraluz**: "TEASER" en tinta, muy espaciado, con un halo blanco cálido detrás (nunca letras blancas); "II" hueco gigante detrás y "Tres lugares · una ventana". Nebulosa de la V2 conservada, sin oro. Los paneles crema de la V2 desaparecen: el texto va en franjas del fondo de la sala.
+- **Vídeo** en franja de sala oscura a sangre, 2.35:1, play redondo grande y cartela en una línea. El reproductor y el visor no cambian (no arranca solo, crece a ventana grande, créditos dentro).
+- **Sinopsis y ficha** a dos columnas (texto de pared + cartela vertical).
+- **Cruzar la ventana** (`[data-cruce]`, `EscenaVentana.astro`, bloque 2b de `teaser.js`): escena fijada (~3 pantallas en escritorio) en 2.5D con capas (pared, arco de la ventana, nebulosa, bosque), cada una a su escala; tres cartelas (El taller, La ventana, El bosque), contador y regla de avance. En móvil, más corta; con movimiento reducido o sin JS, tres fotogramas en lista. Las capas son dibujos provisionales en CSS con la insignia "Placeholder · capas de los renders, S28".
+- **Fotogramas**: 12 planos (`teaser.planos`), fotograma grande 2.35:1, contador "01 / 12" con flechas y tira de miniaturas; teclado, deslizar y visor como antes. Los pies nuevos son placeholder.
+- **La rima**: comparador a casi todo el ancho.
+
+### 16.4 III · Historia — `historia.astro`, `data/historia.js`, `js/historia.js`, `Spoiler.astro`, `css/sala-historia.css`
+
+- **Cabecera**: Rosso Levanto real a sangre con la ventana que se abre al pulsar (la de la V2) y "HISTORIA" monumental en una **franja lisa** de piedra en la base; debajo, el lema y la pista.
+- **Sumario** (`.hist-sumario`): Premisa, I a VI y Final; los tapados con rombo negro; fijo bajo la cabecera en escritorio (opaco, para que no se lea el texto de debajo) y fila desplazable en móvil; marca en rojo el capítulo actual (scrollspy).
+- **Premisa a doble página**: dos columnas justificadas con capitular roja, imagen clave 4:5 en vitrina con cartela, Influencias y La idea: kintsugi como notas al margen.
+- **Capítulos** (`[data-lomo]`): la veta baja por el margen izquierdo como **lomo** (gris, rojo agrietado, oro) con un nodo por capítulo; numeral hueco gigante en el margen, imagen 3:2 y texto alternando lado, "Leer más" y folio. Sin cajas.
+- **SPOILER**: la losa negra tapa imagen y texto juntos ("SPOILER" grabado); el numeral queda visible. Se rompe con costuras de oro (motor de `grietas.js`); "Mostrar todos" solo destapa.
+- **El final** en sala oscura: destapado, la cita entre dos costuras de oro.
+
+### 16.5 IV · Proceso — `proceso.astro`, `data/proceso.js`, `js/proceso.js`, `css/sala-proceso.css`
+
+- **Cabecera** monumental con "IV" hueco e introducción.
+- **Estado** con **regla graduada de 35 semanas** (hecho en tinta, actual en rojo y más alta, marca larga al empezar cada bloque); sale de `src/lib/semanas.js`.
+- **Índice lateral** de placas de grafito con plomada y scrollspy; por debajo de 1000 px, fila de placas arriba.
+- **Desarrollo visual**: antes y después grandes alternando lado, con anotaciones de taller como cartelas.
+- **Método fijado** (`[data-metodo]`, bloque 2 de `proceso.js`): las 8 estaciones a la izquierda con la actual encendida; a la derecha el WIP del paso, contador "05 / 08" y regla. Sin fijar en móvil, sin JS y con movimiento reducido. Debajo, referencias como cajones (diálogos de siempre) y el dato de render (57 s por fotograma). Entre 900 y 1280 px la nota del render baja a su fila (antes desbordaba 12 px).
+- **Calendario como veta**: veta sinuosa de grafito con un nodo por bloque y su cartela; se enciende en rojo hasta la semana actual; al pulsar un nodo, sus semanas salen en el panel de al lado (con desplazamiento propio) con "Ver registro". Las anclas `#s05` siguen funcionando (abren su bloque). En móvil, lista recta.
+- **Archivo con filtros** por tipo y por bloque (`aria-pressed`). Sin JavaScript se ven todas las piezas y no salen los filtros.
+- El código (`npm run exportar`) ya no va en monoespaciada (descartada en Proceso).
+
+### 16.6 Pruebas
+
+- Nuevas: `pruebas/v3-portada.cjs`, `v3-teaser.cjs`, `v3-historia.cjs` y `v3-proceso.cjs` (escenas fijadas, estelas, busto con respaldo, contraluz, 12 planos, sumario, lomo, SPOILER, regla, método, calendario, filtros, sin JS, movimiento reducido y desbordes a 320-1440). `todas.sh` las incluye.
+- Actualizadas: `v2.cjs` (crédito de la música en el pie y disco en la cabecera, 12 planos, Proceso nuevo), `interacciones.cjs`, `bloques.cjs` (el calendario ahora son nodos con panel), `cartas-hover.cjs` (hover estable de las estelas) y `usb.cjs` (hero nuevo y navegación también por la puerta).
+- La prueba de la estela que se inclina espera a que llegue a inclinarse: sin GPU el `requestAnimationFrame` va lento.
+
+### 16.7 Cómo se hizo (para la próxima vez)
+
+La Fase 1 (sistema) la hizo el agente principal; después cuatro agentes en paralelo, uno por sala, cada uno con su página, sus datos, su JS y **su hoja de estilos** (así no se pisan). Los cuatro se cortaron por el límite de uso justo después de subir su primer commit; sus retoques sin subir se recogieron a mano de sus worktrees (`.claude/worktrees/`, no se suben). Funcionó bien: ningún conflicto entre salas.
+
+### 16.8 Pendiente o no comprobado
+
+- **Mirar a ojo en un ordenador de verdad**: la luz rasante, la inclinación de las estelas, el busto (aquí sin GPU va a pocos fps) y la suavidad de las escenas fijadas (cuatro fotogramas, cruzar la ventana, método).
+- **Safari y Firefox**: `color-mix()`, `backdrop-filter`, `position: sticky` dentro de rejillas y `text-stroke` de los numerales huecos. Solo se ha probado en Chromium.
+- **Texturas provisionales**: travertino y grafito (`scripts/generar-materiales-v3.py`); el menú sigue con el mármol provisional de la V1 (`marmol.webp`) y podría pasar al Rosso Levanto real.
+- **Cruzar la ventana**: capas dibujadas en CSS hasta los renders de S28.
+- **Limpieza**: el CSS de la V2 de cada sala en `site.css` (apartados 10 a 13 y 19 a 21) se ha quedado en parte sin uso; conviene borrarlo en la V4 con cuidado (lo comparten la 404 y los registros).
+- **Peso de `dist/`**: las dos texturas reales suman unos 145 KB; mirar el total antes de publicar.
+- Las skills de revisión de la nota (Impeccable, Emil Kowalski, GSAP, web-design-guidelines, webapp-testing) **no se instalaron**: no dio tiempo; la revisión se hizo con capturas y pruebas propias.
+- La web publicada en Vercel no se ve desde aquí.

@@ -59,7 +59,8 @@ const { chromium } = require('playwright');
     ver('la del centro es más alta', await p.evaluate(() => { const l = [...document.querySelectorAll('.estela__losa')].map((e) => e.offsetHeight); return l[1] > l[0] && l[1] > l[2]; }));
     const caja = await (await p.$$('[data-estela]'))[1].boundingBox();
     await p.mouse.move(caja.x + caja.width * 0.8, caja.y + caja.height * 0.3, { steps: 5 });
-    await p.waitForTimeout(700);
+    // sin GPU el rAF va lento: se espera a que la losa llegue a inclinarse
+    await p.waitForFunction(() => /rotateY\(([1-9]|\d\d)/.test(document.querySelectorAll('[data-estela-cuerpo]')[1].style.transform), null, { timeout: 4000 }).catch(() => {});
     const inclinada = await p.evaluate(() => document.querySelectorAll('[data-estela-cuerpo]')[1].style.transform);
     ver('la estela se inclina hacia el cursor', /rotateY\(([1-9]|\d\d)/.test(inclinada), inclinada);
     ver('hover estable sobre la estela', await p.evaluate(() => document.querySelectorAll('[data-estela]')[1].matches(':hover')));
